@@ -1,0 +1,199 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+  AutoIQ Design System — "Precision & Intelligence"
+  Source: Stitch project "AutoIQ AI Diagnostics Marketplace"
+  Design tokens mapped from the Stitch design system.
+  Primary: Navy #081A2F | Accent: Cyan #00B8D9 | Font: Plus Jakarta Sans
+*/
+
+@theme inline {
+  /* Semantic color aliases → CSS variables */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* AutoIQ brand palette — exposed as Tailwind utilities */
+  --color-navy: var(--navy);
+  --color-navy-secondary: var(--navy-secondary);
+  --color-cyan: var(--cyan);
+  --color-surface: var(--surface);
+  --color-surface-container: var(--surface-container);
+  --color-surface-container-high: var(--surface-container-high);
+  --color-on-surface-variant: var(--on-surface-variant);
+
+  /* Border radius scale */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius));
+  --radius-lg: calc(var(--radius) + 4px);
+  --radius-xl: calc(var(--radius) + 8px);
+  --radius-full: 9999px;
+
+  /* Typography */
+  --font-sans:
+    var(--font-plus-jakarta-sans), "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+
+  /* Spacing scale (8px base from Stitch) */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 48px;
+  --spacing-gutter: 24px;
+}
+
+:root {
+  /* ── AutoIQ Light Mode tokens ── */
+
+  /* Surfaces */
+  --background: #f7fafd;
+  --foreground: #181c1e;
+  --surface: #f7fafd;
+  --surface-container: #ebeef1;
+  --surface-container-high: #e5e8eb;
+  --on-surface-variant: #44474d;
+
+  /* Cards / popovers */
+  --card: #ffffff;
+  --card-foreground: #181c1e;
+  --popover: #ffffff;
+  --popover-foreground: #181c1e;
+
+  /* Primary — Navy */
+  --primary: #081a2f;
+  --primary-foreground: #ffffff;
+
+  /* Secondary — subtle slate */
+  --secondary: #ebeef1;
+  --secondary-foreground: #181c1e;
+
+  /* Muted */
+  --muted: #ebeef1;
+  --muted-foreground: #44474d;
+
+  /* Accent — Cyan (AI intelligence layer) */
+  --accent: #00b8d9;
+  --accent-foreground: #ffffff;
+
+  /* Destructive */
+  --destructive: #ba1a1a;
+  --destructive-foreground: #ffffff;
+
+  /* Borders & inputs */
+  --border: #c4c6cd;
+  --input: #c4c6cd;
+  --ring: #00b8d9;
+
+  /* Border radius base */
+  --radius: 0.75rem;
+
+  /* Brand palette for direct use */
+  --navy: #081a2f;
+  --navy-secondary: #102a43;
+  --cyan: #00b8d9;
+}
+
+.dark {
+  --background: #0d1117;
+  --foreground: #e0e3e6;
+  --surface: #0d1117;
+  --surface-container: #1a1e23;
+  --surface-container-high: #22272e;
+  --on-surface-variant: #9aa3ae;
+
+  --card: #161b22;
+  --card-foreground: #e0e3e6;
+  --popover: #161b22;
+  --popover-foreground: #e0e3e6;
+
+  --primary: #b7c7e4;
+  --primary-foreground: #081a2f;
+
+  --secondary: #1a1e23;
+  --secondary-foreground: #e0e3e6;
+
+  --muted: #1a1e23;
+  --muted-foreground: #9aa3ae;
+
+  --accent: #00b8d9;
+  --accent-foreground: #ffffff;
+
+  --destructive: #ff4d4f;
+  --destructive-foreground: #ffffff;
+
+  --border: #30363d;
+  --input: #30363d;
+  --ring: #00b8d9;
+
+  --navy: #0a1c31;
+  --navy-secondary: #102a43;
+  --cyan: #00b8d9;
+}
+
+/* ── Base styles ── */
+* {
+  border-color: var(--border);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-feature-settings:
+    "rlig" 1,
+    "calt" 1;
+}
+
+/* ── RTL support for Arabic ── */
+[dir="rtl"] {
+  text-align: right;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--surface-container);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--on-surface-variant);
+}
+
+/* ── Print (PDF export) ──────────────────────────────────────────────────────
+   "Download PDF Report" is browser print-to-PDF (DownloadPdfButton calls
+   window.print()) — same pattern as the Sprint 13 Invoice Detail page. Any
+   portal chrome or interactive-only control gets `.no-print` so only the
+   actual report content prints. */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}

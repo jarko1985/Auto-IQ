@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__stitch__get_screen",
+      "Bash(grep -A3 \"DEBUG openai\\\\|DEBUG anthropic\" /tmp/dev-server4.log | tail -40)",
+      "Read(//tmp/**)"
+    ]
+  }
+}

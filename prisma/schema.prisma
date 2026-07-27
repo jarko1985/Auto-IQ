@@ -1,0 +1,2475 @@
+// AutoIQ UAE — Prisma Schema
+// Phase 1: Identity, Organizations, RBAC
+// Phase 2: Vehicle Catalog and Customer Vehicles
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  directUrl  = env("DIRECT_URL")
+  extensions = [pgvector(map: "vector"), uuid_ossp(map: "uuid-ossp")]
+}
+
+// ── Enums ─────────────────────────────────────────────────────────────────────
+
+enum UserStatus {
+  ACTIVE
+  PENDING_VERIFICATION
+  SUSPENDED
+  DEACTIVATED
+}
+
+enum OrgType {
+  VENDOR
+  GARAGE
+}
+
+enum OrgStatus {
+  PENDING_APPROVAL
+  ACTIVE
+  SUSPENDED
+  REJECTED
+}
+
+enum RoleName {
+  CUSTOMER
+  VENDOR_OWNER
+  VENDOR_STAFF
+  GARAGE_OWNER
+  GARAGE_MANAGER
+  MECHANIC
+  SUPPORT_AGENT
+  CONTENT_MANAGER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum AuditAction {
+  AUTH_REGISTER
+  AUTH_LOGIN
+  AUTH_LOGIN_FAILED
+  AUTH_LOGOUT
+  AUTH_EMAIL_VERIFIED
+  AUTH_PASSWORD_CHANGED
+  AUTH_PASSWORD_RESET_REQUESTED
+  AUTH_PASSWORD_RESET_COMPLETED
+  AUTH_PHONE_OTP_REQUESTED
+  AUTH_PHONE_VERIFIED
+  AUTH_SIGNUP_OTP_REQUESTED
+  AUTH_ACCOUNT_SUSPENDED
+  DIAG_SESSION_STARTED
+  DIAG_SESSION_COMPLETED
+  DIAG_SESSION_CANCELLED
+  DIAG_SAFETY_ESCALATED
+  DIAG_SHARE_LINK_CREATED
+  DIAG_SHARE_LINK_REVOKED
+  KNOWLEDGE_DOCUMENT_UPLOADED
+  KNOWLEDGE_DOCUMENT_APPROVED
+  KNOWLEDGE_DOCUMENT_REJECTED
+  KNOWLEDGE_DOCUMENT_REINDEXED
+  KNOWLEDGE_DOCUMENT_ARCHIVED
+  VENDOR_ORG_CREATED
+  VENDOR_PROFILE_UPDATED
+  VENDOR_DOCUMENT_UPLOADED
+  VENDOR_DOCUMENT_DELETED
+  VENDOR_SUBMITTED
+  VENDOR_APPROVED
+  VENDOR_REJECTED
+  VENDOR_LOCATION_CREATED
+  VENDOR_LOCATION_UPDATED
+  VENDOR_STAFF_INVITED
+  VENDOR_STAFF_INVITE_REVOKED
+  VENDOR_STAFF_INVITE_ACCEPTED
+  VENDOR_STAFF_REMOVED
+  PART_PROPOSED
+  PART_APPROVED
+  PART_REJECTED
+  PART_UPDATED
+  PART_COMPATIBILITY_ADDED
+  PART_COMPATIBILITY_REMOVED
+  INVENTORY_ITEM_CREATED
+  INVENTORY_ITEM_UPDATED
+  INVENTORY_STOCK_ADJUSTED
+  VENDOR_ORDER_PLACED
+  VENDOR_ORDER_STATUS_CHANGED
+  VENDOR_ORDER_CANCELLED
+  GARAGE_ORG_CREATED
+  GARAGE_PROFILE_UPDATED
+  GARAGE_DOCUMENT_UPLOADED
+  GARAGE_DOCUMENT_DELETED
+  GARAGE_SUBMITTED
+  GARAGE_APPROVED
+  GARAGE_REJECTED
+  GARAGE_LOCATION_CREATED
+  GARAGE_LOCATION_UPDATED
+  GARAGE_WORKING_HOURS_UPDATED
+  GARAGE_SERVICES_UPDATED
+  GARAGE_VEHICLE_CAPABILITIES_UPDATED
+  GARAGE_MAKE_SPECIALIZATIONS_UPDATED
+  GARAGE_STAFF_INVITED
+  GARAGE_STAFF_INVITE_REVOKED
+  GARAGE_STAFF_INVITE_ACCEPTED
+  GARAGE_STAFF_REMOVED
+  GARAGE_MECHANIC_PROFILE_UPDATED
+  GARAGE_REVIEW_CREATED
+  BOOKING_REQUESTED
+  BOOKING_ACCEPTED
+  BOOKING_REJECTED
+  BOOKING_RESCHEDULE_PROPOSED
+  BOOKING_RESCHEDULE_ACCEPTED
+  BOOKING_RESCHEDULE_DECLINED
+  BOOKING_CANCELLED
+  BOOKING_COMPLETED
+  BOOKING_NO_SHOW
+  REPAIR_ORDER_CREATED
+  REPAIR_ORDER_STATUS_CHANGED
+  REPAIR_ORDER_MECHANIC_ASSIGNED
+  REPAIR_ORDER_ESTIMATE_SENT
+  REPAIR_ORDER_APPROVED
+  REPAIR_ORDER_REJECTED
+  REPAIR_ORDER_QC_SIGNED_OFF
+  REPAIR_ORDER_COMPLETED
+  REPAIR_ORDER_INVOICED
+  REPAIR_ORDER_OUTCOME_VERIFIED
+  REPAIR_ORDER_CANCELLED
+  INVOICE_ISSUED
+  INVOICE_VOIDED
+  PAYMENT_INTENT_CREATED
+  PAYMENT_INTENT_STATUS_CHANGED
+  PAYMENT_TRANSACTION_RECORDED
+  REFUND_REQUESTED
+  REFUND_STATUS_CHANGED
+  COMMISSION_RECORDED
+  PAYOUT_INITIATED
+  PAYOUT_STATUS_CHANGED
+  WEBHOOK_EVENT_RECEIVED
+  WEBHOOK_EVENT_PROCESSING_FAILED
+  NOTIFICATION_PREFERENCES_UPDATED
+}
+
+enum SessionStatus {
+  DRAFT
+  IN_PROGRESS
+  AWAITING_AI
+  COMPLETE
+  CANCELLED
+  SAFETY_ESCALATED
+}
+
+enum Severity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum QuestionType {
+  YES_NO
+  SINGLE_SELECT
+  MULTI_SELECT
+  NUMERIC
+  TEXT
+  MEDIA
+}
+
+enum PromptVersionStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+enum FuelType {
+  PETROL
+  DIESEL
+  HYBRID
+  ELECTRIC
+  PLUG_IN_HYBRID
+  LPG
+}
+
+enum TransmissionType {
+  AUTOMATIC
+  MANUAL
+  CVT
+  DCT
+  SEMI_AUTOMATIC
+}
+
+enum VehicleType {
+  SEDAN
+  SUV
+  HATCHBACK
+  COUPE
+  PICKUP_TRUCK
+  VAN
+  MINIBUS
+  TRUCK
+  OTHER
+}
+
+enum DocumentType {
+  REGISTRATION
+  INSURANCE
+  INSPECTION
+  MODIFICATION
+  OTHER
+}
+
+enum KnowledgeDocumentType {
+  OEM_MANUAL
+  SERVICE_BULLETIN
+  REPAIR_GUIDE
+  DIAGNOSTIC_REFERENCE
+  RECALL_NOTICE
+  OTHER
+}
+
+enum KnowledgeApprovalState {
+  PENDING_REVIEW
+  APPROVED
+  REJECTED
+  ARCHIVED
+}
+
+enum KnowledgeIngestionStatus {
+  PENDING
+  EXTRACTED
+  INDEXED
+  FAILED
+}
+
+enum VendorVerificationStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  REJECTED
+}
+
+enum VendorBusinessType {
+  SPARE_PARTS_RETAILER
+  AUTHORIZED_DISTRIBUTOR
+  SALVAGE_YARD
+  OTHER
+}
+
+enum Emirate {
+  DUBAI
+  ABU_DHABI
+  SHARJAH
+  AJMAN
+  UMM_AL_QUWAIN
+  RAS_AL_KHAIMAH
+  FUJAIRAH
+}
+
+enum VendorDocumentType {
+  TRADE_LICENSE
+  VAT_CERTIFICATE
+  EMIRATES_ID_FRONT
+  EMIRATES_ID_BACK
+  PASSPORT
+  OTHER
+}
+
+enum StaffInvitationStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+  REVOKED
+}
+
+enum ServiceType {
+  OIL_CHANGE
+  TYRE_ROTATION
+  BRAKE_SERVICE
+  FILTER_CHANGE
+  FLUID_CHECK
+  BATTERY_REPLACEMENT
+  TIMING_BELT
+  AC_SERVICE
+  TRANSMISSION_SERVICE
+  GENERAL_INSPECTION
+  OTHER
+  // Sprint 21 — repair-category values added 1:1 with the diagnosis service-code
+  // taxonomy (features/diagnostics/taxonomy.ts's retired SERVICE_CODES), so
+  // every diagnosis requiredServiceCodes value maps onto a real GarageService.
+  ENGINE_REPAIR
+  ELECTRICAL_REPAIR
+  SUSPENSION_REPAIR
+  COOLING_SYSTEM_REPAIR
+  EXHAUST_REPAIR
+  TYRE_REPAIR
+  BODY_REPAIR
+  STEERING_REPAIR
+  FUEL_SYSTEM_REPAIR
+}
+
+enum PartOrigin {
+  OEM
+  AFTERMARKET
+}
+
+enum PartApprovalState {
+  PENDING_REVIEW
+  APPROVED
+  REJECTED
+}
+
+enum InventoryChangeType {
+  RESTOCK
+  ADJUSTMENT
+  DAMAGE
+  RESERVATION
+  RESERVATION_RELEASED
+  ORDER_FULFILLED
+}
+
+enum ReservationStatus {
+  ACTIVE
+  RELEASED
+  CONSUMED
+  EXPIRED
+}
+
+enum VendorOrderStatus {
+  PENDING_CONFIRMATION
+  CONFIRMED
+  PREPARING
+  READY_FOR_PICKUP
+  COMPLETED
+  CANCELLED
+}
+
+enum GarageVerificationStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  REJECTED
+}
+
+enum GarageDocumentType {
+  TRADE_LICENSE
+  VAT_CERTIFICATE
+  EMIRATES_ID_FRONT
+  EMIRATES_ID_BACK
+  PASSPORT
+  OTHER
+}
+
+// REQUESTED -> ACCEPTED -> COMPLETED | NO_SHOW
+// REQUESTED -> REJECTED | CANCELLED
+// REQUESTED -> RESCHEDULE_PROPOSED -> ACCEPTED (customer accepts new time) | CANCELLED (declines)
+// ACCEPTED -> CANCELLED (either party, before the visit)
+enum BookingStatus {
+  REQUESTED
+  ACCEPTED
+  RESCHEDULE_PROPOSED
+  REJECTED
+  CANCELLED
+  COMPLETED
+  NO_SHOW
+}
+
+// CREATED -> INSPECTION -> DIAGNOSIS -> ESTIMATE_DRAFT -> AWAITING_APPROVAL
+//   -> APPROVED -> IN_REPAIR -> QUALITY_CHECK -> COMPLETED -> INVOICED
+// AWAITING_APPROVAL -> REJECTED -> ESTIMATE_DRAFT (garage revises and resends)
+// QUALITY_CHECK -> IN_REPAIR (rework)
+// CANCELLED reachable from any pre-repair state (CREATED..APPROVED, REJECTED) — not once
+// work is underway (IN_REPAIR onward) — see features/repair-orders/service.ts's
+// ALLOWED_TRANSITIONS for the exact graph.
+enum RepairOrderStatus {
+  CREATED
+  INSPECTION
+  DIAGNOSIS
+  ESTIMATE_DRAFT
+  AWAITING_APPROVAL
+  APPROVED
+  REJECTED
+  IN_REPAIR
+  QUALITY_CHECK
+  COMPLETED
+  INVOICED
+  CANCELLED
+}
+
+enum RepairJobStatus {
+  PENDING
+  IN_PROGRESS
+  DONE
+}
+
+// ── Payments ──────────────────────────────────────────────────────────────────
+// See docs/adr/ADR-013-payment-architecture.md for the full design (state
+// machines, PCI boundary, reconciliation plan). Sprint 12 is schema + interface
+// only — no provider is wired and no service layer mutates these tables yet.
+
+// What an Invoice (and transitively a PaymentIntent) is paying for. Deliberately
+// a plain type+id pair rather than two nullable FKs on Invoice, since VendorOrder
+// and RepairOrder must not be modified this sprint — see ADR-013. New payable
+// kinds (subscriptions, featured listings — Phase 5 of auto_iq.md) are additive.
+enum PayableType {
+  VENDOR_ORDER
+  REPAIR_ORDER
+}
+
+enum InvoiceStatus {
+  DRAFT
+  ISSUED
+  PAID
+  PARTIALLY_REFUNDED
+  REFUNDED
+  VOID
+}
+
+// CREATED -> REQUIRES_ACTION -> PROCESSING -> SUCCEEDED
+// CREATED -> PROCESSING -> SUCCEEDED (no extra customer action required)
+// CREATED/REQUIRES_ACTION/PROCESSING -> FAILED
+// FAILED -> CREATED (retry with a different payment method, same intent) or CANCELED
+// CREATED/REQUIRES_ACTION -> CANCELED | EXPIRED
+// SUCCEEDED is terminal — refunds are modeled on Refund/PaymentTransaction, never
+// by reopening the intent. See features/payments/state-machines.ts for the
+// code-level adjacency map (PAYMENT_INTENT_TRANSITIONS).
+enum PaymentIntentStatus {
+  CREATED
+  REQUIRES_ACTION
+  PROCESSING
+  SUCCEEDED
+  FAILED
+  CANCELED
+  EXPIRED
+}
+
+enum PaymentTransactionType {
+  AUTHORIZATION
+  CAPTURE
+  SALE
+}
+
+// PENDING -> SUCCEEDED | FAILED. Deliberately minimal: gateways normally report
+// transactions already resolved (a webhook saying "charge succeeded/failed"),
+// so PENDING is only the gap between our provider call and webhook confirmation.
+// See features/payments/state-machines.ts (PAYMENT_TRANSACTION_TRANSITIONS).
+enum PaymentTransactionStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+}
+
+// REQUESTED -> PROCESSING -> SUCCEEDED | FAILED
+// REQUESTED -> CANCELED (withdrawn before the provider call is made)
+// FAILED/SUCCEEDED/CANCELED are terminal — a retry creates a new Refund row.
+// See features/payments/state-machines.ts (REFUND_TRANSITIONS).
+enum RefundStatus {
+  REQUESTED
+  PROCESSING
+  SUCCEEDED
+  FAILED
+  CANCELED
+}
+
+// Earned on a successful PaymentTransaction (PENDING) -> batched into a Payout
+// (INCLUDED_IN_PAYOUT) -> paid out (PAID). REVERSED if the underlying
+// transaction is refunded before it's batched — once INCLUDED_IN_PAYOUT a
+// reversal is netted against a future payout instead (see ADR-013 limitations).
+enum CommissionStatus {
+  PENDING
+  INCLUDED_IN_PAYOUT
+  PAID
+  REVERSED
+}
+
+// PENDING -> PROCESSING -> PAID | FAILED
+// PENDING -> CANCELED (before processing starts, e.g. a commission dispute)
+// FAILED -> PROCESSING (retry) | CANCELED
+// PAID -> REVERSED (rare clawback, e.g. a chargeback discovered after payout)
+// See features/payments/state-machines.ts (PAYOUT_TRANSITIONS).
+enum PayoutStatus {
+  PENDING
+  PROCESSING
+  PAID
+  FAILED
+  CANCELED
+  REVERSED
+}
+
+enum IdempotencyKeyStatus {
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+}
+
+// RECEIVED -> VERIFIED -> PROCESSED | IGNORED | FAILED. VERIFIED means the
+// provider signature checked out; PROCESSED means it was applied to our
+// ledger. IGNORED covers event types we intentionally don't act on.
+enum WebhookEventStatus {
+  RECEIVED
+  VERIFIED
+  PROCESSED
+  IGNORED
+  FAILED
+}
+
+// ── Identity ──────────────────────────────────────────────────────────────────
+
+model User {
+  id            String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name          String?
+  email         String     @unique
+  emailVerified DateTime?
+  image         String?
+  passwordHash  String?
+  phone         String?    @unique
+  phoneVerified DateTime?
+  status        UserStatus @default(PENDING_VERIFICATION)
+  // Platform-level identity role (CUSTOMER, or platform staff — ADMIN, SUPER_ADMIN,
+  // SUPPORT_AGENT, CONTENT_MANAGER). Org-scoped roles (VENDOR_OWNER, GARAGE_MANAGER,
+  // MECHANIC, ...) come from OrganizationMembership -> MembershipRole instead — see
+  // resolveSessionRole() in features/auth/service.ts.
+  role          RoleName   @default(CUSTOMER)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  accounts                      Account[]
+  sessions                      Session[]
+  memberships                   OrganizationMembership[]
+  auditLogs                     AuditLog[]
+  passwordResets                PasswordResetToken[]
+  customerVehicles              CustomerVehicle[]
+  vehicleDocuments              VehicleDocument[]
+  serviceHistory                ServiceHistoryEntry[]
+  diagnosticSessions            DiagnosticSession[]
+  uploadedKnowledgeDocuments    KnowledgeDocument[]        @relation("KnowledgeDocumentUploadedBy")
+  approvedKnowledgeDocuments    KnowledgeDocument[]        @relation("KnowledgeDocumentApprovedBy")
+  reviewedVendors               Vendor[]                   @relation("VendorReviewedBy")
+  uploadedVendorDocuments       VendorDocument[]           @relation("VendorDocumentUploadedBy")
+  reviewedGarages               Garage[]                   @relation("GarageReviewedBy")
+  uploadedGarageDocuments       GarageDocument[]           @relation("GarageDocumentUploadedBy")
+  sentStaffInvitations          StaffInvitation[]          @relation("StaffInvitationInvitedBy")
+  approvedParts                 Part[]
+  performedInventoryAdjustments InventoryAdjustment[]
+  createdReservations           InventoryReservation[]
+  vendorOrders                  VendorOrder[]
+  vendorOrderStatusChanges      VendorOrderStatusHistory[]
+  bookings                      Appointment[]              @relation("BookingCustomer")
+  bookingCancellations          Appointment[]              @relation("BookingCancelledBy")
+  bookingStatusChanges          AppointmentStatusHistory[]
+  repairOrders                  RepairOrder[]              @relation("RepairOrderCustomer")
+  repairOrderQcSignOffs         RepairOrder[]              @relation("RepairOrderQcSignedOffBy")
+  repairOrderCancellations      RepairOrder[]              @relation("RepairOrderCancelledBy")
+  repairOrderStatusChanges      RepairOrderStatusHistory[]
+  qualityChecksPerformed        QualityCheckItem[]
+  invoicesAsCustomer            Invoice[]
+  refundsRequested              Refund[]
+  notifications                 Notification[]
+  notificationPreferences       NotificationPreference[]
+  garageReviews                 GarageReview[]
+  diagnosticShareLinksCreated   DiagnosticShareLink[]
+
+  @@index([email])
+  @@map("users")
+}
+
+// Auth.js v5 adapter models — field names must match exactly
+model Account {
+  id                String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId            String  @db.Uuid
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sessionToken String   @unique
+  userId       String   @db.Uuid
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ── Organizations ─────────────────────────────────────────────────────────────
+
+model Organization {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String
+  slug      String    @unique
+  type      OrgType
+  status    OrgStatus @default(PENDING_APPROVAL)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  memberships         OrganizationMembership[]
+  vendor              Vendor?
+  locations           VendorLocation[]
+  garage              Garage?
+  garageLocations     GarageLocation[]
+  invitations         StaffInvitation[]
+  invoicesAsRecipient Invoice[]
+  commissions         Commission[]
+  payouts             Payout[]
+
+  @@index([slug])
+  @@map("organizations")
+}
+
+model OrganizationMembership {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId         String   @db.Uuid
+  organizationId String   @db.Uuid
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization     Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  roles            MembershipRole[]
+  mechanicProfile  MechanicProfile?
+  leadRepairOrders RepairOrder[]    @relation("RepairOrderLeadMechanic")
+  assignedJobs     RepairJob[]      @relation("RepairJobMechanic")
+
+  @@unique([userId, organizationId])
+  @@map("organization_memberships")
+}
+
+// ── RBAC ─────────────────────────────────────────────────────────────────────
+
+model Role {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        RoleName @unique
+  description String?
+  createdAt   DateTime @default(now())
+
+  permissions RolePermission[]
+  memberships MembershipRole[]
+
+  @@map("roles")
+}
+
+model Permission {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  action    String   @unique
+  resource  String
+  createdAt DateTime @default(now())
+
+  roles RolePermission[]
+
+  @@map("permissions")
+}
+
+model RolePermission {
+  roleId       String @db.Uuid
+  permissionId String @db.Uuid
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+model MembershipRole {
+  membershipId String @db.Uuid
+  roleId       String @db.Uuid
+
+  membership OrganizationMembership @relation(fields: [membershipId], references: [id], onDelete: Cascade)
+  role       Role                   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([membershipId, roleId])
+  @@map("membership_roles")
+}
+
+// ── Addresses ─────────────────────────────────────────────────────────────────
+
+model Address {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  line1     String
+  line2     String?
+  city      String
+  emirate   String
+  country   String   @default("AE")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("addresses")
+}
+
+// ── Vendor Onboarding ─────────────────────────────────────────────────────────
+
+// Vendor-specific business profile — 1:1 with an Organization of type VENDOR.
+// Organization carries platform-wide access state (status); Vendor carries the
+// onboarding-specific verification workflow (DRAFT -> SUBMITTED -> APPROVED/REJECTED).
+// The two are kept in sync in features/vendors/service.ts: approving/rejecting a
+// Vendor also updates its Organization.status in the same transaction.
+model Vendor {
+  id             String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String @unique @db.Uuid
+
+  businessName       String
+  businessType       VendorBusinessType
+  tradeLicenseNumber String             @unique
+  tradeLicenseExpiry DateTime           @db.Date
+  contactPersonName  String
+  contactPhone       String
+  contactEmail       String
+  addressLine1       String
+  emirate            Emirate
+
+  // Authorized-signatory KYC fields — collected alongside document uploads
+  authorizedSignatoryName       String?
+  authorizedSignatoryEmiratesId String?
+
+  verificationStatus VendorVerificationStatus @default(DRAFT)
+  submittedAt        DateTime?
+  reviewedAt         DateTime?
+  reviewedById       String?                  @db.Uuid
+  rejectionReason    String?                  @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization   Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  reviewedBy     User?            @relation("VendorReviewedBy", fields: [reviewedById], references: [id])
+  documents      VendorDocument[]
+  submittedParts Part[]
+  inventoryItems InventoryItem[]
+  vendorOrders   VendorOrder[]
+
+  @@index([verificationStatus])
+  @@map("vendors")
+}
+
+model VendorDocument {
+  id           String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  vendorId     String             @db.Uuid
+  type         VendorDocumentType
+  storageKey   String
+  filename     String
+  mimeType     String
+  sizeBytes    Int
+  uploadedById String             @db.Uuid
+  createdAt    DateTime           @default(now())
+
+  vendor     Vendor @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  uploadedBy User   @relation("VendorDocumentUploadedBy", fields: [uploadedById], references: [id])
+
+  @@index([vendorId])
+  @@map("vendor_documents")
+}
+
+model VendorLocation {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String   @db.Uuid
+  name           String
+  emirate        Emirate
+  addressLine1   String
+  phone          String?
+  email          String?
+  isPrimary      Boolean  @default(false)
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization   Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  inventoryItems InventoryItem[]
+  vendorOrders   VendorOrder[]
+
+  @@index([organizationId])
+  @@map("vendor_locations")
+}
+
+// Generic org-staff invitation — scoped to a RoleName so it can be reused by the
+// garage domain (Sprint 9) without a separate model.
+model StaffInvitation {
+  id             String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String                @db.Uuid
+  email          String
+  role           RoleName
+  status         StaffInvitationStatus @default(PENDING)
+  token          String                @unique
+  invitedById    String                @db.Uuid
+  expiresAt      DateTime
+  acceptedAt     DateTime?
+  createdAt      DateTime              @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  invitedBy    User         @relation("StaffInvitationInvitedBy", fields: [invitedById], references: [id])
+
+  @@index([organizationId])
+  @@index([email])
+  @@map("staff_invitations")
+}
+
+// Public, token-based read-only share link for a completed diagnostic result
+// (Sprint 21.1 — Share Results). Mirrors StaffInvitation's token/expiresAt
+// shape — the closest existing precedent for an unauthenticated-accessible
+// token in this codebase. "One active link at a time" semantics: a session
+// creating a new link while a non-revoked, non-expired one already exists
+// just returns the existing one (see features/diagnostics/service.ts's
+// getOrCreateShareLink) rather than spawning duplicates.
+model DiagnosticShareLink {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sessionId    String    @db.Uuid
+  token        String    @unique
+  createdById  String    @db.Uuid
+  expiresAt    DateTime
+  revokedAt    DateTime?
+  viewCount    Int       @default(0)
+  lastViewedAt DateTime?
+  createdAt    DateTime  @default(now())
+
+  session   DiagnosticSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  createdBy User              @relation(fields: [createdById], references: [id])
+
+  @@index([sessionId])
+  @@map("diagnostic_share_links")
+}
+
+// ── Audit and Tokens ──────────────────────────────────────────────────────────
+
+model AuditLog {
+  id         String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId     String?     @db.Uuid
+  action     AuditAction
+  resourceId String?
+  metadata   Json?
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime    @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+model PasswordResetToken {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String    @db.Uuid
+  token     String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@map("password_reset_tokens")
+}
+
+model PhoneOtpToken {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  phone     String
+  token     String
+  expiresAt DateTime
+  usedAt    DateTime?
+  attempts  Int       @default(0)
+  createdAt DateTime  @default(now())
+
+  @@index([phone])
+  @@map("phone_otp_tokens")
+}
+
+// Email-address OTP for the sign-up flow (features/auth/otp.ts). Stores a hash of the
+// code, not the code itself, unlike PhoneOtpToken — a deliberate small hardening scoped
+// to this new model only.
+model EmailOtpToken {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email     String
+  codeHash  String
+  expiresAt DateTime
+  usedAt    DateTime?
+  attempts  Int       @default(0)
+  createdAt DateTime  @default(now())
+
+  @@index([email])
+  @@map("email_otp_tokens")
+}
+
+// ── Platform ──────────────────────────────────────────────────────────────────
+
+model FeatureFlag {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  key         String   @unique
+  enabled     Boolean  @default(false)
+  description String?
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("feature_flags")
+}
+
+// ── Vehicle Catalog ───────────────────────────────────────────────────────────
+
+model VehicleMake {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String   @unique
+  slug      String   @unique
+  logoUrl   String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  models                VehicleModel[]
+  garageSpecializations GarageMakeSpecialization[]
+
+  @@map("vehicle_makes")
+}
+
+model VehicleModel {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  makeId    String   @db.Uuid
+  name      String
+  slug      String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  make  VehicleMake   @relation(fields: [makeId], references: [id])
+  trims VehicleTrim[]
+
+  @@unique([makeId, slug])
+  @@index([makeId])
+  @@map("vehicle_models")
+}
+
+model VehicleTrim {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  modelId   String   @db.Uuid
+  name      String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  model   VehicleModel    @relation(fields: [modelId], references: [id])
+  engines EngineVariant[]
+
+  @@index([modelId])
+  @@map("vehicle_trims")
+}
+
+model EngineVariant {
+  id           String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  trimId       String           @db.Uuid
+  code         String?
+  displacement Float?
+  cylinders    Int?
+  powerKw      Int?
+  torqueNm     Int?
+  fuelType     FuelType
+  transmission TransmissionType
+  driveType    String?
+  isActive     Boolean          @default(true)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  trim             VehicleTrim       @relation(fields: [trimId], references: [id])
+  customerVehicles CustomerVehicle[]
+
+  @@index([trimId])
+  @@map("engine_variants")
+}
+
+// ── Customer Vehicles ─────────────────────────────────────────────────────────
+
+model CustomerVehicle {
+  id              String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId          String  @db.Uuid
+  engineVariantId String? @db.Uuid
+
+  // Denormalised catalog fields — populated from catalog when available, typed manually otherwise
+  makeName  String
+  modelName String
+  trimName  String?
+
+  year         Int
+  vehicleType  VehicleType
+  fuelType     FuelType
+  transmission TransmissionType
+  color        String?
+
+  // UAE-specific identifiers
+  plateNumber String?
+  vin         String? @unique
+
+  mileageKm Int
+  notes     String? @db.Text
+  isDefault Boolean @default(false)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  user               User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  engineVariant      EngineVariant?        @relation(fields: [engineVariantId], references: [id])
+  documents          VehicleDocument[]
+  serviceHistory     ServiceHistoryEntry[]
+  diagnosticSessions DiagnosticSession[]
+  bookings           Appointment[]
+  repairOrders       RepairOrder[]
+
+  @@index([userId])
+  @@index([deletedAt])
+  @@map("customer_vehicles")
+}
+
+model VehicleDocument {
+  id                String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customerVehicleId String       @db.Uuid
+  userId            String       @db.Uuid
+  type              DocumentType
+  storageKey        String
+  filename          String
+  mimeType          String
+  sizeBytes         Int
+  createdAt         DateTime     @default(now())
+
+  vehicle CustomerVehicle @relation(fields: [customerVehicleId], references: [id], onDelete: Cascade)
+  user    User            @relation(fields: [userId], references: [id])
+
+  @@index([customerVehicleId])
+  @@map("vehicle_documents")
+}
+
+model ServiceHistoryEntry {
+  id                String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customerVehicleId String      @db.Uuid
+  userId            String      @db.Uuid
+  serviceType       ServiceType
+  date              DateTime    @db.Date
+  mileageKm         Int
+  description       String
+  costMinorUnits    Int?
+  currency          String      @default("AED")
+  notes             String?     @db.Text
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  vehicle CustomerVehicle @relation(fields: [customerVehicleId], references: [id], onDelete: Cascade)
+  user    User            @relation(fields: [userId], references: [id])
+
+  @@index([customerVehicleId])
+  @@map("service_history")
+}
+
+// ── Diagnostics ───────────────────────────────────────────────────────────────
+
+model SymptomCategory {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code        String   @unique
+  label       String
+  labelAr     String?
+  description String?
+  iconName    String?
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  symptoms           Symptom[]
+  questions          DiagnosticQuestion[]
+  diagnosticSessions DiagnosticSession[]
+
+  @@map("symptom_categories")
+}
+
+model Symptom {
+  id               String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  categoryId       String   @db.Uuid
+  code             String   @unique
+  label            String
+  labelAr          String?
+  isSafetyCritical Boolean  @default(false)
+  sortOrder        Int      @default(0)
+  isActive         Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  category           SymptomCategory     @relation(fields: [categoryId], references: [id])
+  diagnosticSessions DiagnosticSession[]
+
+  @@index([categoryId])
+  @@map("symptoms")
+}
+
+model DiagnosticSession {
+  id              String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId          String        @db.Uuid
+  vehicleId       String        @db.Uuid
+  categoryId      String        @db.Uuid
+  symptomId       String?       @db.Uuid
+  status          SessionStatus @default(DRAFT)
+  severity        Severity?
+  safeToDrive     Boolean?
+  emergencyAction String?       @db.Text
+  description     String?       @db.Text
+  obdCode         String?
+  currentStep     Int           @default(1)
+  startedAt       DateTime?
+  completedAt     DateTime?
+  cancelledAt     DateTime?
+  cancelledReason String?       @db.Text
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  user         User                   @relation(fields: [userId], references: [id])
+  vehicle      CustomerVehicle        @relation(fields: [vehicleId], references: [id])
+  category     SymptomCategory        @relation(fields: [categoryId], references: [id])
+  symptom      Symptom?               @relation(fields: [symptomId], references: [id])
+  answers      DiagnosticAnswer[]
+  attachments  DiagnosticAttachment[]
+  questions    DiagnosticQuestion[]
+  feedback     DiagnosticFeedback?
+  result       DiagnosticResult?
+  bookings     Appointment[]
+  repairOrders RepairOrder[]
+  shareLinks   DiagnosticShareLink[]
+
+  @@index([userId])
+  @@index([vehicleId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("diagnostic_sessions")
+}
+
+/// Sprint 20 — question text is now either AI_GENERATED (a session-scoped
+/// batch produced by generateSessionQuestions(), tailored to that session's
+/// vehicle/category/description) or STATIC (the small, category-agnostic
+/// emergency fallback bank shown only when generation fails/times out).
+/// The old per-category seeded bank this replaced always had categoryId set
+/// and no sessionId — that source no longer exists.
+enum QuestionSource {
+  STATIC
+  AI_GENERATED
+}
+
+model DiagnosticQuestion {
+  id         String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  categoryId String?        @db.Uuid
+  sessionId  String?        @db.Uuid
+  source     QuestionSource @default(STATIC)
+  code       String         @unique
+  type       QuestionType
+  text       String
+  textAr     String?
+  helpText   String?
+  options    Json?
+  unit       String?
+  minValue   Float?
+  maxValue   Float?
+  isRequired Boolean        @default(true)
+  sortOrder  Int            @default(0)
+  isActive   Boolean        @default(true)
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+
+  category SymptomCategory?   @relation(fields: [categoryId], references: [id])
+  session  DiagnosticSession? @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  answers  DiagnosticAnswer[]
+
+  @@index([categoryId])
+  @@index([sessionId])
+  @@map("diagnostic_questions")
+}
+
+model DiagnosticAnswer {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sessionId  String   @db.Uuid
+  questionId String   @db.Uuid
+  value      Json
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  session  DiagnosticSession  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  question DiagnosticQuestion @relation(fields: [questionId], references: [id])
+
+  @@unique([sessionId, questionId])
+  @@index([sessionId])
+  @@map("diagnostic_answers")
+}
+
+model DiagnosticAttachment {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sessionId  String   @db.Uuid
+  storageKey String
+  filename   String
+  mimeType   String
+  sizeBytes  Int
+  createdAt  DateTime @default(now())
+
+  session DiagnosticSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@map("diagnostic_attachments")
+}
+
+model DiagnosticFeedback {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sessionId String   @unique @db.Uuid
+  rating    Int
+  comment   String?  @db.Text
+  createdAt DateTime @default(now())
+
+  session DiagnosticSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@map("diagnostic_feedback")
+}
+
+model DiagnosticResult {
+  id                   String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sessionId            String   @unique @db.Uuid
+  severity             Severity
+  safeToDrive          Boolean?
+  emergencyAction      String?  @db.Text
+  limitations          String[]
+  costRangeMinMinor    Int?
+  costRangeMaxMinor    Int?
+  costRangeCurrency    String?
+  isDegraded           Boolean  @default(false)
+  degradedReason       String?  @db.Text
+  aiProvider           String?
+  aiModel              String?
+  promptVersionId      String?  @db.Uuid
+  knowledgeDocumentIds String[]
+  // Sprint 15 — plain-language customer explanation / technical garage brief,
+  // generated once alongside the main result (never regenerated on read).
+  // Both null when isDegraded or when their AI call itself failed — never
+  // guessed, and never allowed to contradict severity/safeToDrive above.
+  customerExplanation  String?  @db.Text
+  garageSummary        String?  @db.Text
+  createdAt            DateTime @default(now())
+
+  session       DiagnosticSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  promptVersion PromptVersion?    @relation(fields: [promptVersionId], references: [id])
+  causes        DiagnosticCause[]
+
+  @@map("diagnostic_results")
+}
+
+model DiagnosticCause {
+  id                      String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  resultId                String   @db.Uuid
+  rank                    Int
+  issueCode               String
+  label                   String
+  confidence              Int
+  evidence                String[]
+  missingEvidence         String[]
+  suggestedChecks         String[]
+  requiredServiceCodes    String[]
+  likelyPartCategoryCodes String[]
+  createdAt               DateTime @default(now())
+
+  result DiagnosticResult @relation(fields: [resultId], references: [id], onDelete: Cascade)
+
+  @@index([resultId])
+  @@map("diagnostic_causes")
+}
+
+// ── AI Orchestration ─────────────────────────────────────────────────────────
+
+model PromptTemplate {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  key         String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+
+  versions PromptVersion[]
+
+  @@map("prompt_templates")
+}
+
+model PromptVersion {
+  id          String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  templateId  String              @db.Uuid
+  version     Int
+  content     String              @db.Text
+  status      PromptVersionStatus @default(DRAFT)
+  activatedAt DateTime?
+  createdAt   DateTime            @default(now())
+
+  template          PromptTemplate     @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  diagnosticResults DiagnosticResult[]
+
+  @@unique([templateId, version])
+  @@index([templateId, status])
+  @@map("prompt_versions")
+}
+
+// ── Automotive Knowledge Base (RAG) ────────────────────────────────────────────
+
+// Approved-document store for retrieval-augmented diagnostic prompts.
+// Indexing (chunk + embed) is a separate admin-triggered step from upload —
+// see ADR-007 — so extracted text can be reviewed before spending on embeddings.
+model KnowledgeDocument {
+  id           String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title        String
+  description  String?               @db.Text
+  sourceName   String
+  sourceUrl    String?
+  documentType KnowledgeDocumentType
+
+  // Vehicle applicability — null means "applies to all" for that dimension
+  makeName   String?
+  modelName  String?
+  yearFrom   Int?
+  yearTo     Int?
+  engineCode String?
+
+  storageKey    String
+  filename      String
+  mimeType      String
+  sizeBytes     Int
+  contentHash   String
+  extractedText String? @db.Text
+
+  approvalState   KnowledgeApprovalState   @default(PENDING_REVIEW)
+  ingestionStatus KnowledgeIngestionStatus @default(PENDING)
+  ingestionError  String?                  @db.Text
+
+  version           Int     @default(1)
+  previousVersionId String? @unique @db.Uuid
+
+  uploadedById   String    @db.Uuid
+  approvedById   String?   @db.Uuid
+  approvedAt     DateTime?
+  rejectedReason String?   @db.Text
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  uploadedBy      User               @relation("KnowledgeDocumentUploadedBy", fields: [uploadedById], references: [id])
+  approvedBy      User?              @relation("KnowledgeDocumentApprovedBy", fields: [approvedById], references: [id])
+  previousVersion KnowledgeDocument? @relation("KnowledgeDocumentVersion", fields: [previousVersionId], references: [id])
+  nextVersion     KnowledgeDocument? @relation("KnowledgeDocumentVersion")
+  chunks          KnowledgeChunk[]
+
+  @@index([approvalState])
+  @@index([documentType])
+  @@index([contentHash])
+  @@index([makeName, modelName])
+  @@index([deletedAt])
+  @@map("knowledge_documents")
+}
+
+model KnowledgeChunk {
+  id         String                       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  documentId String                       @db.Uuid
+  chunkIndex Int
+  content    String                       @db.Text
+  tokenCount Int
+  // Populated via raw SQL only — Prisma Client has no native pgvector type.
+  embedding  Unsupported("vector(1536)")?
+  createdAt  DateTime                     @default(now())
+
+  document KnowledgeDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@unique([documentId, chunkIndex])
+  @@index([documentId])
+  @@map("knowledge_chunks")
+}
+
+// ── Parts Catalog ─────────────────────────────────────────────────────────────
+
+model PartCategory {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code      String   @unique
+  name      String
+  nameAr    String?
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  parts Part[]
+
+  @@map("part_categories")
+}
+
+// Canonical, admin-approved part record. Vendors may propose a new Part (via
+// features/catalog's submitPartProposal) but it stays PENDING_REVIEW — and cannot
+// be attached to an InventoryItem — until an admin approves it. This is the
+// review gate that prevents vendors from creating conflicting canonical data
+// (Prompt 13), rather than blocking vendor-originated parts outright.
+model Part {
+  id                   String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  categoryId           String            @db.Uuid
+  manufacturerName     String
+  partNumber           String
+  alternatePartNumbers String[]
+  name                 String
+  description          String?           @db.Text
+  origin               PartOrigin
+  approvalState        PartApprovalState @default(PENDING_REVIEW)
+  submittedByVendorId  String?           @db.Uuid
+  approvedById         String?           @db.Uuid
+  approvedAt           DateTime?
+  rejectionReason      String?           @db.Text
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+  deletedAt            DateTime?
+
+  category          PartCategory        @relation(fields: [categoryId], references: [id])
+  submittedByVendor Vendor?             @relation(fields: [submittedByVendorId], references: [id])
+  approvedBy        User?               @relation(fields: [approvedById], references: [id])
+  media             PartMedia[]
+  compatibilities   PartCompatibility[]
+  inventoryItems    InventoryItem[]
+
+  @@unique([manufacturerName, partNumber])
+  @@index([categoryId])
+  @@index([approvalState])
+  @@index([deletedAt])
+  @@map("parts")
+}
+
+model PartMedia {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  partId     String   @db.Uuid
+  storageKey String
+  filename   String
+  mimeType   String
+  sizeBytes  Int
+  sortOrder  Int      @default(0)
+  createdAt  DateTime @default(now())
+
+  part Part @relation(fields: [partId], references: [id], onDelete: Cascade)
+
+  @@index([partId])
+  @@map("part_media")
+}
+
+// Vehicle applicability for a Part — makeName/modelName are required (unlike
+// KnowledgeDocument's fully-nullable applicability) since a compatibility rule
+// only exists to scope a part to specific vehicles. yearFrom/yearTo/engineCode/
+// trimName null means "applies to all" for that dimension — same convention as
+// features/knowledge/filters.ts.
+model PartCompatibility {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  partId     String   @db.Uuid
+  makeName   String
+  modelName  String
+  yearFrom   Int?
+  yearTo     Int?
+  engineCode String?
+  trimName   String?
+  notes      String?  @db.Text
+  createdAt  DateTime @default(now())
+
+  part Part @relation(fields: [partId], references: [id], onDelete: Cascade)
+
+  @@index([partId])
+  @@index([makeName, modelName])
+  @@map("part_compatibilities")
+}
+
+// ── Inventory & Vendor Orders ─────────────────────────────────────────────────
+
+// Location-scoped vendor stock for one Part. qtyAvailable is sellable stock;
+// qtyReserved is stock held against PENDING_CONFIRMATION..PREPARING VendorOrders
+// (see features/inventory/service.ts reserveStock/releaseStock); qtyDamaged is a
+// separate quarantine bucket adjusted manually. `version` guards optimistic
+// updates to price/threshold; the qty fields are additionally guarded by a
+// conditional UPDATE ... WHERE qtyAvailable >= :amount at the SQL level to
+// prevent overselling under concurrent reservations.
+model InventoryItem {
+  id               String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  partId           String   @db.Uuid
+  vendorId         String   @db.Uuid
+  locationId       String   @db.Uuid
+  priceMinorUnits  Int
+  currency         String   @default("AED")
+  qtyAvailable     Int      @default(0)
+  qtyReserved      Int      @default(0)
+  qtyDamaged       Int      @default(0)
+  reorderThreshold Int      @default(0)
+  isActive         Boolean  @default(true)
+  version          Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  part         Part                   @relation(fields: [partId], references: [id])
+  vendor       Vendor                 @relation(fields: [vendorId], references: [id])
+  location     VendorLocation         @relation(fields: [locationId], references: [id])
+  adjustments  InventoryAdjustment[]
+  reservations InventoryReservation[]
+  orderItems   VendorOrderItem[]
+
+  @@unique([vendorId, locationId, partId])
+  @@index([vendorId])
+  @@index([partId])
+  @@index([locationId])
+  @@map("inventory_items")
+}
+
+// Append-only audit trail for every stock mutation — this is the "Inventory
+// Audit Log" (Prompt 14). qty*Delta is the signed change applied in that
+// mutation; qty*After is the resulting balance, so a row is self-contained for
+// display without joining back through history.
+model InventoryAdjustment {
+  id                String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  inventoryItemId   String              @db.Uuid
+  changeType        InventoryChangeType
+  qtyAvailableDelta Int
+  qtyReservedDelta  Int                 @default(0)
+  qtyDamagedDelta   Int                 @default(0)
+  qtyAvailableAfter Int
+  qtyReservedAfter  Int
+  qtyDamagedAfter   Int
+  reason            String?             @db.Text
+  performedById     String?             @db.Uuid
+  createdAt         DateTime            @default(now())
+
+  inventoryItem InventoryItem @relation(fields: [inventoryItemId], references: [id], onDelete: Cascade)
+  performedBy   User?         @relation(fields: [performedById], references: [id])
+
+  @@index([inventoryItemId])
+  @@index([createdAt])
+  @@map("inventory_adjustments")
+}
+
+// A temporary hold on stock created when a VendorOrder is placed (1:1 with a
+// VendorOrderItem once consumed). expiresAt enables lazy expiry — checked when
+// an order is read/confirmed rather than via a scheduled job, since no job
+// queue exists yet (ADR pending for Sprint 12+).
+model InventoryReservation {
+  id              String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  inventoryItemId String            @db.Uuid
+  quantity        Int
+  status          ReservationStatus @default(ACTIVE)
+  expiresAt       DateTime
+  createdById     String            @db.Uuid
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  inventoryItem   InventoryItem    @relation(fields: [inventoryItemId], references: [id])
+  createdBy       User             @relation(fields: [createdById], references: [id])
+  vendorOrderItem VendorOrderItem?
+
+  @@index([inventoryItemId])
+  @@index([status, expiresAt])
+  @@map("inventory_reservations")
+}
+
+// A customer order placed directly against vendor inventory. No Cart/checkout
+// step yet (Commerce domain is Sprint 12) — placing the order both reserves
+// stock and creates this record in one transaction; totals are always computed
+// server-side from InventoryItem.priceMinorUnits, never trusted from the client.
+model VendorOrder {
+  id                   String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orderNumber          String            @unique
+  customerId           String            @db.Uuid
+  vendorId             String            @db.Uuid
+  locationId           String            @db.Uuid
+  status               VendorOrderStatus @default(PENDING_CONFIRMATION)
+  subtotalMinorUnits   Int
+  vatMinorUnits        Int
+  totalMinorUnits      Int
+  currency             String            @default("AED")
+  deliveryAddressLine1 String?
+  deliveryEmirate      Emirate?
+  contactPhone         String?
+  confirmedAt          DateTime?
+  preparedAt           DateTime?
+  readyAt              DateTime?
+  completedAt          DateTime?
+  cancelledAt          DateTime?
+  cancelledReason      String?           @db.Text
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+
+  customer      User                       @relation(fields: [customerId], references: [id])
+  vendor        Vendor                     @relation(fields: [vendorId], references: [id])
+  location      VendorLocation             @relation(fields: [locationId], references: [id])
+  items         VendorOrderItem[]
+  statusHistory VendorOrderStatusHistory[]
+
+  @@index([customerId])
+  @@index([vendorId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("vendor_orders")
+}
+
+model VendorOrderItem {
+  id                  String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  vendorOrderId       String   @db.Uuid
+  inventoryItemId     String   @db.Uuid
+  partId              String   @db.Uuid
+  partNameSnapshot    String
+  quantity            Int
+  unitPriceMinorUnits Int
+  totalMinorUnits     Int
+  reservationId       String?  @unique @db.Uuid
+  createdAt           DateTime @default(now())
+
+  vendorOrder   VendorOrder           @relation(fields: [vendorOrderId], references: [id], onDelete: Cascade)
+  inventoryItem InventoryItem         @relation(fields: [inventoryItemId], references: [id])
+  reservation   InventoryReservation? @relation(fields: [reservationId], references: [id])
+
+  @@index([vendorOrderId])
+  @@map("vendor_order_items")
+}
+
+model VendorOrderStatusHistory {
+  id            String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  vendorOrderId String             @db.Uuid
+  fromStatus    VendorOrderStatus?
+  toStatus      VendorOrderStatus
+  changedById   String?            @db.Uuid
+  note          String?            @db.Text
+  createdAt     DateTime           @default(now())
+
+  vendorOrder VendorOrder @relation(fields: [vendorOrderId], references: [id], onDelete: Cascade)
+  changedBy   User?       @relation(fields: [changedById], references: [id])
+
+  @@index([vendorOrderId])
+  @@map("vendor_order_status_history")
+}
+
+// ── Garage Onboarding and Operations ───────────────────────────────────────────
+
+// Garage-specific business profile — 1:1 with an Organization of type GARAGE.
+// Mirrors Vendor's split exactly: Organization carries platform-wide access
+// state (status); Garage carries the onboarding-specific verification workflow
+// (DRAFT -> SUBMITTED -> APPROVED/REJECTED), kept in sync in
+// features/garages/service.ts the same way features/vendors/service.ts does.
+model Garage {
+  id             String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String @unique @db.Uuid
+
+  businessName       String
+  tradeLicenseNumber String   @unique
+  tradeLicenseExpiry DateTime @db.Date
+  contactPersonName  String
+  contactPhone       String
+  contactEmail       String
+  addressLine1       String
+  emirate            Emirate
+
+  // Authorized-signatory KYC fields — collected alongside document uploads
+  authorizedSignatoryName       String?
+  authorizedSignatoryEmiratesId String?
+
+  verificationStatus GarageVerificationStatus @default(DRAFT)
+  submittedAt        DateTime?
+  reviewedAt         DateTime?
+  reviewedById       String?                  @db.Uuid
+  rejectionReason    String?                  @db.Text
+
+  // Sprint 21 — cached rating, recomputed transactionally on every
+  // GarageReview insert (features/garages/repository.ts's createReview) rather
+  // than computed live in search, since search is a hot paginated read path —
+  // same write-time-aggregation precedent as RepairOrder's pre-computed totals.
+  reviewCount   Int   @default(0)
+  averageRating Float @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization        Organization               @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  reviewedBy          User?                      @relation("GarageReviewedBy", fields: [reviewedById], references: [id])
+  documents           GarageDocument[]
+  services            GarageService[]
+  vehicleCapabilities GarageVehicleCapability[]
+  makeSpecializations GarageMakeSpecialization[]
+  appointments        Appointment[]
+  repairOrders        RepairOrder[]
+  reviews             GarageReview[]
+
+  @@index([verificationStatus])
+  @@map("garages")
+}
+
+model GarageDocument {
+  id           String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  garageId     String             @db.Uuid
+  type         GarageDocumentType
+  storageKey   String
+  filename     String
+  mimeType     String
+  sizeBytes    Int
+  uploadedById String             @db.Uuid
+  createdAt    DateTime           @default(now())
+
+  garage     Garage @relation(fields: [garageId], references: [id], onDelete: Cascade)
+  uploadedBy User   @relation("GarageDocumentUploadedBy", fields: [uploadedById], references: [id])
+
+  @@index([garageId])
+  @@map("garage_documents")
+}
+
+model GarageLocation {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String   @db.Uuid
+  name           String
+  emirate        Emirate
+  addressLine1   String
+  phone          String?
+  email          String?
+  isPrimary      Boolean  @default(false)
+  isActive       Boolean  @default(true)
+  // Sprint 21 — distance search / map pins. Nullable: a location with no
+  // coordinates still works everywhere, it just can't be distance-sorted or
+  // pinned. Plain Float (not Decimal) — no real precision need at UAE scale,
+  // matching the existing non-money-numeric convention (e.g. DiagnosticQuestion
+  // min/maxValue).
+  latitude       Float?
+  longitude      Float?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  workingHours GarageWorkingHours[]
+  appointments Appointment[]
+  repairOrders RepairOrder[]
+
+  @@index([organizationId])
+  @@map("garage_locations")
+}
+
+// One row per day of the week for a location. dayOfWeek 0 = Sunday .. 6 =
+// Saturday (UAE work week convention). isClosed short-circuits open/closeTime.
+model GarageWorkingHours {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  locationId String   @db.Uuid
+  dayOfWeek  Int
+  isClosed   Boolean  @default(false)
+  openTime   String? // "HH:mm", 24-hour
+  closeTime  String? // "HH:mm", 24-hour
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  location GarageLocation @relation(fields: [locationId], references: [id], onDelete: Cascade)
+
+  @@unique([locationId, dayOfWeek])
+  @@index([locationId])
+  @@map("garage_working_hours")
+}
+
+// A service the garage offers, drawn from the same ServiceType enum customers
+// use to log ServiceHistoryEntry rows — keeps the vocabulary of "what a garage
+// can do" and "what work was done" aligned.
+model GarageService {
+  id          String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  garageId    String      @db.Uuid
+  serviceType ServiceType
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  garage Garage @relation(fields: [garageId], references: [id], onDelete: Cascade)
+
+  @@unique([garageId, serviceType])
+  @@index([garageId])
+  @@map("garage_services")
+}
+
+// Which vehicle categories (sedan, SUV, heavy truck, ...) a garage is
+// equipped to service — reuses the same VehicleType enum as CustomerVehicle.
+model GarageVehicleCapability {
+  id          String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  garageId    String      @db.Uuid
+  vehicleType VehicleType
+  createdAt   DateTime    @default(now())
+
+  garage Garage @relation(fields: [garageId], references: [id], onDelete: Cascade)
+
+  @@unique([garageId, vehicleType])
+  @@index([garageId])
+  @@map("garage_vehicle_capabilities")
+}
+
+// Vehicle makes a garage specializes in — free-text brand specialization
+// scoped to the real VehicleMake catalog rather than a denormalized string,
+// consistent with PartCompatibility's use of the catalog elsewhere.
+model GarageMakeSpecialization {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  garageId  String   @db.Uuid
+  makeId    String   @db.Uuid
+  createdAt DateTime @default(now())
+
+  garage Garage      @relation(fields: [garageId], references: [id], onDelete: Cascade)
+  make   VehicleMake @relation(fields: [makeId], references: [id])
+
+  @@unique([garageId, makeId])
+  @@index([garageId])
+  @@map("garage_make_specializations")
+}
+
+// Extended profile for a MECHANIC-role membership — skills/experience beyond
+// what OrganizationMembership + MembershipRole already capture. 1:1 with the
+// membership so it is automatically scoped to the correct garage and user.
+model MechanicProfile {
+  id              String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  membershipId    String        @unique @db.Uuid
+  specialties     ServiceType[]
+  yearsExperience Int?
+  bio             String?       @db.Text
+  isActive        Boolean       @default(true)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  membership OrganizationMembership @relation(fields: [membershipId], references: [id], onDelete: Cascade)
+
+  @@map("mechanic_profiles")
+}
+
+// A customer's rating of a garage — gated on a verified-completed repair
+// order rather than a moderation queue (Sprint 21). repairOrderId (not
+// (customerId, garageId)) is the natural 1:1 key, matching
+// DiagnosticFeedback.sessionId — one review per completed repair, no
+// updatedAt (create-only, same shape as DiagnosticFeedback).
+model GarageReview {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  garageId      String   @db.Uuid
+  customerId    String   @db.Uuid
+  repairOrderId String   @unique @db.Uuid
+  rating        Int
+  comment       String?  @db.Text
+  createdAt     DateTime @default(now())
+
+  garage      Garage      @relation(fields: [garageId], references: [id], onDelete: Cascade)
+  customer    User        @relation(fields: [customerId], references: [id])
+  repairOrder RepairOrder @relation(fields: [repairOrderId], references: [id], onDelete: Cascade)
+
+  @@index([garageId])
+  @@map("garage_reviews")
+}
+
+// ── Bookings ──────────────────────────────────────────────────────────────────
+
+// A customer's appointment request against one garage location, optionally
+// carrying a completed DiagnosticSession's context through to the garage.
+// Slots are deterministic (fixed-duration grid aligned to GarageWorkingHours,
+// see features/bookings/slots.ts) so an overlap can only ever occur between
+// appointments sharing the exact same scheduledStart at a location. Preventing
+// double-booking therefore doesn't need inventory's guarded-UPDATE trick (this
+// is an INSERT, which has no equivalent atomic WHERE guard) — instead
+// createBooking() takes a Postgres transaction-scoped advisory lock keyed on
+// locationId before checking for an existing active booking in that slot, so
+// two concurrent requests for the same slot cannot both pass the check (see
+// features/bookings/repository.ts).
+model Appointment {
+  id            String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  bookingNumber String @unique
+
+  customerId          String  @db.Uuid
+  vehicleId           String  @db.Uuid
+  garageId            String  @db.Uuid
+  locationId          String  @db.Uuid
+  diagnosticSessionId String? @db.Uuid
+
+  serviceType ServiceType
+
+  status         BookingStatus @default(REQUESTED)
+  scheduledStart DateTime
+  scheduledEnd   DateTime
+
+  // Set while status = RESCHEDULE_PROPOSED — the garage's proposed alternate
+  // slot, held separately so the originally requested slot isn't lost while
+  // awaiting the customer's decision. Copied onto scheduled* and cleared when
+  // the customer accepts.
+  proposedStart  DateTime?
+  proposedEnd    DateTime?
+  rescheduleNote String?   @db.Text
+
+  customerNotes   String? @db.Text
+  rejectionReason String? @db.Text
+  cancelledReason String? @db.Text
+  cancelledById   String? @db.Uuid
+
+  acceptedAt  DateTime?
+  completedAt DateTime?
+  noShowAt    DateTime?
+  cancelledAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  customer          User                       @relation("BookingCustomer", fields: [customerId], references: [id])
+  vehicle           CustomerVehicle            @relation(fields: [vehicleId], references: [id])
+  garage            Garage                     @relation(fields: [garageId], references: [id])
+  location          GarageLocation             @relation(fields: [locationId], references: [id])
+  diagnosticSession DiagnosticSession?         @relation(fields: [diagnosticSessionId], references: [id])
+  cancelledBy       User?                      @relation("BookingCancelledBy", fields: [cancelledById], references: [id])
+  statusHistory     AppointmentStatusHistory[]
+  repairOrder       RepairOrder?
+
+  @@index([customerId])
+  @@index([garageId])
+  @@index([locationId, scheduledStart])
+  @@index([status])
+  @@map("appointments")
+}
+
+model AppointmentStatusHistory {
+  id            String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  appointmentId String         @db.Uuid
+  fromStatus    BookingStatus?
+  toStatus      BookingStatus
+  changedById   String?        @db.Uuid
+  note          String?        @db.Text
+  createdAt     DateTime       @default(now())
+
+  appointment Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  changedBy   User?       @relation(fields: [changedById], references: [id])
+
+  @@index([appointmentId])
+  @@map("appointment_status_history")
+}
+
+// ── Repair Orders ─────────────────────────────────────────────────────────────
+
+// A garage's workshop record for one vehicle visit, created from an ACCEPTED
+// Appointment (1:1 via appointmentId) when the customer checks in. Carries the
+// full inspection -> diagnosis -> estimate -> approval -> repair -> QC ->
+// completion -> invoice lifecycle (RepairOrderStatus). Line items (RepairJob,
+// RepairOrderPart) are only editable during the estimate-building phase
+// (DIAGNOSIS/ESTIMATE_DRAFT/REJECTED) — see features/repair-orders/service.ts —
+// so totals snapshotted at sendEstimate() and finalizeInvoice() are always
+// server-computed and never re-derived from client input.
+model RepairOrder {
+  id                String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  repairOrderNumber String @unique
+
+  customerId          String  @db.Uuid
+  vehicleId           String  @db.Uuid
+  garageId            String  @db.Uuid
+  locationId          String  @db.Uuid
+  appointmentId       String  @unique @db.Uuid
+  diagnosticSessionId String? @db.Uuid
+
+  status      RepairOrderStatus @default(CREATED)
+  serviceType ServiceType
+
+  // Initial inspection
+  inspectionNotes     String?   @db.Text
+  odometerReadingKm   Int?
+  inspectionStartedAt DateTime?
+
+  // Diagnosis — aiSuggestedDiagnosis/aiConfidence are a snapshot of the linked
+  // DiagnosticSession's top-ranked DiagnosticCause at creation time, if any.
+  aiSuggestedDiagnosis String?
+  aiConfidence         Int?
+  confirmedDiagnosis   String?
+  diagnosisRecordedAt  DateTime?
+
+  // Estimate — server-computed from jobs + parts at sendEstimate() time
+  laborSubtotalMinorUnits Int       @default(0)
+  partsSubtotalMinorUnits Int       @default(0)
+  vatMinorUnits           Int       @default(0)
+  totalMinorUnits         Int       @default(0)
+  currency                String    @default("AED")
+  customerNotes           String?   @db.Text
+  estimateSentAt          DateTime?
+  rejectionReason         String?   @db.Text
+
+  leadMechanicMembershipId String? @db.Uuid
+
+  qcSignedOffById String?   @db.Uuid
+  qcSignedOffAt   DateTime?
+
+  completedAt               DateTime?
+  invoicedAt                DateTime?
+  warrantyDurationMonths    Int?
+  warrantyCoverageItems     String[]
+  warrantyTerms             String?   @db.Text
+  outcomeNotes              String?   @db.Text
+  customerVerifiedOutcomeAt DateTime?
+
+  cancelledAt     DateTime?
+  cancelledReason String?   @db.Text
+  cancelledById   String?   @db.Uuid
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  customer          User                    @relation("RepairOrderCustomer", fields: [customerId], references: [id])
+  vehicle           CustomerVehicle         @relation(fields: [vehicleId], references: [id])
+  garage            Garage                  @relation(fields: [garageId], references: [id])
+  location          GarageLocation          @relation(fields: [locationId], references: [id])
+  appointment       Appointment             @relation(fields: [appointmentId], references: [id])
+  diagnosticSession DiagnosticSession?      @relation(fields: [diagnosticSessionId], references: [id])
+  leadMechanic      OrganizationMembership? @relation("RepairOrderLeadMechanic", fields: [leadMechanicMembershipId], references: [id])
+  qcSignedOffBy     User?                   @relation("RepairOrderQcSignedOffBy", fields: [qcSignedOffById], references: [id])
+  cancelledBy       User?                   @relation("RepairOrderCancelledBy", fields: [cancelledById], references: [id])
+
+  jobs          RepairJob[]
+  parts         RepairOrderPart[]
+  qualityChecks QualityCheckItem[]
+  statusHistory RepairOrderStatusHistory[]
+  review        GarageReview?
+
+  @@index([customerId])
+  @@index([garageId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("repair_orders")
+}
+
+// A unit of work on a RepairOrder — combines "job" (description) and "labor"
+// (mechanic/hours/rate) into one row, matching the Stitch "Jobs & Labor" table
+// which shows exactly these fields together. status tracks execution progress
+// once the RO is IN_REPAIR; description/mechanic/hours/rate are only editable
+// during the estimate-building phase (see features/repair-orders/service.ts).
+model RepairJob {
+  id                   String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  repairOrderId        String          @db.Uuid
+  description          String
+  mechanicMembershipId String?         @db.Uuid
+  hours                Float
+  rateMinorUnits       Int
+  totalMinorUnits      Int
+  status               RepairJobStatus @default(PENDING)
+  sortOrder            Int             @default(0)
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+
+  repairOrder RepairOrder             @relation(fields: [repairOrderId], references: [id], onDelete: Cascade)
+  mechanic    OrganizationMembership? @relation("RepairJobMechanic", fields: [mechanicMembershipId], references: [id])
+
+  @@index([repairOrderId])
+  @@map("repair_jobs")
+}
+
+// A part consumed on a RepairOrder. Free-text (partName/sku) rather than a
+// catalog Part reference — garages don't have a Part/InventoryItem catalog of
+// their own (that's the vendor domain, Sprint 8) and linking RO parts to
+// vendor inventory/fulfillment is out of scope for this sprint.
+model RepairOrderPart {
+  id                  String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  repairOrderId       String   @db.Uuid
+  partName            String
+  sku                 String?
+  quantity            Int
+  unitPriceMinorUnits Int
+  totalMinorUnits     Int
+  sortOrder           Int      @default(0)
+  createdAt           DateTime @default(now())
+
+  repairOrder RepairOrder @relation(fields: [repairOrderId], references: [id], onDelete: Cascade)
+
+  @@index([repairOrderId])
+  @@map("repair_order_parts")
+}
+
+// A single checklist line in the pre-completion quality check. Garage-defined
+// (no fixed universal checklist) — added while IN_REPAIR/QUALITY_CHECK, all
+// must be checked before signOffQualityCheck() can transition to COMPLETED.
+model QualityCheckItem {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  repairOrderId String    @db.Uuid
+  label         String
+  isChecked     Boolean   @default(false)
+  checkedById   String?   @db.Uuid
+  checkedAt     DateTime?
+  sortOrder     Int       @default(0)
+  createdAt     DateTime  @default(now())
+
+  repairOrder RepairOrder @relation(fields: [repairOrderId], references: [id], onDelete: Cascade)
+  checkedBy   User?       @relation(fields: [checkedById], references: [id])
+
+  @@index([repairOrderId])
+  @@map("repair_order_quality_checks")
+}
+
+model RepairOrderStatusHistory {
+  id            String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  repairOrderId String             @db.Uuid
+  fromStatus    RepairOrderStatus?
+  toStatus      RepairOrderStatus
+  changedById   String?            @db.Uuid
+  note          String?            @db.Text
+  createdAt     DateTime           @default(now())
+
+  repairOrder RepairOrder @relation(fields: [repairOrderId], references: [id], onDelete: Cascade)
+  changedBy   User?       @relation(fields: [changedById], references: [id])
+
+  @@index([repairOrderId])
+  @@map("repair_order_status_history")
+}
+
+// ── Payments ──────────────────────────────────────────────────────────────────
+// Sprint 12 (design only — see docs/adr/ADR-013-payment-architecture.md). No
+// service layer writes to these tables yet; Prompt 19 implements the provider
+// adapter and the code that creates/mutates these rows.
+
+// The financial record of what a customer owes for a VendorOrder or a
+// RepairOrder, independent of either domain's own workflow status. Linked by
+// payableType+payableId rather than a Prisma relation so that VendorOrder and
+// RepairOrder — out of scope this sprint — are not touched at all; there is no
+// DB-level FK, so referential integrity for the payable side is the
+// responsibility of whatever creates the Invoice (documented in ADR-013).
+// lineItemsSnapshot freezes a copy of the source domain's line items at issue
+// time so the invoice (and any PDF rendered from it) never silently changes if
+// the underlying RepairJob/RepairOrderPart/VendorOrderItem rows are edited later.
+model Invoice {
+  id            String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  invoiceNumber String      @unique
+  payableType   PayableType
+  payableId     String      @db.Uuid
+
+  customerId              String @db.Uuid
+  recipientOrganizationId String @db.Uuid
+
+  status             InvoiceStatus @default(DRAFT)
+  subtotalMinorUnits Int
+  vatMinorUnits      Int
+  totalMinorUnits    Int
+  currency           String        @default("AED")
+  lineItemsSnapshot  Json
+
+  issuedAt  DateTime?
+  dueAt     DateTime?
+  paidAt    DateTime?
+  voidedAt  DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  customer  User         @relation(fields: [customerId], references: [id])
+  recipient Organization @relation(fields: [recipientOrganizationId], references: [id])
+
+  paymentIntents PaymentIntent[]
+
+  @@index([payableType, payableId])
+  @@index([customerId])
+  @@index([recipientOrganizationId])
+  @@index([status])
+  @@map("invoices")
+}
+
+// One checkout session/attempt for an Invoice. provider/providerIntentId are
+// free-text (not an enum) — see lib/payments/types.ts's PaymentProviderName —
+// matching the existing aiProvider: String? pattern on DiagnosticResult, so
+// adding a gateway never requires a migration. clientSecret is an opaque token
+// handed to the client for hosted/provider-secure collection; card data itself
+// must never reach a field on this or any AutoIQ model (PCI boundary, ADR-013).
+model PaymentIntent {
+  id               String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  invoiceId        String              @db.Uuid
+  provider         String
+  providerIntentId String?
+  status           PaymentIntentStatus @default(CREATED)
+  amountMinorUnits Int
+  currency         String              @default("AED")
+  clientSecret     String?
+  failureReason    String?
+  idempotencyKeyId String?             @unique @db.Uuid
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+
+  invoice        Invoice         @relation(fields: [invoiceId], references: [id])
+  idempotencyKey IdempotencyKey? @relation(fields: [idempotencyKeyId], references: [id])
+
+  transactions  PaymentTransaction[]
+  webhookEvents WebhookEvent[]
+
+  @@index([invoiceId])
+  @@index([status])
+  @@index([provider, providerIntentId])
+  @@map("payment_intents")
+}
+
+// The append-only ledger of gateway-reported money-movement attempts for a
+// PaymentIntent (authorize/capture/sale). Refunds are NOT PaymentTransaction
+// rows — they're their own Refund model, referencing the transaction refunded.
+model PaymentTransaction {
+  id                    String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  paymentIntentId       String                   @db.Uuid
+  type                  PaymentTransactionType
+  status                PaymentTransactionStatus @default(PENDING)
+  amountMinorUnits      Int
+  currency              String                   @default("AED")
+  providerTransactionId String?
+  failureCode           String?
+  failureMessage        String?
+  rawResponseSnapshot   Json?
+  occurredAt            DateTime                 @default(now())
+  createdAt             DateTime                 @default(now())
+
+  paymentIntent PaymentIntent @relation(fields: [paymentIntentId], references: [id])
+
+  refunds    Refund[]
+  commission Commission?
+
+  @@index([paymentIntentId])
+  @@index([providerTransactionId])
+  @@map("payment_transactions")
+}
+
+// A refund against a specific successful (CAPTURE/SALE) PaymentTransaction.
+// requestedById is null for system-initiated refunds (e.g. an auto-refund on
+// order cancellation) as opposed to an admin/support action.
+model Refund {
+  id               String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  transactionId    String       @db.Uuid
+  requestedById    String?      @db.Uuid
+  status           RefundStatus @default(REQUESTED)
+  amountMinorUnits Int
+  currency         String       @default("AED")
+  reason           String?      @db.Text
+  providerRefundId String?
+  failureReason    String?
+  processedAt      DateTime?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  transaction PaymentTransaction @relation(fields: [transactionId], references: [id])
+  requestedBy User?              @relation(fields: [requestedById], references: [id])
+
+  @@index([transactionId])
+  @@index([status])
+  @@map("refunds")
+}
+
+// The platform's cut of one successful PaymentTransaction, and what's left
+// owed to the vendor/garage (recipientOrganizationId — Vendor and Garage are
+// both 1:1 with an Organization, so this reuses that existing anchor instead
+// of a union of vendorId/garageId). rateBasisPoints follows the existing
+// VAT_RATE_BPS convention (features/repair-orders/service.ts, features/vendor-orders).
+model Commission {
+  id                         String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  transactionId              String           @unique @db.Uuid
+  recipientOrganizationId    String           @db.Uuid
+  status                     CommissionStatus @default(PENDING)
+  grossAmountMinorUnits      Int
+  rateBasisPoints            Int
+  commissionAmountMinorUnits Int
+  payoutAmountMinorUnits     Int
+  currency                   String           @default("AED")
+  payoutId                   String?          @db.Uuid
+  createdAt                  DateTime         @default(now())
+
+  transaction PaymentTransaction @relation(fields: [transactionId], references: [id])
+  recipient   Organization       @relation(fields: [recipientOrganizationId], references: [id])
+  payout      Payout?            @relation(fields: [payoutId], references: [id])
+
+  @@index([recipientOrganizationId])
+  @@index([status])
+  @@index([payoutId])
+  @@map("commissions")
+}
+
+// A batch payment of accumulated Commission.payoutAmountMinorUnits to one
+// vendor/garage Organization over [periodStart, periodEnd]. provider here is
+// the payout rail (may differ from the PaymentProvider that collected the
+// original charge — e.g. a direct bank transfer batch) — also free-text.
+model Payout {
+  id                      String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  payoutNumber            String       @unique
+  recipientOrganizationId String       @db.Uuid
+  status                  PayoutStatus @default(PENDING)
+  amountMinorUnits        Int
+  currency                String       @default("AED")
+  periodStart             DateTime
+  periodEnd               DateTime
+  provider                String?
+  providerPayoutId        String?
+  failureReason           String?
+  processedAt             DateTime?
+  createdAt               DateTime     @default(now())
+  updatedAt               DateTime     @updatedAt
+
+  recipient   Organization @relation(fields: [recipientOrganizationId], references: [id])
+  commissions Commission[]
+
+  @@index([recipientOrganizationId])
+  @@index([status])
+  @@map("payouts")
+}
+
+// Generic idempotency guard for client-initiated mutating payment requests
+// (e.g. POST /payment-intents retried by a flaky client must not create two
+// intents). scope+key is the uniqueness boundary, not key alone, so the same
+// raw key can't collide across unrelated endpoints. A replay with the same
+// scope+key but a different requestHash is a client error, not a safe replay
+// (see ADR-013's reconciliation plan) — expiresAt enables the same lazy-expiry
+// convention used for stale VendorOrder reservations (Sprint 8) since no job
+// queue exists yet.
+model IdempotencyKey {
+  id               String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  key              String
+  scope            String
+  requestHash      String
+  status           IdempotencyKeyStatus @default(IN_PROGRESS)
+  responseSnapshot Json?
+  resourceType     String?
+  resourceId       String?              @db.Uuid
+  createdAt        DateTime             @default(now())
+  expiresAt        DateTime
+
+  paymentIntent PaymentIntent?
+
+  @@unique([scope, key])
+  @@index([expiresAt])
+  @@map("idempotency_keys")
+}
+
+// Inbound webhook log — generic (not payments-only, per ADR-011's original
+// intent) even though payments are the only producer so far. The
+// (provider, providerEventId) unique constraint is the core dedupe mechanism:
+// a provider's retry of the same event hits a P2002 on insert, handled the
+// same way Sprint 6's DiagnosticResult handles a P2002 race — treat it as
+// "already processed" and return success, never double-apply the event.
+model WebhookEvent {
+  id                String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  provider          String
+  providerEventId   String
+  eventType         String
+  payloadRaw        Json
+  signatureVerified Boolean            @default(false)
+  status            WebhookEventStatus @default(RECEIVED)
+  paymentIntentId   String?            @db.Uuid
+  attempts          Int                @default(0)
+  lastError         String?            @db.Text
+  receivedAt        DateTime           @default(now())
+  processedAt       DateTime?
+
+  paymentIntent PaymentIntent? @relation(fields: [paymentIntentId], references: [id])
+
+  @@unique([provider, providerEventId])
+  @@index([status])
+  @@index([paymentIntentId])
+  @@map("webhook_events")
+}
+
+// ── Notifications (Sprint 14 / Prompt 20) ──────────────────────────────────────
+
+enum NotificationEventType {
+  EMAIL_VERIFICATION
+  DIAGNOSTIC_COMPLETE
+  BOOKING_REQUESTED
+  BOOKING_ACCEPTED
+  ESTIMATE_READY
+  ESTIMATE_APPROVED
+  PAYMENT_COMPLETE
+  PAYMENT_FAILED
+  REPAIR_STATUS_CHANGED
+  REPAIR_COMPLETED
+}
+
+enum NotificationCategory {
+  ACCOUNT
+  DIAGNOSTICS
+  BOOKINGS
+  REPAIR_ORDERS
+  PAYMENTS
+}
+
+enum NotificationChannel {
+  EMAIL
+  SMS
+  IN_APP
+}
+
+enum NotificationDeliveryStatus {
+  PENDING
+  SENT
+  FAILED
+  SKIPPED
+}
+
+// One logical notification instance per recipient per event occurrence. The
+// in-app "delivery" IS this row existing — readAt tracks the in-app read
+// state directly here rather than in a NotificationDelivery row, since
+// there's nothing else for an IN_APP channel to record. dedupKey scopes the
+// natural idempotency key of the triggering event (sessionId, bookingId,
+// repairOrderId+status, invoiceId, ...) — a retried dispatch for the same
+// (userId, eventType, dedupKey) hits P2002 and is treated as already-sent,
+// the same pattern Sprint 6/13 use for DiagnosticResult/WebhookEvent races.
+model Notification {
+  id        String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String                @db.Uuid
+  eventType NotificationEventType
+  category  NotificationCategory
+  title     String
+  body      String                @db.Text
+  data      Json?
+  dedupKey  String
+  readAt    DateTime?
+  createdAt DateTime              @default(now())
+
+  user       User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  deliveries NotificationDelivery[]
+
+  @@unique([userId, eventType, dedupKey])
+  @@index([userId, readAt])
+  @@index([userId, category])
+  @@map("notifications")
+}
+
+// Per-channel delivery attempt/outcome for a Notification (EMAIL/SMS only —
+// IN_APP is tracked on Notification itself, see above). attempts/lastError
+// record the in-process retry loop features/notifications/service.ts runs
+// synchronously (no job scheduler exists yet, matching the lazy/synchronous
+// convention every other domain in this codebase uses for the same gap).
+model NotificationDelivery {
+  id             String                     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  notificationId String                     @db.Uuid
+  channel        NotificationChannel
+  status         NotificationDeliveryStatus @default(PENDING)
+  attempts       Int                        @default(0)
+  lastError      String?                    @db.Text
+  sentAt         DateTime?
+  createdAt      DateTime                   @default(now())
+  updatedAt      DateTime                   @updatedAt
+
+  notification Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+
+  @@unique([notificationId, channel])
+  @@map("notification_deliveries")
+}
+
+// Per-user, per-event channel opt-in/out. No row means "use the event's
+// documented default" (features/notifications/defaults.ts) — rows are only
+// written when a user actually changes something, not pre-seeded for every
+// user/event pair. EMAIL_VERIFICATION is intentionally never editable here
+// (enforced server-side in features/notifications/service.ts, not just
+// hidden in the UI) — a user cannot opt out of the one email that unlocks
+// their account.
+model NotificationPreference {
+  id           String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId       String                @db.Uuid
+  eventType    NotificationEventType
+  emailEnabled Boolean               @default(true)
+  smsEnabled   Boolean               @default(false)
+  inAppEnabled Boolean               @default(true)
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, eventType])
+  @@map("notification_preferences")
+}

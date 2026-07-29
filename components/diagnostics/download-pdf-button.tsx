@@ -31,9 +31,10 @@ export function DownloadPdfButton({ variant = "outline" }: Props) {
         fontWeight: 600,
         cursor: "pointer",
         whiteSpace: "nowrap",
+        width: "150px",
       }}
     >
-      <Download size={14} /> Download PDF Report
+      <Download size={14} /> Download Report
     </button>
   );
 }

@@ -170,8 +170,8 @@ export default async function DiagnosticSessionPage({ params }: Props) {
         <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
           {isComplete && (
             <>
-              <DownloadPdfButton />
               <ShareResultsButton sessionId={diagSession.id} />
+              <DownloadPdfButton />
             </>
           )}
           {isResumable && (
@@ -348,7 +348,12 @@ export default async function DiagnosticSessionPage({ params }: Props) {
               </div>
               <div>
                 <p
-                  style={{ fontSize: "0.9375rem", fontWeight: 700, color: "#081a2f", margin: "0 0 0.125rem" }}
+                  style={{
+                    fontSize: "0.9375rem",
+                    fontWeight: 700,
+                    color: "#081a2f",
+                    margin: "0 0 0.125rem",
+                  }}
                 >
                   {diagSession.vehicle.year} {diagSession.vehicle.makeName}{" "}
                   {diagSession.vehicle.modelName}
@@ -438,9 +443,20 @@ export default async function DiagnosticSessionPage({ params }: Props) {
             }}
           >
             <div style={{ display: "flex", gap: "0.75rem", alignItems: "flex-start" }}>
-              <AlertTriangle size={20} color="#dc2626" style={{ flexShrink: 0, marginTop: "2px" }} />
+              <AlertTriangle
+                size={20}
+                color="#dc2626"
+                style={{ flexShrink: 0, marginTop: "2px" }}
+              />
               <div>
-                <p style={{ fontSize: "0.9375rem", fontWeight: 700, color: "#991b1b", margin: "0 0 0.375rem" }}>
+                <p
+                  style={{
+                    fontSize: "0.9375rem",
+                    fontWeight: 700,
+                    color: "#991b1b",
+                    margin: "0 0 0.375rem",
+                  }}
+                >
                   Safety Alert — Immediate Action Required
                 </p>
                 <p style={{ fontSize: "0.875rem", color: "#7f1d1d", margin: 0, lineHeight: 1.6 }}>
@@ -450,7 +466,6 @@ export default async function DiagnosticSessionPage({ params }: Props) {
             </div>
           </div>
         )}
-
       </div>
     </div>
   );

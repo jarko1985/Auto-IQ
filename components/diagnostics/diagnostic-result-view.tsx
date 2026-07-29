@@ -186,155 +186,157 @@ export function DiagnosticResultView({
                           <span style={{ fontSize: "1.125rem", fontWeight: 800, color: "#00b8d9" }}>
                             {cause.confidence}%
                           </span>
-                          <span style={{ fontSize: "0.9375rem", fontWeight: 700, color: "#081a2f" }}>
+                          <span
+                            style={{ fontSize: "0.9375rem", fontWeight: 700, color: "#081a2f" }}
+                          >
                             {cause.label}
                           </span>
                         </div>
-                        {index === 0 && (
-                          <span style={{ ...badgeStyle("#081a2f"), padding: "0.25rem 0.625rem" }}>
-                            PRIMARY MATCH
-                          </span>
-                        )}
                       </div>
                     </AccordionTrigger>
                     <AccordionContent>
-                    {cause.evidence.length > 0 && (
-                      <div style={{ marginBottom: "0.625rem" }}>
-                        <p
-                          style={{
-                            fontSize: "0.75rem",
-                            fontWeight: 700,
-                            color: "#74777d",
-                            letterSpacing: "0.04em",
-                            margin: "0 0 0.375rem",
-                          }}
-                        >
-                          SUPPORTING EVIDENCE
-                        </p>
-                        <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                          {cause.evidence.map((item, i) => (
-                            <li
-                              key={i}
-                              style={{
-                                display: "flex",
-                                gap: "0.5rem",
-                                fontSize: "0.8125rem",
-                                color: "#44474d",
-                                marginBottom: "0.375rem",
-                              }}
-                            >
-                              <CheckCircle2
-                                size={14}
-                                color="#16a34a"
-                                style={{ flexShrink: 0, marginTop: "1px" }}
-                              />
-                              {item}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-
-                    {cause.missingEvidence.length > 0 && (
-                      <div style={{ marginBottom: "0.5rem" }}>
-                        <p
-                          style={{
-                            fontSize: "0.75rem",
-                            fontWeight: 700,
-                            color: "#74777d",
-                            letterSpacing: "0.04em",
-                            margin: "0 0 0.375rem",
-                          }}
-                        >
-                          NEEDED TO CONFIRM
-                        </p>
-                        <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                          {cause.missingEvidence.map((item, i) => (
-                            <li
-                              key={i}
-                              style={{
-                                display: "flex",
-                                gap: "0.5rem",
-                                fontSize: "0.8125rem",
-                                color: "#74777d",
-                                marginBottom: "0.375rem",
-                              }}
-                            >
-                              <Info
-                                size={14}
-                                color="#0891b2"
-                                style={{ flexShrink: 0, marginTop: "1px" }}
-                              />
-                              {item}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-
-                    {cause.suggestedChecks.length > 0 && (
-                      <div style={{ marginTop: "0.75rem" }}>
-                        <p
-                          style={{
-                            fontSize: "0.75rem",
-                            fontWeight: 700,
-                            color: "#74777d",
-                            letterSpacing: "0.04em",
-                            margin: "0 0 0.375rem",
-                          }}
-                        >
-                          SUGGESTED CHECKS
-                        </p>
-                        <p
-                          style={{ fontSize: "0.8125rem", color: "#44474d", margin: 0, lineHeight: 1.6 }}
-                        >
-                          {cause.suggestedChecks.join(" · ")}
-                        </p>
-                      </div>
-                    )}
-
-                    {(cause.requiredServiceCodes.length > 0 ||
-                      cause.likelyPartCategoryCodes.length > 0) && (
-                      <div
-                        style={{
-                          display: "flex",
-                          flexWrap: "wrap",
-                          gap: "0.375rem",
-                          marginTop: "0.75rem",
-                        }}
-                      >
-                        {cause.requiredServiceCodes.map((code) => (
-                          <span
-                            key={code}
+                      {cause.evidence.length > 0 && (
+                        <div style={{ marginBottom: "0.625rem" }}>
+                          <p
                             style={{
                               fontSize: "0.75rem",
-                              fontWeight: 500,
-                              color: "#0891b2",
-                              backgroundColor: "#e0f7fa",
-                              borderRadius: "0.375rem",
-                              padding: "0.1875rem 0.5rem",
+                              fontWeight: 700,
+                              color: "#74777d",
+                              letterSpacing: "0.04em",
+                              margin: "0 0 0.375rem",
                             }}
                           >
-                            {formatTaxonomyLabel(code)}
-                          </span>
-                        ))}
-                        {cause.likelyPartCategoryCodes.map((code) => (
-                          <span
-                            key={code}
+                            SUPPORTING EVIDENCE
+                          </p>
+                          <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                            {cause.evidence.map((item, i) => (
+                              <li
+                                key={i}
+                                style={{
+                                  display: "flex",
+                                  gap: "0.5rem",
+                                  fontSize: "0.8125rem",
+                                  color: "#44474d",
+                                  marginBottom: "0.375rem",
+                                }}
+                              >
+                                <CheckCircle2
+                                  size={14}
+                                  color="#16a34a"
+                                  style={{ flexShrink: 0, marginTop: "1px" }}
+                                />
+                                {item}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {cause.missingEvidence.length > 0 && (
+                        <div style={{ marginBottom: "0.5rem" }}>
+                          <p
                             style={{
                               fontSize: "0.75rem",
-                              fontWeight: 500,
+                              fontWeight: 700,
+                              color: "#74777d",
+                              letterSpacing: "0.04em",
+                              margin: "0 0 0.375rem",
+                            }}
+                          >
+                            NEEDED TO CONFIRM
+                          </p>
+                          <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                            {cause.missingEvidence.map((item, i) => (
+                              <li
+                                key={i}
+                                style={{
+                                  display: "flex",
+                                  gap: "0.5rem",
+                                  fontSize: "0.8125rem",
+                                  color: "#74777d",
+                                  marginBottom: "0.375rem",
+                                }}
+                              >
+                                <Info
+                                  size={14}
+                                  color="#0891b2"
+                                  style={{ flexShrink: 0, marginTop: "1px" }}
+                                />
+                                {item}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {cause.suggestedChecks.length > 0 && (
+                        <div style={{ marginTop: "0.75rem" }}>
+                          <p
+                            style={{
+                              fontSize: "0.75rem",
+                              fontWeight: 700,
+                              color: "#74777d",
+                              letterSpacing: "0.04em",
+                              margin: "0 0 0.375rem",
+                            }}
+                          >
+                            SUGGESTED CHECKS
+                          </p>
+                          <p
+                            style={{
+                              fontSize: "0.8125rem",
                               color: "#44474d",
-                              backgroundColor: "#f1f4f7",
-                              borderRadius: "0.375rem",
-                              padding: "0.1875rem 0.5rem",
+                              margin: 0,
+                              lineHeight: 1.6,
                             }}
                           >
-                            {formatTaxonomyLabel(code)}
-                          </span>
-                        ))}
-                      </div>
-                    )}
+                            {cause.suggestedChecks.join(" · ")}
+                          </p>
+                        </div>
+                      )}
+
+                      {(cause.requiredServiceCodes.length > 0 ||
+                        cause.likelyPartCategoryCodes.length > 0) && (
+                        <div
+                          style={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: "0.375rem",
+                            marginTop: "0.75rem",
+                          }}
+                        >
+                          {cause.requiredServiceCodes.map((code) => (
+                            <span
+                              key={code}
+                              style={{
+                                fontSize: "0.75rem",
+                                fontWeight: 500,
+                                color: "#0891b2",
+                                backgroundColor: "#e0f7fa",
+                                borderRadius: "0.375rem",
+                                padding: "0.1875rem 0.5rem",
+                              }}
+                            >
+                              {formatTaxonomyLabel(code)}
+                            </span>
+                          ))}
+                          {cause.likelyPartCategoryCodes.map((code) => (
+                            <span
+                              key={code}
+                              style={{
+                                fontSize: "0.75rem",
+                                fontWeight: 500,
+                                color: "#44474d",
+                                backgroundColor: "#f1f4f7",
+                                borderRadius: "0.375rem",
+                                padding: "0.1875rem 0.5rem",
+                              }}
+                            >
+                              {formatTaxonomyLabel(code)}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </AccordionContent>
                   </AccordionItem>
                 ))}
@@ -354,7 +356,9 @@ export function DiagnosticResultView({
                 }}
               >
                 <BookOpen size={15} color="#0891b2" />
-                <p style={{ ...sectionLabelStyle, color: "#0891b2" }}>SOURCED FROM KNOWLEDGE BASE</p>
+                <p style={{ ...sectionLabelStyle, color: "#0891b2" }}>
+                  SOURCED FROM KNOWLEDGE BASE
+                </p>
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: "0.625rem" }}>
                 {citations.map((doc) => {
@@ -376,7 +380,12 @@ export function DiagnosticResultView({
                         </p>
                       </div>
                       <div
-                        style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexShrink: 0 }}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "0.5rem",
+                          flexShrink: 0,
+                        }}
                       >
                         <span
                           style={{
@@ -434,13 +443,27 @@ export function DiagnosticResultView({
               borderInlineStart: `3px solid ${severityMeta.color}`,
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.75rem" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+                marginBottom: "0.75rem",
+              }}
+            >
               <AlertTriangle size={15} color={severityMeta.color} />
               <p style={{ ...sectionLabelStyle, color: severityMeta.color }}>
                 SEVERITY: {result.severity}
               </p>
             </div>
-            <p style={{ fontSize: "0.9375rem", fontWeight: 700, color: "#081a2f", margin: "0 0 0.625rem" }}>
+            <p
+              style={{
+                fontSize: "0.9375rem",
+                fontWeight: 700,
+                color: "#081a2f",
+                margin: "0 0 0.625rem",
+              }}
+            >
               {severityMeta.note}
             </p>
 
@@ -455,7 +478,14 @@ export function DiagnosticResultView({
             >
               OPERATIONAL RESTRICTION
             </p>
-            <p style={{ fontSize: "0.8125rem", color: "#5b6472", margin: "0 0 0.75rem", lineHeight: 1.5 }}>
+            <p
+              style={{
+                fontSize: "0.8125rem",
+                color: "#5b6472",
+                margin: "0 0 0.75rem",
+                lineHeight: 1.5,
+              }}
+            >
               {result.emergencyAction ?? driveNote}
             </p>
 
@@ -488,7 +518,9 @@ export function DiagnosticResultView({
 
       {/* Estimated repair cost — full page width */}
       <div style={{ ...cardStyle, backgroundColor: "#081a2f", border: "none" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.75rem" }}>
+        <div
+          style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.75rem" }}
+        >
           <Wallet size={15} color="#00b8d9" />
           <p style={{ ...sectionLabelStyle, color: "rgba(255,255,255,0.6)" }}>
             ESTIMATED REPAIR COST

@@ -134,7 +134,7 @@ export function ShareResultsButton({ sessionId }: Props) {
           whiteSpace: "nowrap",
         }}
       >
-        <Share2 size={14} /> Share Results
+        <Share2 size={14} />
       </button>
 
       {open && (
@@ -152,15 +152,31 @@ export function ShareResultsButton({ sessionId }: Props) {
             zIndex: 30,
           }}
         >
-          <p style={{ fontSize: "0.8125rem", fontWeight: 700, color: "#081a2f", margin: "0 0 0.375rem" }}>
+          <p
+            style={{
+              fontSize: "0.8125rem",
+              fontWeight: 700,
+              color: "#081a2f",
+              margin: "0 0 0.375rem",
+            }}
+          >
             Shareable report link
           </p>
-          <p style={{ fontSize: "0.75rem", color: "#74777d", margin: "0 0 0.75rem", lineHeight: 1.5 }}>
+          <p
+            style={{
+              fontSize: "0.75rem",
+              color: "#74777d",
+              margin: "0 0 0.75rem",
+              lineHeight: 1.5,
+            }}
+          >
             Anyone with this link can view a read-only copy of this report — no sign-in required.
           </p>
 
           {loading && !link ? (
-            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", padding: "0.5rem 0" }}>
+            <div
+              style={{ display: "flex", alignItems: "center", gap: "0.5rem", padding: "0.5rem 0" }}
+            >
               <InlineSpinner />
               <span style={{ fontSize: "0.8125rem", color: "#74777d" }}>Generating link…</span>
             </div>
@@ -198,11 +214,20 @@ export function ShareResultsButton({ sessionId }: Props) {
                     cursor: "pointer",
                   }}
                 >
-                  {copied ? <Check size={14} color="#16a34a" /> : <Copy size={14} color="#5b6472" />}
+                  {copied ? (
+                    <Check size={14} color="#16a34a" />
+                  ) : (
+                    <Copy size={14} color="#5b6472" />
+                  )}
                 </button>
               </div>
               <p style={{ fontSize: "0.6875rem", color: "#a1a5ab", margin: "0 0 0.75rem" }}>
-                Expires {new Date(link.expiresAt).toLocaleDateString("en-AE", { day: "numeric", month: "long", year: "numeric" })}
+                Expires{" "}
+                {new Date(link.expiresAt).toLocaleDateString("en-AE", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })}
               </p>
               <button
                 type="button"

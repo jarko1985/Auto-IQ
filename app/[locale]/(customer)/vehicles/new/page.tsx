@@ -11,7 +11,7 @@ export default async function NewVehiclePage() {
   const t = await getTranslations("Vehicles");
 
   return (
-    <div style={{ padding: "2rem 2.5rem" }}>
+    <div className="px-4 py-6 sm:px-6 sm:py-8 lg:px-10 lg:py-8">
       {/* Back breadcrumb */}
       <Link
         href="/vehicles"

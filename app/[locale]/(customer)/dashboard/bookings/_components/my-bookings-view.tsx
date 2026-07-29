@@ -79,7 +79,7 @@ export function MyBookingsView({ initialBookings }: Props) {
 
   return (
     <div>
-      <div style={{ display: "flex", gap: "0.375rem", marginBottom: "1.5rem" }}>
+      <div style={{ display: "flex", gap: "0.375rem", marginBottom: "1.5rem", overflowX: "auto" }}>
         {TABS.map((t) => (
           <button
             key={t.value}
@@ -94,6 +94,8 @@ export function MyBookingsView({ initialBookings }: Props) {
               fontSize: "0.75rem",
               fontWeight: 600,
               cursor: "pointer",
+              whiteSpace: "nowrap",
+              flexShrink: 0,
             }}
           >
             {t.label}

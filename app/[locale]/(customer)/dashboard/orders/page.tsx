@@ -11,7 +11,7 @@ export default async function MyOrdersPage() {
   const { orders, total } = await listMyOrders(session.user.id, { limit: 50, offset: 0 });
 
   return (
-    <div style={{ padding: "2rem 2.5rem", maxWidth: "1100px" }}>
+    <div className="px-4 py-6 sm:px-6 sm:py-8 lg:px-10 lg:py-8" style={{ maxWidth: "1100px" }}>
       <h1
         style={{ fontSize: "1.5rem", fontWeight: 700, color: "#081a2f", marginBottom: "0.25rem" }}
       >

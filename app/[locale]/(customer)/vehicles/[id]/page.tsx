@@ -63,7 +63,7 @@ export default async function VehicleDetailPage({ params }: Params) {
   ];
 
   return (
-    <div style={{ padding: "2rem 2.5rem" }}>
+    <div className="px-4 py-6 sm:px-6 sm:py-8 lg:px-10 lg:py-8">
       {/* Back breadcrumb */}
       <div
         style={{
@@ -100,8 +100,8 @@ export default async function VehicleDetailPage({ params }: Params) {
       </div>
 
       <h1
+        className="text-fluid-page-title break-words"
         style={{
-          fontSize: "1.5rem",
           fontWeight: 700,
           color: "var(--navy)",
           margin: "0 0 0.25rem",
@@ -138,14 +138,7 @@ export default async function VehicleDetailPage({ params }: Params) {
           >
             Vehicle Details
           </h2>
-          <dl
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "0.875rem 1rem",
-              margin: 0,
-            }}
-          >
+          <dl className="grid grid-cols-1 gap-y-3.5 gap-x-4 sm:grid-cols-2" style={{ margin: 0 }}>
             {rows
               .filter((r) => r.value)
               .map(({ label, value }) => (
@@ -160,6 +153,7 @@ export default async function VehicleDetailPage({ params }: Params) {
                     {label}
                   </dt>
                   <dd
+                    className="overflow-wrap-anywhere"
                     style={{
                       fontSize: "0.9375rem",
                       fontWeight: 500,

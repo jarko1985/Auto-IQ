@@ -1,8 +1,10 @@
 "use client";
 
-import { Link } from "@/i18n/routing";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, MapPin, Users, Settings, Boxes, ShoppingCart, Bell } from "lucide-react";
+import { useIsDesktop } from "@/lib/hooks/use-is-desktop";
+import { SidebarNavLink } from "@/components/layout/sidebar-nav-link";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const navItems = [
   { href: "/vendor/dashboard", label: "Dashboard", icon: LayoutDashboard, soon: false },
@@ -20,6 +22,7 @@ interface Props {
 
 export function VendorSidebar({ organizationName, organizationStatus }: Props) {
   const pathname = usePathname();
+  const collapsed = !useIsDesktop();
 
   function isActive(href: string) {
     return pathname.includes(href);
@@ -28,8 +31,8 @@ export function VendorSidebar({ organizationName, organizationStatus }: Props) {
   return (
     <aside
       style={{
-        width: "240px",
-        minWidth: "240px",
+        width: collapsed ? "4.5rem" : "240px",
+        minWidth: collapsed ? "4.5rem" : "240px",
         height: "100vh",
         position: "sticky",
         top: 0,
@@ -37,12 +40,14 @@ export function VendorSidebar({ organizationName, organizationStatus }: Props) {
         display: "flex",
         flexDirection: "column",
         overflowY: "auto",
+        overflowX: "hidden",
         flexShrink: 0,
+        transition: "width 0.15s, min-width 0.15s",
       }}
     >
       <div
         style={{
-          padding: "1.5rem 1.25rem",
+          padding: collapsed ? "1.5rem 0" : "1.5rem 1.25rem",
           borderBottom: "1px solid rgba(255,255,255,0.08)",
           flexShrink: 0,
         }}
@@ -51,8 +56,9 @@ export function VendorSidebar({ organizationName, organizationStatus }: Props) {
           style={{
             display: "flex",
             alignItems: "center",
+            justifyContent: collapsed ? "center" : "flex-start",
             gap: "0.625rem",
-            marginBottom: "0.875rem",
+            marginBottom: collapsed ? 0 : "0.875rem",
           }}
         >
           <div
@@ -69,114 +75,78 @@ export function VendorSidebar({ organizationName, organizationStatus }: Props) {
           >
             <span style={{ color: "#fff", fontWeight: 700, fontSize: "0.875rem" }}>A</span>
           </div>
-          <span
-            style={{ color: "#fff", fontWeight: 700, fontSize: "1rem", letterSpacing: "-0.01em" }}
-          >
-            AutoIQ Vendor
-          </span>
+          {!collapsed && (
+            <span
+              style={{ color: "#fff", fontWeight: 700, fontSize: "1rem", letterSpacing: "-0.01em" }}
+            >
+              AutoIQ Vendor
+            </span>
+          )}
         </div>
-        <p style={{ color: "#fff", fontSize: "0.8125rem", fontWeight: 600, margin: 0 }}>
-          {organizationName}
-        </p>
-        <span
-          style={{
-            display: "inline-block",
-            marginTop: "0.375rem",
-            fontSize: "0.6875rem",
-            fontWeight: 700,
-            padding: "0.125rem 0.5rem",
-            borderRadius: "9999px",
-            backgroundColor:
-              organizationStatus === "ACTIVE"
-                ? "rgba(22,163,74,0.2)"
-                : organizationStatus === "REJECTED"
-                  ? "rgba(220,38,38,0.2)"
-                  : "rgba(217,119,6,0.2)",
-            color:
-              organizationStatus === "ACTIVE"
-                ? "#4ade80"
-                : organizationStatus === "REJECTED"
-                  ? "#f87171"
-                  : "#fbbf24",
-          }}
-        >
-          {organizationStatus === "ACTIVE"
-            ? "Verified Vendor"
-            : organizationStatus === "REJECTED"
-              ? "Rejected"
-              : "Pending Approval"}
-        </span>
-      </div>
-
-      <nav style={{ flex: 1, padding: "1rem 0.75rem 0.75rem" }}>
-        {navItems.map(({ href, label, icon: Icon, soon }) => {
-          const active = isActive(href);
-          return (
-            <Link
-              key={href}
-              href={soon ? "/vendor/dashboard" : href}
+        {!collapsed && (
+          <>
+            <p style={{ color: "#fff", fontSize: "0.8125rem", fontWeight: 600, margin: 0 }}>
+              {organizationName}
+            </p>
+            <span
               style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                gap: "0.75rem",
-                padding: "0.625rem 0.75rem",
-                borderRadius: "0.625rem",
-                textDecoration: "none",
-                marginBottom: "0.125rem",
-                backgroundColor: active ? "rgba(0,184,217,0.15)" : "transparent",
-                color: active
-                  ? "#00b8d9"
-                  : soon
-                    ? "rgba(255,255,255,0.3)"
-                    : "rgba(255,255,255,0.55)",
-                fontWeight: active ? 600 : 400,
-                fontSize: "0.875rem",
+                display: "inline-block",
+                marginTop: "0.375rem",
+                fontSize: "0.6875rem",
+                fontWeight: 700,
+                padding: "0.125rem 0.5rem",
+                borderRadius: "9999px",
+                backgroundColor:
+                  organizationStatus === "ACTIVE"
+                    ? "rgba(22,163,74,0.2)"
+                    : organizationStatus === "REJECTED"
+                      ? "rgba(220,38,38,0.2)"
+                      : "rgba(217,119,6,0.2)",
+                color:
+                  organizationStatus === "ACTIVE"
+                    ? "#4ade80"
+                    : organizationStatus === "REJECTED"
+                      ? "#f87171"
+                      : "#fbbf24",
               }}
             >
-              <span style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-                <Icon size={17} strokeWidth={active ? 2.5 : 1.75} />
-                {label}
-              </span>
-              {soon && (
-                <span
-                  style={{
-                    fontSize: "0.625rem",
-                    fontWeight: 700,
-                    padding: "0.0625rem 0.375rem",
-                    borderRadius: "9999px",
-                    backgroundColor: "rgba(255,255,255,0.08)",
-                    color: "rgba(255,255,255,0.4)",
-                  }}
-                >
-                  Soon
-                </span>
-              )}
-            </Link>
-          );
-        })}
+              {organizationStatus === "ACTIVE"
+                ? "Verified Vendor"
+                : organizationStatus === "REJECTED"
+                  ? "Rejected"
+                  : "Pending Approval"}
+            </span>
+          </>
+        )}
+      </div>
 
-        <div
-          style={{ height: "1px", backgroundColor: "rgba(255,255,255,0.08)", margin: "0.75rem 0" }}
-        />
+      <TooltipProvider>
+        <nav style={{ flex: 1, padding: collapsed ? "1rem 0.625rem 0.75rem" : "1rem 0.75rem 0.75rem" }}>
+          {navItems.map(({ href, label, icon, soon }) => (
+            <SidebarNavLink
+              key={href}
+              href={soon ? "/vendor/dashboard" : href}
+              label={label}
+              icon={icon}
+              active={isActive(href)}
+              collapsed={collapsed}
+              soon={soon}
+            />
+          ))}
 
-        <Link
-          href="/vendor/onboarding"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "0.75rem",
-            padding: "0.625rem 0.75rem",
-            borderRadius: "0.625rem",
-            textDecoration: "none",
-            color: "rgba(255,255,255,0.4)",
-            fontSize: "0.875rem",
-          }}
-        >
-          <Settings size={17} strokeWidth={1.75} />
-          Business Profile
-        </Link>
-      </nav>
+          <div
+            style={{ height: "1px", backgroundColor: "rgba(255,255,255,0.08)", margin: "0.75rem 0" }}
+          />
+
+          <SidebarNavLink
+            href="/vendor/onboarding"
+            label="Business Profile"
+            icon={Settings}
+            active={isActive("/vendor/onboarding")}
+            collapsed={collapsed}
+          />
+        </nav>
+      </TooltipProvider>
     </aside>
   );
 }

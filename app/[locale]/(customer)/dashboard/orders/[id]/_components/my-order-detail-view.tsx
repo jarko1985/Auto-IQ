@@ -119,15 +119,19 @@ export function MyOrderDetailView({ order }: Props) {
       <div
         style={{
           display: "flex",
+          flexWrap: "wrap",
           alignItems: "flex-start",
           justifyContent: "space-between",
           marginBottom: "1.5rem",
           gap: "1rem",
         }}
       >
-        <div>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
-            <h1 style={{ fontSize: "1.5rem", fontWeight: 700, color: "#081a2f", margin: 0 }}>
+        <div style={{ minWidth: 0 }}>
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.625rem" }}>
+            <h1
+              className="text-fluid-page-title break-words"
+              style={{ fontWeight: 700, color: "#081a2f", margin: 0 }}
+            >
               #{order.orderNumber}
             </h1>
             <span
@@ -213,7 +217,10 @@ export function MyOrderDetailView({ order }: Props) {
         >
           Items
         </h2>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.8125rem" }}>
+        <div style={{ overflowX: "auto" }}>
+        <table
+          style={{ width: "100%", minWidth: "420px", borderCollapse: "collapse", fontSize: "0.8125rem" }}
+        >
           <thead>
             <tr style={{ textAlign: "start" }}>
               {["Product", "Qty", "Unit Price", "Total"].map((h) => (
@@ -282,6 +289,7 @@ export function MyOrderDetailView({ order }: Props) {
             })}
           </tbody>
         </table>
+        </div>
 
         <div style={{ marginTop: "1rem", fontSize: "0.8125rem" }}>
           <div

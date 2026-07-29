@@ -66,20 +66,13 @@ export default async function DashboardPage() {
   const badge = STATUS_BADGE[badgeKey];
 
   return (
-    <div style={{ padding: "2rem 2.5rem" }}>
+    <div className="px-4 py-6 sm:px-6 sm:py-8 lg:px-10 lg:py-8">
       {/* Page header */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginBottom: "2rem",
-        }}
-      >
-        <div>
+      <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
           <h1
+            className="text-fluid-page-title break-words"
             style={{
-              fontSize: "1.5rem",
               fontWeight: 700,
               color: "var(--navy)",
               margin: "0 0 0.25rem",
@@ -97,6 +90,7 @@ export default async function DashboardPage() {
         {defaultVehicle && (
           <Link
             href="/vehicles"
+            className="max-w-full self-start truncate sm:self-auto"
             style={{
               display: "flex",
               alignItems: "center",
@@ -120,21 +114,16 @@ export default async function DashboardPage() {
                 flexShrink: 0,
               }}
             />
-            {defaultVehicle.year} {defaultVehicle.makeName} {defaultVehicle.modelName}
-            <span style={{ color: "var(--muted-foreground)" }}>▾</span>
+            <span className="truncate">
+              {defaultVehicle.year} {defaultVehicle.makeName} {defaultVehicle.modelName}
+            </span>
+            <span style={{ color: "var(--muted-foreground)", flexShrink: 0 }}>▾</span>
           </Link>
         )}
       </div>
 
       {/* Top row: Vehicle Health + AI Diagnostics */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "1.5rem",
-          marginBottom: "1.5rem",
-        }}
-      >
+      <div className="mb-6 grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* Vehicle Health Score */}
         <div
           style={{
@@ -175,6 +164,7 @@ export default async function DashboardPage() {
               <div
                 style={{
                   display: "flex",
+                  flexWrap: "wrap",
                   alignItems: "center",
                   gap: "1.5rem",
                   marginBottom: "1.25rem",
@@ -257,8 +247,9 @@ export default async function DashboardPage() {
                   );
                 })()}
 
-                <div>
+                <div style={{ minWidth: "140px", flex: "1 1 140px" }}>
                   <p
+                    className="break-words"
                     style={{
                       fontWeight: 700,
                       color: "var(--navy)",
@@ -270,6 +261,7 @@ export default async function DashboardPage() {
                   </p>
                   {defaultVehicle.trimName && (
                     <p
+                      className="break-words"
                       style={{
                         fontSize: "0.8125rem",
                         color: "var(--muted-foreground)",
@@ -281,6 +273,7 @@ export default async function DashboardPage() {
                   )}
                   {defaultVehicle.plateNumber && (
                     <span
+                      className="overflow-wrap-anywhere"
                       style={{
                         fontSize: "0.75rem",
                         fontWeight: 600,
@@ -494,7 +487,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Bottom row: quick-nav cards */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "1.5rem" }}>
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <QuickCard
           title={t("myVehicles")}
           desc={t("myVehiclesDesc")}

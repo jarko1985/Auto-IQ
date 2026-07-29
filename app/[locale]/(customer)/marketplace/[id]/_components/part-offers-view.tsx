@@ -97,7 +97,7 @@ export function PartOffersView({ part, offers }: Props) {
             <Package size={48} color="#8a92a6" />
           )}
         </div>
-        <div>
+        <div style={{ minWidth: 0, flex: "1 1 220px" }}>
           <div
             style={{
               fontSize: "0.75rem",
@@ -109,8 +109,8 @@ export function PartOffersView({ part, offers }: Props) {
             {part.manufacturerName}
           </div>
           <h1
+            className="text-fluid-page-title break-words"
             style={{
-              fontSize: "1.5rem",
               fontWeight: 700,
               color: "#081a2f",
               margin: "0 0 0.375rem",
@@ -118,7 +118,10 @@ export function PartOffersView({ part, offers }: Props) {
           >
             {part.name}
           </h1>
-          <p style={{ fontSize: "0.8125rem", color: "#5b6472", marginBottom: "0.5rem" }}>
+          <p
+            className="overflow-wrap-anywhere"
+            style={{ fontSize: "0.8125rem", color: "#5b6472", marginBottom: "0.5rem" }}
+          >
             {part.partNumber}
             {part.alternatePartNumbers.length > 0 &&
               ` · Also: ${part.alternatePartNumbers.join(", ")}`}
@@ -150,9 +153,15 @@ export function PartOffersView({ part, offers }: Props) {
           No vendors currently stock this part.
         </p>
       ) : (
-        <div
-          style={{ border: "1px solid var(--border)", borderRadius: "0.75rem", overflow: "hidden" }}
-        >
+        <div style={{ overflowX: "auto" }}>
+          <div
+            style={{
+              border: "1px solid var(--border)",
+              borderRadius: "0.75rem",
+              overflow: "hidden",
+              minWidth: "640px",
+            }}
+          >
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.8125rem" }}>
             <thead>
               <tr style={{ backgroundColor: "#f7fafd", textAlign: "start" }}>
@@ -236,6 +245,7 @@ export function PartOffersView({ part, offers }: Props) {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       )}
     </div>

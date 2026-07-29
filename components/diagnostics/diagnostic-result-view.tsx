@@ -130,14 +130,7 @@ export function DiagnosticResultView({
 
       {/* Two-column layout — wider analysis column left, severity + garages
           right — per the Stitch "Refined Light Theme" reference screen. */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1.7fr 1fr",
-          gap: "1.25rem",
-          alignItems: "start",
-        }}
-      >
+      <div className="grid-analysis-split" style={{ alignItems: "start" }}>
         {/* Left column — main analysis */}
         <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", minWidth: 0 }}>
           {/* Plain-language explanation */}

@@ -16,7 +16,7 @@ export default async function MyBookingDetailPage({ params }: { params: Promise<
   if (!booking) notFound();
 
   return (
-    <div style={{ padding: "2rem 2.5rem", maxWidth: "800px" }}>
+    <div className="px-4 py-6 sm:px-6 sm:py-8 lg:px-10 lg:py-8" style={{ maxWidth: "800px" }}>
       <MyBookingDetailView
         booking={{
           id: booking.id,

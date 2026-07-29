@@ -19,7 +19,11 @@ export default async function CustomerLayout({ children }: { children: ReactNode
     <div style={{ display: "flex", minHeight: "100vh", backgroundColor: "var(--background)" }}>
       <CustomerSidebar />
       <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
-        <PortalTopbar notificationsHref="/dashboard/notifications" />
+        <PortalTopbar
+          notificationsHref="/dashboard/notifications"
+          profileHref="/dashboard/profile"
+          settingsHref="/dashboard/settings"
+        />
         <main style={{ flex: 1, minWidth: 0, overflowY: "auto" }}>{children}</main>
       </div>
     </div>

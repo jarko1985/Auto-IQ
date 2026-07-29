@@ -69,7 +69,7 @@ export function MyRepairOrdersView({ initialRepairOrders }: Props) {
 
   return (
     <div>
-      <div style={{ display: "flex", gap: "0.375rem", marginBottom: "1.5rem" }}>
+      <div style={{ display: "flex", gap: "0.375rem", marginBottom: "1.5rem", overflowX: "auto" }}>
         {TABS.map((t) => (
           <button
             key={t.value}
@@ -84,6 +84,8 @@ export function MyRepairOrdersView({ initialRepairOrders }: Props) {
               fontSize: "0.75rem",
               fontWeight: 600,
               cursor: "pointer",
+              whiteSpace: "nowrap",
+              flexShrink: 0,
             }}
           >
             {t.label}
@@ -115,6 +117,7 @@ export function MyRepairOrdersView({ initialRepairOrders }: Props) {
                 key={ro.id}
                 style={{
                   display: "flex",
+                  flexWrap: "wrap",
                   gap: "1.25rem",
                   border: "1px solid var(--border)",
                   borderRadius: "0.875rem",
@@ -125,8 +128,8 @@ export function MyRepairOrdersView({ initialRepairOrders }: Props) {
                 <div style={{ width: "10rem", height: "7rem", borderRadius: "0.625rem", overflow: "hidden", flexShrink: 0, position: "relative" }}>
                   <Image src={image} alt={ro.vehicleLabel} fill style={{ objectFit: "cover" }} />
                 </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.5rem" }}>
+                <div style={{ flex: "1 1 200px", minWidth: 0 }}>
+                  <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-start", gap: "0.5rem", marginBottom: "0.5rem" }}>
                     <div>
                       <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                         <span style={{ fontSize: "1rem", fontWeight: 700, color: "#081a2f" }}>#{ro.repairOrderNumber}</span>
@@ -154,7 +157,7 @@ export function MyRepairOrdersView({ initialRepairOrders }: Props) {
                       </div>
                     )}
                   </div>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem", fontSize: "0.8125rem", marginBottom: "0.875rem" }}>
+                  <div className="mb-3.5 grid grid-cols-1 gap-3 text-[0.8125rem] sm:grid-cols-2">
                     <div>
                       <div style={{ color: "#8a92a6", fontSize: "0.6875rem", textTransform: "uppercase" }}>Vehicle</div>
                       <div style={{ color: "#081a2f", fontWeight: 600 }}>

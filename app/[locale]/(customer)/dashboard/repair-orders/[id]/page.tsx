@@ -15,7 +15,7 @@ export default async function MyRepairOrderDetailPage({
   const ro = await getMyRepairOrderDetail(session.user.id, id);
 
   return (
-    <div style={{ padding: "2rem 2.5rem" }}>
+    <div className="px-4 py-6 sm:px-6 sm:py-8 lg:px-10 lg:py-8">
       <MyRepairOrderDetailView
         repairOrder={{
           id: ro.id,

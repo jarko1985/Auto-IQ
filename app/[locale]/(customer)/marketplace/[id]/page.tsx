@@ -23,7 +23,7 @@ export default async function MarketplacePartDetailPage({
   const offers = await listOffersForPart(id);
 
   return (
-    <div style={{ padding: "2rem 2.5rem", maxWidth: "1100px" }}>
+    <div className="px-4 py-6 sm:px-6 sm:py-8 lg:px-10 lg:py-8" style={{ maxWidth: "1100px" }}>
       <PartOffersView
         part={{
           id: part.id,

@@ -138,15 +138,19 @@ export function MyBookingDetailView({ booking }: Props) {
       <div
         style={{
           display: "flex",
+          flexWrap: "wrap",
           alignItems: "flex-start",
           justifyContent: "space-between",
           marginBottom: "1.5rem",
           gap: "1rem",
         }}
       >
-        <div>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
-            <h1 style={{ fontSize: "1.5rem", fontWeight: 700, color: "#081a2f", margin: 0 }}>
+        <div style={{ minWidth: 0 }}>
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.625rem" }}>
+            <h1
+              className="text-fluid-page-title break-words"
+              style={{ fontWeight: 700, color: "#081a2f", margin: 0 }}
+            >
               #{booking.bookingNumber}
             </h1>
             <span
@@ -280,12 +284,8 @@ export function MyBookingDetailView({ booking }: Props) {
           Appointment Details
         </h2>
         <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "0.875rem 1.5rem",
-            fontSize: "0.8125rem",
-          }}
+          className="grid grid-cols-1 gap-y-3.5 gap-x-6 sm:grid-cols-2"
+          style={{ fontSize: "0.8125rem" }}
         >
           <div>
             <div style={{ color: "#8a92a6" }}>Vehicle</div>

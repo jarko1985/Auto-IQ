@@ -60,6 +60,22 @@
   --spacing-xl: 32px;
   --spacing-xxl: 48px;
   --spacing-gutter: 24px;
+
+  /* Fluid type scale — clamp() so each level scales smoothly between
+   * mobile and desktop instead of jumping at a breakpoint or ever
+   * overflowing a narrow viewport, while landing on the exact same
+   * value at desktop width that every screen already used before this
+   * (preserves visual identity at desktop, only mobile/tablet change).
+   * Tailwind v4 maps `--text-*` in @theme to `text-*` utilities, so
+   * these are usable as e.g. className="text-fluid-hero". */
+  --text-fluid-hero: clamp(1.75rem, 4vw + 1rem, 3rem);
+  --text-fluid-hero--line-height: 1.15;
+  --text-fluid-page-title: clamp(1.25rem, 1.5vw + 0.9rem, 1.5rem);
+  --text-fluid-page-title--line-height: 1.25;
+  --text-fluid-section-title: clamp(1.0625rem, 1vw + 0.85rem, 1.25rem);
+  --text-fluid-section-title--line-height: 1.3;
+  --text-fluid-card-title: clamp(0.9375rem, 0.5vw + 0.8rem, 1rem);
+  --text-fluid-card-title--line-height: 1.4;
 }
 
 :root {
@@ -155,12 +171,99 @@
   border-color: var(--border);
 }
 
+html {
+  /* Last-resort guard — real fixes are min-width:0 on flex/grid children
+   * and the wrapping rules below, but this ensures a stray long token
+   * (an untranslated string, an unbroken URL) can never force a page-wide
+   * horizontal scrollbar even if some future component misses them. */
+  overflow-x: hidden;
+}
+
 body {
   background-color: var(--background);
   color: var(--foreground);
   font-feature-settings:
     "rlig" 1,
     "calt" 1;
+}
+
+/* ── Responsive typography / overflow safety net ─────────────────────────────
+   Element-selector rules apply everywhere automatically, including pages
+   this pass didn't touch individually — headings can never cause
+   horizontal overflow, long lines wrap at a sane point, and readable line
+   heights survive whatever inline font-size a component sets. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+  word-break: break-word;
+  line-height: 1.25;
+}
+
+p,
+li,
+td,
+th,
+dd,
+dt,
+label,
+span,
+a {
+  overflow-wrap: break-word;
+}
+
+img,
+svg,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+table {
+  max-width: 100%;
+}
+
+/* Opt-in utility for identifier-like content (VINs, plate numbers, order/
+ * invoice/booking numbers, trade license numbers, emails, hashes, URLs) —
+ * Tailwind's own `break-words` still respects word boundaries first and
+ * can leave a single long token unbroken; `anywhere` guarantees it never
+ * overflows its container regardless of length. */
+.overflow-wrap-anywhere {
+  overflow-wrap: anywhere;
+}
+
+/* Shared "main content + fixed-width sidebar" detail-page layout (invoice,
+ * booking, checkout, diagnostic result, repair-order estimate, ...) — one
+ * reusable pattern instead of duplicating a media query per page. Stacks to
+ * a single column below `lg`; set the sidebar's desktop width per instance
+ * with the --sidebar-w custom property (falls back to 320px). */
+.grid-content-sidebar {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+@media (min-width: 1024px) {
+  .grid-content-sidebar {
+    grid-template-columns: minmax(0, 1fr) var(--sidebar-w, 320px);
+  }
+}
+
+/* Same idea, proportional split rather than a fixed-width sidebar (the
+ * diagnostic result view's wider analysis column + narrower severity
+ * column) — kept separate from .grid-content-sidebar since the ratio, not
+ * a pixel width, is what defines this shape. */
+.grid-analysis-split {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+@media (min-width: 1024px) {
+  .grid-analysis-split {
+    grid-template-columns: 1.7fr 1fr;
+  }
 }
 
 /* ── RTL support for Arabic ── */

@@ -29,7 +29,10 @@ export default async function CheckoutPage({ params }: { params: Promise<{ invoi
   ).map((item, index) => ({ id: `${invoiceId}-${index}`, ...item }));
 
   return (
-    <div style={{ padding: "2rem 2.5rem", maxWidth: "1280px", margin: "0 auto" }}>
+    <div
+      className="px-4 py-6 sm:px-6 sm:py-8 lg:px-10 lg:py-8"
+      style={{ maxWidth: "1280px", margin: "0 auto" }}
+    >
       <CheckoutView
         invoice={{
           id: invoice.id,

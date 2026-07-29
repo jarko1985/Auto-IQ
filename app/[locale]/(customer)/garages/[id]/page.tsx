@@ -25,7 +25,7 @@ export default async function GarageProfilePage({ params }: Props) {
   const primaryLocation = garage.organization.garageLocations[0] ?? null;
 
   return (
-    <div style={{ padding: "2rem 2.5rem", maxWidth: "1000px" }}>
+    <div className="px-4 py-6 sm:px-6 sm:py-8 lg:px-10 lg:py-8" style={{ maxWidth: "1000px" }}>
       <GarageProfileView
         garage={{
           id: garage.id,

@@ -61,6 +61,7 @@ enum AuditAction {
   AUTH_PHONE_VERIFIED
   AUTH_SIGNUP_OTP_REQUESTED
   AUTH_ACCOUNT_SUSPENDED
+  AUTH_PROFILE_UPDATED
   DIAG_SESSION_STARTED
   DIAG_SESSION_COMPLETED
   DIAG_SESSION_CANCELLED
@@ -530,6 +531,11 @@ model User {
   // MECHANIC, ...) come from OrganizationMembership -> MembershipRole instead — see
   // resolveSessionRole() in features/auth/service.ts.
   role          RoleName   @default(CUSTOMER)
+  // Interface language preference, set from the Settings page. Independent of
+  // next-intl's URL-segment locale (which drives a given *request*'s rendering) —
+  // this is what background triggers with no request context (e.g. notification
+  // dispatch) read instead. See resolveLocale() in features/notifications/service.ts.
+  locale        String     @default("en")
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
 

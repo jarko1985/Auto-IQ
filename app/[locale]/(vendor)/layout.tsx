@@ -20,7 +20,11 @@ export default async function VendorLayout({ children }: { children: ReactNode }
         organizationStatus={dashboard.organization.status}
       />
       <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
-        <PortalTopbar notificationsHref="/vendor/notifications" />
+        <PortalTopbar
+          notificationsHref="/vendor/notifications"
+          profileHref="/vendor/profile"
+          settingsHref="/vendor/settings"
+        />
         <main style={{ flex: 1, minWidth: 0, overflowY: "auto" }}>{children}</main>
       </div>
     </div>

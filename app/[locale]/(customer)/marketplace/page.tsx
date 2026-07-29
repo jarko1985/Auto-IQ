@@ -15,9 +15,10 @@ export default async function MarketplacePage() {
   ]);
 
   return (
-    <div style={{ padding: "2rem 2.5rem", maxWidth: "1300px" }}>
+    <div className="px-4 py-6 sm:px-6 sm:py-8 lg:px-10" style={{ maxWidth: "1300px" }}>
       <h1
-        style={{ fontSize: "1.5rem", fontWeight: 700, color: "#081a2f", marginBottom: "0.25rem" }}
+        className="text-fluid-page-title break-words"
+        style={{ fontWeight: 700, color: "#081a2f", marginBottom: "0.25rem" }}
       >
         Spare Parts Marketplace
       </h1>

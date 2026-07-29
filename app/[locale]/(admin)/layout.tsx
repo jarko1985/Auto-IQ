@@ -14,7 +14,11 @@ export default async function AdminLayout({ children }: { children: ReactNode })
     <div style={{ display: "flex", minHeight: "100vh", backgroundColor: "var(--background)" }}>
       <AdminSidebar />
       <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
-        <PortalTopbar notificationsHref="/admin/notifications" />
+        <PortalTopbar
+          notificationsHref="/admin/notifications"
+          profileHref="/admin/profile"
+          settingsHref="/admin/settings"
+        />
         <main style={{ flex: 1, minWidth: 0, overflowY: "auto" }}>{children}</main>
       </div>
     </div>

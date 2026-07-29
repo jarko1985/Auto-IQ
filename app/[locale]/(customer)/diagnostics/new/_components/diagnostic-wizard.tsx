@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, type CSSProperties } from "react";
 import Image from "next/image";
 import { useLocale } from "next-intl";
 import { toast } from "sonner";
@@ -235,8 +235,8 @@ function WizardHeader({
       </div>
       <ProgressBar current={step} total={total} />
       <h1
+        className="text-fluid-page-title break-words"
         style={{
-          fontSize: "1.5rem",
           fontWeight: 700,
           color: "#081a2f",
           margin: "0 0 0.375rem",
@@ -774,8 +774,9 @@ export function DiagnosticWizard({ vehicles, categories, resumeSession }: Props)
             STEP 01 / 0{TOTAL_STEPS}
           </div>
           <h1
+            className="break-words"
             style={{
-              fontSize: "2rem",
+              fontSize: "clamp(1.375rem, 4vw, 2rem)",
               fontWeight: 700,
               color: "#081a2f",
               margin: "0 0 0.5rem",
@@ -790,14 +791,7 @@ export function DiagnosticWizard({ vehicles, categories, resumeSession }: Props)
         </div>
 
         {/* Vehicle grid */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: "1rem",
-            marginBottom: "2rem",
-          }}
-        >
+        <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {vehicles.map((v) => {
             const health = mockHealth(0); // no mileage on card
             const selected = vehicleId === v.id;
@@ -1001,14 +995,7 @@ export function DiagnosticWizard({ vehicles, categories, resumeSession }: Props)
         />
 
         {/* Symptom category grid */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: "0.875rem",
-            marginBottom: "1.5rem",
-          }}
-        >
+        <div className="mb-6 grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
           {categories.map((cat) => {
             const Icon = CATEGORY_ICON[cat.code] ?? Settings;
             const color = CATEGORY_COLOR[cat.code] ?? "#44474d";
@@ -1174,7 +1161,7 @@ export function DiagnosticWizard({ vehicles, categories, resumeSession }: Props)
           subtitle="Use your own words to describe what's wrong with your vehicle."
         />
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: "1.5rem" }}>
+        <div className="grid-content-sidebar" style={{ "--sidebar-w": "340px" } as CSSProperties}>
           {/* Left: form */}
           <div>
             <h2
@@ -1747,7 +1734,7 @@ export function DiagnosticWizard({ vehicles, categories, resumeSession }: Props)
             </div>
           </div>
         ) : (
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 300px", gap: "1.5rem" }}>
+          <div className="grid-content-sidebar" style={{ "--sidebar-w": "300px" } as CSSProperties}>
             {/* Left: question */}
             <div>
               {/* AutoIQ Engine badge */}
@@ -1795,14 +1782,7 @@ export function DiagnosticWizard({ vehicles, categories, resumeSession }: Props)
 
               {/* Answer options */}
               {question?.type === "YES_NO" && (
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr 1fr 1fr",
-                    gap: "0.75rem",
-                    marginBottom: "1.5rem",
-                  }}
-                >
+                <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
                   {[
                     { value: "yes", label: "Yes, definitely", icon: <Check size={20} /> },
                     { value: "no", label: "No, not at all", icon: <X size={20} /> },
@@ -2135,8 +2115,9 @@ export function DiagnosticWizard({ vehicles, categories, resumeSession }: Props)
         </div>
 
         <h1
+          className="break-words"
           style={{
-            fontSize: "2rem",
+            fontSize: "clamp(1.375rem, 4vw, 2rem)",
             fontWeight: 700,
             color: "#081a2f",
             margin: "0 0 0.5rem",
@@ -2241,7 +2222,7 @@ export function DiagnosticWizard({ vehicles, categories, resumeSession }: Props)
   // ── Main render ─────────────────────────────────────────────────────────────
 
   return (
-    <div style={{ padding: "2rem 2.5rem", maxWidth: "1000px" }}>
+    <div className="px-4 py-6 sm:px-6 sm:py-8 lg:px-10 lg:py-8" style={{ maxWidth: "1000px" }}>
       <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
       {step === 1 && renderStep1()}
       {step === 2 && renderStep2()}

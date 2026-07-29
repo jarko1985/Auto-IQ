@@ -33,20 +33,13 @@ export default async function VehiclesPage() {
   const vehicles = await listUserVehicles(session.user.id);
 
   return (
-    <div style={{ padding: "2rem 2.5rem" }}>
+    <div className="px-4 py-6 sm:px-6 sm:py-8 lg:px-10 lg:py-8">
       {/* Page header */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginBottom: "2rem",
-        }}
-      >
-        <div>
+      <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
           <h1
+            className="text-fluid-page-title break-words"
             style={{
-              fontSize: "1.5rem",
               fontWeight: 700,
               color: "var(--navy)",
               margin: "0 0 0.25rem",
@@ -61,6 +54,7 @@ export default async function VehiclesPage() {
         </div>
         <Link
           href="/vehicles/new"
+          className="self-start sm:self-auto"
           style={{
             display: "inline-block",
             padding: "0.5rem 1.25rem",

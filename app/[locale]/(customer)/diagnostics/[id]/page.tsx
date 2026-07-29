@@ -95,7 +95,7 @@ export default async function DiagnosticSessionPage({ params }: Props) {
   const isComplete = diagSession.status === "COMPLETE" && diagSession.result != null;
 
   return (
-    <div style={{ padding: "2rem 2.5rem", maxWidth: "1440px" }}>
+    <div className="px-4 py-6 sm:px-6 sm:py-8 lg:px-10 lg:py-8" style={{ maxWidth: "1440px" }}>
       {/* Back link */}
       <Link
         href="/diagnostics"
@@ -126,8 +126,8 @@ export default async function DiagnosticSessionPage({ params }: Props) {
       >
         <div>
           <h1
+            className="text-fluid-page-title break-words"
             style={{
-              fontSize: "1.5rem",
               fontWeight: 700,
               color: "#081a2f",
               margin: "0 0 0.375rem",
@@ -200,15 +200,11 @@ export default async function DiagnosticSessionPage({ params }: Props) {
         {/* Context strip — description / vehicle / session details side by side,
             using the full page width instead of a cramped single column. */}
         <div
-          style={{
-            display: "grid",
-            gridTemplateColumns:
-              diagSession.description || diagSession.attachments.length > 0
-                ? "2fr 1fr 1fr"
-                : "1fr 1fr",
-            gap: "1.25rem",
-            alignItems: "stretch",
-          }}
+          className={`grid grid-cols-1 items-stretch gap-5 ${
+            diagSession.description || diagSession.attachments.length > 0
+              ? "lg:grid-cols-[2fr_1fr_1fr]"
+              : "lg:grid-cols-2"
+          }`}
         >
           {(diagSession.description || diagSession.attachments.length > 0) && (
             <div style={{ ...cardStyle, display: "flex", flexDirection: "column" }}>

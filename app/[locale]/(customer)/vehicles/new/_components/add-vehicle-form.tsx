@@ -107,14 +107,7 @@ export function AddVehicleForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       {/* Make / Model / Trim */}
-      <div
-        style={{
-          display: "grid",
-          gap: "0 1rem",
-          gridTemplateColumns: "1fr 1fr",
-          marginBottom: "1.25rem",
-        }}
-      >
+      <div className="mb-5 grid grid-cols-1 gap-x-4 sm:grid-cols-2">
         <div>
           <label style={labelStyle}>{t("make")} *</label>
           <input style={fieldStyle} placeholder="e.g. Toyota" {...register("makeName")} />
@@ -127,14 +120,7 @@ export function AddVehicleForm() {
         </div>
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gap: "0 1rem",
-          gridTemplateColumns: "1fr 1fr",
-          marginBottom: "1.25rem",
-        }}
-      >
+      <div className="mb-5 grid grid-cols-1 gap-x-4 sm:grid-cols-2">
         <div>
           <label style={labelStyle}>{t("trim")}</label>
           <input style={fieldStyle} placeholder="e.g. SE, XLE" {...register("trimName")} />
@@ -155,14 +141,7 @@ export function AddVehicleForm() {
       </div>
 
       {/* Vehicle Type / Fuel / Transmission */}
-      <div
-        style={{
-          display: "grid",
-          gap: "0 1rem",
-          gridTemplateColumns: "1fr 1fr 1fr",
-          marginBottom: "1.25rem",
-        }}
-      >
+      <div className="mb-5 grid grid-cols-1 gap-x-4 sm:grid-cols-3">
         <div>
           <label style={labelStyle}>{t("vehicleType")} *</label>
           <select style={fieldStyle} {...register("vehicleType")}>
@@ -202,14 +181,7 @@ export function AddVehicleForm() {
       </div>
 
       {/* Mileage / Color */}
-      <div
-        style={{
-          display: "grid",
-          gap: "0 1rem",
-          gridTemplateColumns: "1fr 1fr",
-          marginBottom: "1.25rem",
-        }}
-      >
+      <div className="mb-5 grid grid-cols-1 gap-x-4 sm:grid-cols-2">
         <div>
           <label style={labelStyle}>{t("mileageKm")} *</label>
           <input
@@ -228,14 +200,7 @@ export function AddVehicleForm() {
       </div>
 
       {/* Plate / VIN */}
-      <div
-        style={{
-          display: "grid",
-          gap: "0 1rem",
-          gridTemplateColumns: "1fr 1fr",
-          marginBottom: "1.25rem",
-        }}
-      >
+      <div className="mb-5 grid grid-cols-1 gap-x-4 sm:grid-cols-2">
         <div>
           <label style={labelStyle}>{t("plateNumber")}</label>
           <input style={fieldStyle} placeholder="e.g. A 12345" {...register("plateNumber")} />

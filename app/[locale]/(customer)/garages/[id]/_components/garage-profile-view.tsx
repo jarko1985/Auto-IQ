@@ -79,9 +79,12 @@ export function GarageProfileView({ garage, primaryLocationId }: Props) {
           flexWrap: "wrap",
         }}
       >
-        <div>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-            <h1 style={{ fontSize: "1.5rem", fontWeight: 700, color: "#081a2f", margin: 0 }}>
+        <div style={{ minWidth: 0 }}>
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.5rem" }}>
+            <h1
+              className="text-fluid-page-title break-words"
+              style={{ fontWeight: 700, color: "#081a2f", margin: 0 }}
+            >
               {garage.businessName}
             </h1>
             <span
@@ -191,12 +194,12 @@ export function GarageProfileView({ garage, primaryLocationId }: Props) {
         <span style={{ display: "flex", alignItems: "center", gap: "0.375rem" }}>
           <Phone size={13} /> {garage.contactPhone}
         </span>
-        <span style={{ display: "flex", alignItems: "center", gap: "0.375rem" }}>
+        <span className="overflow-wrap-anywhere" style={{ display: "flex", alignItems: "center", gap: "0.375rem" }}>
           <Mail size={13} /> {garage.contactEmail}
         </span>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem" }}>
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         <div
           style={{ border: "1px solid var(--border)", borderRadius: "0.75rem", padding: "1.25rem" }}
         >

@@ -20,7 +20,11 @@ export default async function GarageLayout({ children }: { children: ReactNode }
         organizationStatus={dashboard.organization.status}
       />
       <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
-        <PortalTopbar notificationsHref="/garage/notifications" />
+        <PortalTopbar
+          notificationsHref="/garage/notifications"
+          profileHref="/garage/profile"
+          settingsHref="/garage/settings"
+        />
         <main style={{ flex: 1, minWidth: 0, overflowY: "auto" }}>{children}</main>
       </div>
     </div>

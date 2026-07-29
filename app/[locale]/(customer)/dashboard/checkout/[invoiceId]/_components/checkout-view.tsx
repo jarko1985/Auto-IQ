@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { loadStripe } from "@stripe/stripe-js";
@@ -92,7 +92,10 @@ function OrderSummaryCard({ invoice }: { invoice: InvoiceForCheckout }) {
           {invoice.invoiceNumber}
         </span>
       </div>
-      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.8125rem" }}>
+      <div style={{ overflowX: "auto" }}>
+      <table
+        style={{ width: "100%", minWidth: "420px", borderCollapse: "collapse", fontSize: "0.8125rem" }}
+      >
         <thead>
           <tr style={{ textAlign: "start" }}>
             {["Service / Part Description", "Qty", `Price (${invoice.currency})`].map((h) => (
@@ -124,6 +127,7 @@ function OrderSummaryCard({ invoice }: { invoice: InvoiceForCheckout }) {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 }
@@ -417,17 +421,13 @@ export function CheckoutView({ invoice }: { invoice: InvoiceForCheckout }) {
   return (
     <div>
       <BackLink invoice={invoice} />
-      <h1 style={{ fontSize: "1.5rem", fontWeight: 700, color: "#081a2f", margin: "0 0 1.5rem" }}>
+      <h1 className="text-fluid-page-title" style={{ fontWeight: 700, color: "#081a2f", margin: "0 0 1.5rem" }}>
         Checkout
       </h1>
 
       <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "minmax(0,1fr) 22rem",
-          gap: "1.5rem",
-          alignItems: "start",
-        }}
+        className="grid-content-sidebar"
+        style={{ alignItems: "start", "--sidebar-w": "22rem" } as CSSProperties}
       >
         <div>
           <OrderSummaryCard invoice={invoice} />

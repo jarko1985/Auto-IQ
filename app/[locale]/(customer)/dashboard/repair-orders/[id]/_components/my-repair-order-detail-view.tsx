@@ -127,13 +127,18 @@ export function MyRepairOrderDetailView({ repairOrder }: Props) {
       <div
         style={{
           display: "flex",
+          flexWrap: "wrap",
           justifyContent: "space-between",
           alignItems: "flex-start",
           marginBottom: "1.5rem",
+          gap: "1rem",
         }}
       >
-        <div>
-          <h1 style={{ fontSize: "1.5rem", fontWeight: 700, color: "#081a2f", margin: 0 }}>
+        <div style={{ minWidth: 0 }}>
+          <h1
+            className="text-fluid-page-title break-words"
+            style={{ fontWeight: 700, color: "#081a2f", margin: 0 }}
+          >
             Repair Order #{ro.repairOrderNumber}
           </h1>
           <p style={{ fontSize: "0.8125rem", color: "#5b6472", marginTop: "0.25rem" }}>
@@ -256,11 +261,14 @@ export function MyRepairOrderDetailView({ repairOrder }: Props) {
                 Service Estimate
               </h3>
             </div>
-            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.8125rem" }}>
+            <div style={{ overflowX: "auto" }}>
+            <table
+              style={{ width: "100%", minWidth: "360px", borderCollapse: "collapse", fontSize: "0.8125rem" }}
+            >
               <tbody>
                 {ro.jobs.map((j) => (
                   <tr key={j.id} style={{ borderBottom: "1px solid var(--border)" }}>
-                    <td style={{ padding: "0.625rem 1.25rem", color: "#081a2f" }}>
+                    <td className="break-words" style={{ padding: "0.625rem 1.25rem", color: "#081a2f" }}>
                       {j.description}
                     </td>
                     <td
@@ -277,7 +285,9 @@ export function MyRepairOrderDetailView({ repairOrder }: Props) {
                 ))}
                 {ro.parts.map((p) => (
                   <tr key={p.id} style={{ borderBottom: "1px solid var(--border)" }}>
-                    <td style={{ padding: "0.625rem 1.25rem", color: "#081a2f" }}>{p.partName}</td>
+                    <td className="break-words" style={{ padding: "0.625rem 1.25rem", color: "#081a2f" }}>
+                      {p.partName}
+                    </td>
                     <td
                       style={{
                         padding: "0.625rem 1.25rem",
@@ -292,6 +302,7 @@ export function MyRepairOrderDetailView({ repairOrder }: Props) {
                 ))}
               </tbody>
             </table>
+            </div>
             <div style={{ padding: "1.25rem", display: "flex", justifyContent: "flex-end" }}>
               <div style={{ width: "16rem" }}>
                 <div

@@ -11,7 +11,7 @@ import type {
 export async function getUserContact(userId: string) {
   return db.user.findUnique({
     where: { id: userId },
-    select: { id: true, email: true, phone: true, name: true },
+    select: { id: true, email: true, phone: true, name: true, locale: true },
   });
 }
 

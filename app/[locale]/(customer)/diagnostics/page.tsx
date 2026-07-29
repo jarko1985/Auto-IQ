@@ -49,26 +49,18 @@ export default async function DiagnosticsPage() {
   });
 
   return (
-    <div style={{ padding: "2rem 2.5rem", maxWidth: "900px" }}>
+    <div className="px-4 py-6 sm:px-6 sm:py-8 lg:px-10" style={{ maxWidth: "900px" }}>
       {/* Header */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginBottom: "2rem",
-        }}
-      >
-        <div>
-          <h1
-            style={{ fontSize: "1.5rem", fontWeight: 700, color: "#081a2f", margin: "0 0 0.25rem" }}
-          >
+      <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="text-fluid-page-title break-words" style={{ fontWeight: 700, color: "#081a2f", margin: "0 0 0.25rem" }}>
             {t("title")}
           </h1>
           <p style={{ fontSize: "0.9375rem", color: "#44474d", margin: 0 }}>{t("subtitle")}</p>
         </div>
         <Link
           href="/diagnostics/new"
+          className="self-start sm:self-auto"
           style={{
             display: "inline-flex",
             alignItems: "center",
@@ -180,12 +172,16 @@ export default async function DiagnosticsPage() {
                   <div
                     style={{
                       display: "flex",
+                      flexWrap: "wrap",
                       alignItems: "center",
                       gap: "0.5rem",
                       marginBottom: "0.25rem",
                     }}
                   >
-                    <span style={{ fontSize: "0.9375rem", fontWeight: 600, color: "#081a2f" }}>
+                    <span
+                      className="break-words"
+                      style={{ fontSize: "0.9375rem", fontWeight: 600, color: "#081a2f" }}
+                    >
                       {s.vehicle.year} {s.vehicle.makeName} {s.vehicle.modelName}
                     </span>
                     <span

@@ -5,18 +5,22 @@ import { getSmsProvider } from "@/lib/sms";
 import { logger } from "@/lib/observability/logger";
 import { NotFoundError } from "@/lib/errors";
 import { EVENT_METADATA } from "./defaults";
-import { renderNotificationContent, type NotificationEventPayload } from "./templates";
+import {
+  renderNotificationContent,
+  type NotificationEventPayload,
+  type NotificationLocale,
+} from "./templates";
 import type { ListNotificationsInput, UpdatePreferencesInput } from "./schemas";
 import * as repo from "./repository";
 
 const MAX_DELIVERY_ATTEMPTS = 2;
 
-/** No per-user locale is stored anywhere yet (User has no `locale` column —
- * next-intl's locale lives only in the URL segment, which background
- * triggers like a webhook or a cron-less status change don't have access
- * to). Always renders English until that gap is closed — see Sprint 19. */
-function resolveLocale(): "en" {
-  return "en";
+/** User.locale (set from the Settings page — see features/account/) is the
+ * per-user language preference background triggers (a webhook, a status
+ * change) can read even with no active request/URL-segment locale in hand.
+ * Falls back to "en" for any stored value outside the supported set. */
+function resolveLocale(userLocale: string | null | undefined): NotificationLocale {
+  return userLocale === "ar" ? "ar" : "en";
 }
 
 function resolveChannels(eventType: NotificationEventType, pref: { emailEnabled: boolean; smsEnabled: boolean; inAppEnabled: boolean } | null) {
@@ -91,7 +95,7 @@ async function dispatch(userId: string, payload: NotificationEventPayload, dedup
   const user = await repo.getUserContact(userId);
   if (!user) return; // recipient no longer exists
 
-  const locale = resolveLocale();
+  const locale = resolveLocale(user.locale);
   const content = renderNotificationContent(payload, locale);
   const pref = await repo.getPreference(userId, payload.eventType);
   const channels = resolveChannels(payload.eventType, pref);

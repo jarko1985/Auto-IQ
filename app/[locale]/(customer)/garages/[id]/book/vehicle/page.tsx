@@ -33,9 +33,9 @@ export default async function BookSelectVehiclePage({ params, searchParams }: Pr
   if (vehicles.length === 0) redirect("/vehicles/new" as never);
 
   return (
-    <div style={{ padding: "2rem 2.5rem", maxWidth: "900px" }}>
+    <div className="px-4 py-6 sm:px-6 sm:py-8 lg:px-10 lg:py-8" style={{ maxWidth: "900px" }}>
       <StepProgress step={1} />
-      <h1 style={{ fontSize: "1.5rem", fontWeight: 700, color: "#081a2f", margin: "0 0 0.375rem" }}>
+      <h1 className="text-fluid-page-title break-words" style={{ fontWeight: 700, color: "#081a2f", margin: "0 0 0.375rem" }}>
         Book an Appointment at {garage.businessName}
       </h1>
       <p style={{ fontSize: "0.9375rem", color: "#5b6472", marginBottom: "1.75rem" }}>

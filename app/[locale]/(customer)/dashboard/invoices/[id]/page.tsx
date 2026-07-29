@@ -31,7 +31,10 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
     : 0;
 
   return (
-    <div style={{ padding: "2rem 2.5rem", maxWidth: "72rem", margin: "0 auto" }}>
+    <div
+      className="px-4 py-6 sm:px-6 sm:py-8 lg:px-10 lg:py-8"
+      style={{ maxWidth: "72rem", margin: "0 auto" }}
+    >
       <InvoiceDetailView
         invoice={{
           id: invoice.id,

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import {
   CheckCircle2,
   Download,
@@ -114,7 +115,10 @@ export function InvoiceDetailView({ invoice }: { invoice: InvoiceDetail }) {
                 marginBottom: "0.375rem",
               }}
             >
-              <h1 style={{ fontSize: "1.375rem", fontWeight: 700, color: "#081a2f", margin: 0 }}>
+              <h1
+                className="break-words"
+                style={{ fontSize: "1.375rem", fontWeight: 700, color: "#081a2f", margin: 0 }}
+              >
                 Invoice #{invoice.invoiceNumber}
               </h1>
               <span
@@ -177,14 +181,7 @@ export function InvoiceDetailView({ invoice }: { invoice: InvoiceDetail }) {
         </div>
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "1.25rem",
-          marginBottom: "1.25rem",
-        }}
-      >
+      <div className="mb-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
         <div style={{ ...card, padding: "1.25rem" }}>
           <h3
             style={{
@@ -266,7 +263,10 @@ export function InvoiceDetailView({ invoice }: { invoice: InvoiceDetail }) {
             Service Items
           </h3>
         </div>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.8125rem" }}>
+        <div style={{ overflowX: "auto" }}>
+        <table
+          style={{ width: "100%", minWidth: "480px", borderCollapse: "collapse", fontSize: "0.8125rem" }}
+        >
           <thead>
             <tr style={{ textAlign: "start" }}>
               {[
@@ -306,15 +306,11 @@ export function InvoiceDetailView({ invoice }: { invoice: InvoiceDetail }) {
             ))}
           </tbody>
         </table>
+        </div>
 
         <div
-          style={{
-            padding: "1.25rem",
-            display: "grid",
-            gridTemplateColumns: "1fr 18rem",
-            gap: "1.5rem",
-            alignItems: "start",
-          }}
+          className="grid-content-sidebar"
+          style={{ padding: "1.25rem", alignItems: "start", "--sidebar-w": "18rem" } as CSSProperties}
         >
           <div
             style={{
@@ -432,13 +428,8 @@ export function InvoiceDetailView({ invoice }: { invoice: InvoiceDetail }) {
       invoice.status === "PARTIALLY_REFUNDED" ||
       invoice.status === "REFUNDED" ? (
         <div
-          style={{
-            ...card,
-            padding: "1.25rem",
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: "1.25rem",
-          }}
+          className="grid grid-cols-1 gap-5 sm:grid-cols-3"
+          style={{ ...card, padding: "1.25rem" }}
         >
           <div>
             <div

@@ -23,7 +23,7 @@ export default async function AdminPartDetailPage({ params }: { params: Promise<
   if (!part) notFound();
 
   return (
-    <div style={{ padding: "2rem 2.5rem", maxWidth: "1100px" }}>
+    <div className="px-4 py-6 sm:px-10 sm:py-8" style={{ maxWidth: "1100px" }}>
       <AdminPartDetailView
         part={{
           id: part.id,

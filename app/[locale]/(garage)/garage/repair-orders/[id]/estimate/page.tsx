@@ -14,7 +14,7 @@ export default async function EstimateBuilderPage({ params }: { params: Promise<
   ]);
 
   return (
-    <div style={{ padding: "2rem 2.5rem" }}>
+    <div className="px-4 py-6 sm:px-10 sm:py-8">
       <EstimateBuilderView
         repairOrder={{
           id: ro.id,
@@ -46,7 +46,10 @@ export default async function EstimateBuilderPage({ params }: { params: Promise<
           totalMinorUnits: ro.totalMinorUnits,
           currency: ro.currency,
         }}
-        mechanics={mechanics.map((m) => ({ membershipId: m.id, name: m.user.name ?? m.user.email }))}
+        mechanics={mechanics.map((m) => ({
+          membershipId: m.id,
+          name: m.user.name ?? m.user.email,
+        }))}
       />
     </div>
   );

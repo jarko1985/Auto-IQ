@@ -10,6 +10,7 @@ import {
   emirateValues,
   type CreateVendorLocationInput,
 } from "@/features/vendors/schemas";
+import { SelectChevron } from "@/components/forms/field-styles";
 
 interface VendorLocation {
   id: string;
@@ -47,6 +48,14 @@ const fieldStyle: React.CSSProperties = {
   color: "var(--foreground)",
   outline: "none",
   boxSizing: "border-box",
+};
+
+const selectStyle: React.CSSProperties = {
+  ...fieldStyle,
+  paddingInlineEnd: "1.75rem",
+  appearance: "none",
+  WebkitAppearance: "none",
+  MozAppearance: "none",
 };
 
 const labelStyle: React.CSSProperties = {
@@ -154,12 +163,8 @@ export function VendorLocationsView({ initialLocations, canManage }: Props) {
           }}
         >
           <div
-            style={{
-              display: "grid",
-              gap: "0 1rem",
-              gridTemplateColumns: "1fr 1fr",
-              marginBottom: "1rem",
-            }}
+            className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2"
+            style={{ marginBottom: "1rem" }}
           >
             <div>
               <label style={labelStyle}>Location Name *</label>
@@ -170,14 +175,17 @@ export function VendorLocationsView({ initialLocations, canManage }: Props) {
             </div>
             <div>
               <label style={labelStyle}>Emirate *</label>
-              <select style={fieldStyle} {...register("emirate")}>
-                <option value="">Select emirate</option>
-                {emirateValues.map((v) => (
-                  <option key={v} value={v}>
-                    {EMIRATE_LABELS[v]}
-                  </option>
-                ))}
-              </select>
+              <div style={{ position: "relative" }}>
+                <select style={selectStyle} {...register("emirate")}>
+                  <option value="">Select emirate</option>
+                  {emirateValues.map((v) => (
+                    <option key={v} value={v}>
+                      {EMIRATE_LABELS[v]}
+                    </option>
+                  ))}
+                </select>
+                <SelectChevron size={14} insetInlineEnd="0.625rem" />
+              </div>
               {errors.emirate && (
                 <p style={{ fontSize: "0.75rem", color: "#dc2626" }}>{errors.emirate.message}</p>
               )}
@@ -195,12 +203,8 @@ export function VendorLocationsView({ initialLocations, canManage }: Props) {
             )}
           </div>
           <div
-            style={{
-              display: "grid",
-              gap: "0 1rem",
-              gridTemplateColumns: "1fr 1fr",
-              marginBottom: "1rem",
-            }}
+            className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2"
+            style={{ marginBottom: "1rem" }}
           >
             <div>
               <label style={labelStyle}>Phone</label>

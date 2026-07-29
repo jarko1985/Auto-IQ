@@ -20,7 +20,7 @@ export default async function VendorOrderDetailPage({
   if (!order) notFound();
 
   return (
-    <div style={{ padding: "2rem 2.5rem", maxWidth: "1000px" }}>
+    <div className="px-4 py-6 sm:px-10 sm:py-8" style={{ maxWidth: "1000px" }}>
       <VendorOrderDetailView
         order={{
           id: order.id,

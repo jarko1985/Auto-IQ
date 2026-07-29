@@ -5,6 +5,7 @@ import { useRouter } from "@/i18n/routing";
 import { toast } from "sonner";
 import { Search } from "lucide-react";
 import { InlineSpinner } from "@/components/ui/inline-spinner";
+import { fieldFocusClass, SelectChevron } from "@/components/forms/field-styles";
 
 interface PartOption {
   id: string;
@@ -20,14 +21,23 @@ interface Props {
 
 const fieldStyle: React.CSSProperties = {
   width: "100%",
-  padding: "0.5rem 0.75rem",
+  padding: "0.625rem 0.75rem",
   border: "1px solid var(--border)",
   borderRadius: "0.5rem",
-  fontSize: "0.8125rem",
+  // 16px prevents iOS Safari from auto-zooming the viewport on focus.
+  fontSize: "1rem",
   backgroundColor: "transparent",
   color: "var(--foreground)",
   outline: "none",
   boxSizing: "border-box",
+};
+
+const selectStyle: React.CSSProperties = {
+  ...fieldStyle,
+  paddingInlineEnd: "2rem",
+  appearance: "none",
+  WebkitAppearance: "none",
+  MozAppearance: "none",
 };
 
 const labelStyle: React.CSSProperties = {
@@ -167,10 +177,16 @@ export function AddInventoryItemForm({ locations }: Props) {
             ) : (
               <Search
                 size={14}
-                style={{ position: "absolute", insetInlineStart: "0.75rem", top: "0.625rem", color: "#8a92a6" }}
+                style={{
+                  position: "absolute",
+                  insetInlineStart: "0.75rem",
+                  top: "0.625rem",
+                  color: "#8a92a6",
+                }}
               />
             )}
             <input
+              className={fieldFocusClass}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="e.g. NGK-7092 or Iridium Spark Plugs"
@@ -232,34 +248,36 @@ export function AddInventoryItemForm({ locations }: Props) {
 
       <div style={{ marginBottom: "1rem" }}>
         <label style={labelStyle}>Storage Location *</label>
-        <select
-          value={locationId}
-          onChange={(e) => setLocationId(e.target.value)}
-          style={fieldStyle}
-        >
-          {locations.length === 0 && <option value="">No locations — add one first</option>}
-          {locations.map((l) => (
-            <option key={l.id} value={l.id}>
-              {l.name}
-            </option>
-          ))}
-        </select>
+        <div style={{ position: "relative" }}>
+          <select
+            className={fieldFocusClass}
+            value={locationId}
+            onChange={(e) => setLocationId(e.target.value)}
+            style={selectStyle}
+          >
+            {locations.length === 0 && <option value="">No locations — add one first</option>}
+            {locations.map((l) => (
+              <option key={l.id} value={l.id}>
+                {l.name}
+              </option>
+            ))}
+          </select>
+          <SelectChevron />
+        </div>
       </div>
 
       <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "0 1rem",
-          marginBottom: "1rem",
-        }}
+        className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2"
+        style={{ marginBottom: "1rem" }}
       >
         <div>
           <label style={labelStyle}>Price (AED) *</label>
           <input
+            className={fieldFocusClass}
             type="number"
             step="0.01"
             min="0"
+            inputMode="decimal"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
             style={fieldStyle}
@@ -268,8 +286,10 @@ export function AddInventoryItemForm({ locations }: Props) {
         <div>
           <label style={labelStyle}>Initial Quantity</label>
           <input
+            className={fieldFocusClass}
             type="number"
             min="0"
+            inputMode="numeric"
             value={qtyAvailable}
             onChange={(e) => setQtyAvailable(e.target.value)}
             style={fieldStyle}
@@ -278,18 +298,16 @@ export function AddInventoryItemForm({ locations }: Props) {
       </div>
 
       <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "0 1rem",
-          marginBottom: "1.25rem",
-        }}
+        className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2"
+        style={{ marginBottom: "1.25rem" }}
       >
         <div>
           <label style={labelStyle}>Reorder Threshold</label>
           <input
+            className={fieldFocusClass}
             type="number"
             min="0"
+            inputMode="numeric"
             value={reorderThreshold}
             onChange={(e) => setReorderThreshold(e.target.value)}
             style={fieldStyle}
@@ -298,8 +316,10 @@ export function AddInventoryItemForm({ locations }: Props) {
         <div>
           <label style={labelStyle}>Damaged/Defective Units</label>
           <input
+            className={fieldFocusClass}
             type="number"
             min="0"
+            inputMode="numeric"
             value={qtyDamaged}
             onChange={(e) => setQtyDamaged(e.target.value)}
             style={fieldStyle}

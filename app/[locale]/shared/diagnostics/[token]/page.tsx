@@ -76,7 +76,7 @@ export default async function SharedDiagnosticPage({ params }: Props) {
         <DownloadPdfButton />
       </header>
 
-      <div style={{ padding: "2rem 1.5rem", maxWidth: "1400px", margin: "0 auto" }}>
+      <div className="px-4 py-6 sm:px-6 sm:py-8" style={{ maxWidth: "1400px", margin: "0 auto" }}>
         <div
           className="no-print"
           style={{

@@ -1203,7 +1203,8 @@ export function DiagnosticWizard({ vehicles, categories, resumeSession }: Props)
               {[
                 {
                   key: "voice",
-                  icon: voiceState === "starting" ? Loader2 : voiceState === "listening" ? MicOff : Mic,
+                  icon:
+                    voiceState === "starting" ? Loader2 : voiceState === "listening" ? MicOff : Mic,
                   spin: voiceState === "starting",
                   label:
                     voiceState === "starting"
@@ -1241,30 +1242,35 @@ export function DiagnosticWizard({ vehicles, categories, resumeSession }: Props)
                   danger: false,
                   title: undefined,
                 },
-              ].map(({ key, icon: Icon, spin, label, onClick, disabled, active, danger, title }) => (
-                <button
-                  key={key}
-                  type="button"
-                  onClick={onClick}
-                  disabled={disabled}
-                  title={title}
-                  aria-pressed={active}
-                  style={{
-                    ...btnSecondary,
-                    fontSize: "0.875rem",
-                    padding: "0.5rem 0.875rem",
-                    ...(disabled ? { opacity: 0.45, cursor: "not-allowed" } : {}),
-                    ...(active
-                      ? danger
-                        ? { backgroundColor: "#fee2e2", borderColor: "#dc2626", color: "#dc2626" }
-                        : { backgroundColor: "#e0f7fa", borderColor: "#00b8d9", color: "#0891b2" }
-                      : {}),
-                  }}
-                >
-                  <Icon size={14} style={spin ? { animation: "spin 1s linear infinite" } : undefined} />{" "}
-                  {label}
-                </button>
-              ))}
+              ].map(
+                ({ key, icon: Icon, spin, label, onClick, disabled, active, danger, title }) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={onClick}
+                    disabled={disabled}
+                    title={title}
+                    aria-pressed={active}
+                    style={{
+                      ...btnSecondary,
+                      fontSize: "0.875rem",
+                      padding: "0.5rem 0.875rem",
+                      ...(disabled ? { opacity: 0.45, cursor: "not-allowed" } : {}),
+                      ...(active
+                        ? danger
+                          ? { backgroundColor: "#fee2e2", borderColor: "#dc2626", color: "#dc2626" }
+                          : { backgroundColor: "#e0f7fa", borderColor: "#00b8d9", color: "#0891b2" }
+                        : {}),
+                    }}
+                  >
+                    <Icon
+                      size={14}
+                      style={spin ? { animation: "spin 1s linear infinite" } : undefined}
+                    />{" "}
+                    {label}
+                  </button>
+                ),
+              )}
             </div>
 
             {voiceState !== "idle" && (
@@ -1878,7 +1884,6 @@ export function DiagnosticWizard({ vehicles, categories, resumeSession }: Props)
                 />
               )}
 
-
               {/* Progress footer */}
               <div
                 style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}
@@ -2143,10 +2148,10 @@ export function DiagnosticWizard({ vehicles, categories, resumeSession }: Props)
 
         {/* Processing card */}
         <div
+          className="p-3 sm:p-8"
           style={{
             maxWidth: "520px",
             margin: "0 auto 2rem",
-            padding: "2rem",
             backgroundColor: "#081a2f",
             borderRadius: "1.25rem",
             textAlign: "start",

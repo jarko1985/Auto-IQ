@@ -12,6 +12,17 @@ import {
   fuelTypeValues,
   transmissionValues,
 } from "@/features/vehicles/schemas";
+import {
+  fieldStyle,
+  fieldFocusClass,
+  selectStyle,
+  selectWrapperStyle,
+  SelectChevron,
+  labelStyle,
+  requiredStyle,
+  errorStyle,
+  sectionHeadingStyle,
+} from "@/components/forms/field-styles";
 
 const fuelLabels: Record<string, string> = {
   PETROL: "Petrol",
@@ -42,32 +53,6 @@ const typeLabels: Record<string, string> = {
 
 const CURRENT_YEAR = new Date().getFullYear();
 const YEARS = Array.from({ length: CURRENT_YEAR - 1989 }, (_, i) => CURRENT_YEAR + 1 - i);
-
-const fieldStyle: React.CSSProperties = {
-  width: "100%",
-  padding: "0.5rem 0.75rem",
-  border: "1px solid var(--border)",
-  borderRadius: "0.5rem",
-  fontSize: "0.875rem",
-  backgroundColor: "transparent",
-  color: "var(--foreground)",
-  outline: "none",
-  boxSizing: "border-box",
-};
-
-const labelStyle: React.CSSProperties = {
-  display: "block",
-  fontSize: "0.875rem",
-  fontWeight: 500,
-  color: "var(--foreground)",
-  marginBottom: "0.375rem",
-};
-
-const errorStyle: React.CSSProperties = {
-  fontSize: "0.8125rem",
-  color: "var(--destructive)",
-  marginTop: "0.25rem",
-};
 
 const rowStyle: React.CSSProperties = { marginBottom: "1.25rem" };
 
@@ -106,87 +91,138 @@ export function AddVehicleForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
+      <h2 style={sectionHeadingStyle}>Vehicle Details</h2>
+
       {/* Make / Model / Trim */}
-      <div className="mb-5 grid grid-cols-1 gap-x-4 sm:grid-cols-2">
+      <div className="mb-5 grid grid-cols-1 gap-x-4 gap-y-5 sm:grid-cols-2">
         <div>
-          <label style={labelStyle}>{t("make")} *</label>
-          <input style={fieldStyle} placeholder="e.g. Toyota" {...register("makeName")} />
+          <label style={labelStyle}>
+            {t("make")} <span style={requiredStyle}>*</span>
+          </label>
+          <input
+            className={fieldFocusClass}
+            style={fieldStyle}
+            placeholder="e.g. Toyota"
+            {...register("makeName")}
+          />
           {errors.makeName && <p style={errorStyle}>{errors.makeName.message}</p>}
         </div>
         <div>
-          <label style={labelStyle}>{t("model")} *</label>
-          <input style={fieldStyle} placeholder="e.g. Camry" {...register("modelName")} />
+          <label style={labelStyle}>
+            {t("model")} <span style={requiredStyle}>*</span>
+          </label>
+          <input
+            className={fieldFocusClass}
+            style={fieldStyle}
+            placeholder="e.g. Camry"
+            {...register("modelName")}
+          />
           {errors.modelName && <p style={errorStyle}>{errors.modelName.message}</p>}
         </div>
       </div>
 
-      <div className="mb-5 grid grid-cols-1 gap-x-4 sm:grid-cols-2">
+      <div className="mb-6 grid grid-cols-1 gap-x-4 gap-y-5 sm:grid-cols-2">
         <div>
           <label style={labelStyle}>{t("trim")}</label>
-          <input style={fieldStyle} placeholder="e.g. SE, XLE" {...register("trimName")} />
+          <input
+            className={fieldFocusClass}
+            style={fieldStyle}
+            placeholder="e.g. SE, XLE"
+            {...register("trimName")}
+          />
           {errors.trimName && <p style={errorStyle}>{errors.trimName.message}</p>}
         </div>
         <div>
-          <label style={labelStyle}>{t("year")} *</label>
-          <select style={fieldStyle} {...register("year", { valueAsNumber: true })}>
-            <option value="">Select year</option>
-            {YEARS.map((y) => (
-              <option key={y} value={y}>
-                {y}
-              </option>
-            ))}
-          </select>
+          <label style={labelStyle}>
+            {t("year")} <span style={requiredStyle}>*</span>
+          </label>
+          <div style={selectWrapperStyle}>
+            <select
+              className={fieldFocusClass}
+              style={selectStyle}
+              {...register("year", { valueAsNumber: true })}
+            >
+              <option value="">Select year</option>
+              {YEARS.map((y) => (
+                <option key={y} value={y}>
+                  {y}
+                </option>
+              ))}
+            </select>
+            <SelectChevron />
+          </div>
           {errors.year && <p style={errorStyle}>{errors.year.message}</p>}
         </div>
       </div>
 
+      <h2 style={sectionHeadingStyle}>Specifications</h2>
+
       {/* Vehicle Type / Fuel / Transmission */}
-      <div className="mb-5 grid grid-cols-1 gap-x-4 sm:grid-cols-3">
+      <div className="mb-6 grid grid-cols-1 gap-x-4 gap-y-5 sm:grid-cols-3">
         <div>
-          <label style={labelStyle}>{t("vehicleType")} *</label>
-          <select style={fieldStyle} {...register("vehicleType")}>
-            <option value="">Select type</option>
-            {vehicleTypeValues.map((v) => (
-              <option key={v} value={v}>
-                {typeLabels[v]}
-              </option>
-            ))}
-          </select>
+          <label style={labelStyle}>
+            {t("vehicleType")} <span style={requiredStyle}>*</span>
+          </label>
+          <div style={selectWrapperStyle}>
+            <select className={fieldFocusClass} style={selectStyle} {...register("vehicleType")}>
+              <option value="">Select type</option>
+              {vehicleTypeValues.map((v) => (
+                <option key={v} value={v}>
+                  {typeLabels[v]}
+                </option>
+              ))}
+            </select>
+            <SelectChevron />
+          </div>
           {errors.vehicleType && <p style={errorStyle}>{errors.vehicleType.message}</p>}
         </div>
         <div>
-          <label style={labelStyle}>{t("fuelType")} *</label>
-          <select style={fieldStyle} {...register("fuelType")}>
-            <option value="">Select fuel</option>
-            {fuelTypeValues.map((v) => (
-              <option key={v} value={v}>
-                {fuelLabels[v]}
-              </option>
-            ))}
-          </select>
+          <label style={labelStyle}>
+            {t("fuelType")} <span style={requiredStyle}>*</span>
+          </label>
+          <div style={selectWrapperStyle}>
+            <select className={fieldFocusClass} style={selectStyle} {...register("fuelType")}>
+              <option value="">Select fuel</option>
+              {fuelTypeValues.map((v) => (
+                <option key={v} value={v}>
+                  {fuelLabels[v]}
+                </option>
+              ))}
+            </select>
+            <SelectChevron />
+          </div>
           {errors.fuelType && <p style={errorStyle}>{errors.fuelType.message}</p>}
         </div>
         <div>
-          <label style={labelStyle}>{t("transmission")} *</label>
-          <select style={fieldStyle} {...register("transmission")}>
-            <option value="">Select transmission</option>
-            {transmissionValues.map((v) => (
-              <option key={v} value={v}>
-                {transmissionLabels[v]}
-              </option>
-            ))}
-          </select>
+          <label style={labelStyle}>
+            {t("transmission")} <span style={requiredStyle}>*</span>
+          </label>
+          <div style={selectWrapperStyle}>
+            <select className={fieldFocusClass} style={selectStyle} {...register("transmission")}>
+              <option value="">Select transmission</option>
+              {transmissionValues.map((v) => (
+                <option key={v} value={v}>
+                  {transmissionLabels[v]}
+                </option>
+              ))}
+            </select>
+            <SelectChevron />
+          </div>
           {errors.transmission && <p style={errorStyle}>{errors.transmission.message}</p>}
         </div>
       </div>
 
       {/* Mileage / Color */}
-      <div className="mb-5 grid grid-cols-1 gap-x-4 sm:grid-cols-2">
+      <div className="mb-6 grid grid-cols-1 gap-x-4 gap-y-5 sm:grid-cols-2">
         <div>
-          <label style={labelStyle}>{t("mileageKm")} *</label>
+          <label style={labelStyle}>
+            {t("mileageKm")} <span style={requiredStyle}>*</span>
+          </label>
           <input
+            className={fieldFocusClass}
             style={fieldStyle}
             type="number"
+            inputMode="numeric"
             min={0}
             placeholder="0"
             {...register("mileageKm", { valueAsNumber: true })}
@@ -195,21 +231,34 @@ export function AddVehicleForm() {
         </div>
         <div>
           <label style={labelStyle}>{t("color")}</label>
-          <input style={fieldStyle} placeholder="e.g. White, Silver" {...register("color")} />
+          <input
+            className={fieldFocusClass}
+            style={fieldStyle}
+            placeholder="e.g. White, Silver"
+            {...register("color")}
+          />
         </div>
       </div>
 
+      <h2 style={sectionHeadingStyle}>Identification &amp; Notes</h2>
+
       {/* Plate / VIN */}
-      <div className="mb-5 grid grid-cols-1 gap-x-4 sm:grid-cols-2">
+      <div className="mb-5 grid grid-cols-1 gap-x-4 gap-y-5 sm:grid-cols-2">
         <div>
           <label style={labelStyle}>{t("plateNumber")}</label>
-          <input style={fieldStyle} placeholder="e.g. A 12345" {...register("plateNumber")} />
+          <input
+            className={fieldFocusClass}
+            style={fieldStyle}
+            placeholder="e.g. A 12345"
+            {...register("plateNumber")}
+          />
           {errors.plateNumber && <p style={errorStyle}>{errors.plateNumber.message}</p>}
         </div>
         <div>
           <label style={labelStyle}>{t("vin")}</label>
           <input
-            style={fieldStyle}
+            className={fieldFocusClass}
+            style={{ ...fieldStyle, textTransform: "uppercase" }}
             placeholder="17-character VIN"
             maxLength={17}
             {...register("vin")}
@@ -222,36 +271,40 @@ export function AddVehicleForm() {
       <div style={rowStyle}>
         <label style={labelStyle}>{t("notes")}</label>
         <textarea
+          className={fieldFocusClass}
           style={{ ...fieldStyle, minHeight: "5rem", resize: "vertical" }}
           placeholder="Any additional details..."
           {...register("notes")}
         />
       </div>
 
-      {/* Default checkbox */}
-      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "1.5rem" }}>
+      {/* Default checkbox — the whole row is clickable, not just the tiny box, for an easier mobile tap target */}
+      <label
+        htmlFor="isDefault"
+        className="mb-6 flex cursor-pointer items-center gap-3 rounded-lg border p-3"
+        style={{ borderColor: "var(--border)" }}
+      >
         <input
           id="isDefault"
           type="checkbox"
           {...register("isDefault")}
-          style={{ width: "1rem", height: "1rem", cursor: "pointer" }}
+          className="h-5 w-5 shrink-0 cursor-pointer"
         />
-        <label htmlFor="isDefault" style={{ ...labelStyle, marginBottom: 0, cursor: "pointer" }}>
-          {t("isDefault")}
-        </label>
-      </div>
+        <span style={{ ...labelStyle, marginBottom: 0 }}>{t("isDefault")}</span>
+      </label>
 
       <button
         type="submit"
         disabled={isSubmitting}
+        className="transition-opacity hover:enabled:opacity-90 active:enabled:opacity-80"
         style={{
           width: "100%",
-          padding: "0.625rem 1.25rem",
+          padding: "0.875rem 1.25rem",
           backgroundColor: isSubmitting ? "var(--muted)" : "var(--navy)",
           color: "#fff",
           border: "none",
           borderRadius: "0.5rem",
-          fontSize: "0.875rem",
+          fontSize: "1rem",
           fontWeight: 600,
           cursor: isSubmitting ? "not-allowed" : "pointer",
         }}

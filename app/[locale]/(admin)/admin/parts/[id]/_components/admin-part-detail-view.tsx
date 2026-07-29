@@ -14,6 +14,7 @@ import {
   type UpdatePartInput,
 } from "@/features/catalog/schemas";
 import { getPartImage } from "@/features/catalog/part-image";
+import { SelectChevron } from "@/components/forms/field-styles";
 
 interface Media {
   id: string;
@@ -71,6 +72,16 @@ const fieldStyle: React.CSSProperties = {
   color: "var(--foreground)",
   outline: "none",
   boxSizing: "border-box",
+};
+
+// Native <select> arrows render flush against the border regardless of
+// padding — this reserves room for a positioned chevron instead.
+const selectStyle: React.CSSProperties = {
+  ...fieldStyle,
+  paddingInlineEnd: "1.75rem",
+  appearance: "none",
+  WebkitAppearance: "none",
+  MozAppearance: "none",
 };
 
 const labelStyle: React.CSSProperties = {
@@ -316,38 +327,36 @@ export function AdminPartDetailView({ part, categories }: Props) {
           Part Details
         </h2>
         <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "0 1rem",
-            marginBottom: "1rem",
-          }}
+          className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2"
+          style={{ marginBottom: "1rem" }}
         >
           <div>
             <label style={labelStyle}>Category</label>
-            <select style={fieldStyle} {...register("categoryId")}>
-              {categories.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
+            <div style={{ position: "relative" }}>
+              <select style={selectStyle} {...register("categoryId")}>
+                {categories.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+              <SelectChevron size={14} insetInlineEnd="0.625rem" />
+            </div>
           </div>
           <div>
             <label style={labelStyle}>Origin</label>
-            <select style={fieldStyle} {...register("origin")}>
-              <option value="OEM">OEM</option>
-              <option value="AFTERMARKET">Aftermarket</option>
-            </select>
+            <div style={{ position: "relative" }}>
+              <select style={selectStyle} {...register("origin")}>
+                <option value="OEM">OEM</option>
+                <option value="AFTERMARKET">Aftermarket</option>
+              </select>
+              <SelectChevron size={14} insetInlineEnd="0.625rem" />
+            </div>
           </div>
         </div>
         <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "0 1rem",
-            marginBottom: "1rem",
-          }}
+          className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2"
+          style={{ marginBottom: "1rem" }}
         >
           <div>
             <label style={labelStyle}>Manufacturer</label>
@@ -570,12 +579,7 @@ export function AdminPartDetailView({ part, categories }: Props) {
 
         <form
           onSubmit={handleSubmitRule(onAddRule)}
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr 1fr 1fr",
-            gap: "0.75rem",
-            alignItems: "end",
-          }}
+          className="grid grid-cols-1 items-end gap-3 sm:grid-cols-2 lg:grid-cols-4"
         >
           <div>
             <label style={labelStyle}>Make *</label>
@@ -611,7 +615,7 @@ export function AdminPartDetailView({ part, categories }: Props) {
             <label style={labelStyle}>Trim</label>
             <input style={fieldStyle} placeholder="Optional" {...registerRule("trimName")} />
           </div>
-          <div style={{ gridColumn: "span 2" }}>
+          <div className="sm:col-span-2">
             <button
               type="submit"
               disabled={isSubmittingRule}

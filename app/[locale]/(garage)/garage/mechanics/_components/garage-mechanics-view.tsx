@@ -12,6 +12,7 @@ import {
   type InviteStaffInput,
 } from "@/features/garages/schemas";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { SelectChevron } from "@/components/forms/field-styles";
 
 interface MechanicProfile {
   specialties: string[];
@@ -72,6 +73,14 @@ const fieldStyle: React.CSSProperties = {
   color: "var(--foreground)",
   outline: "none",
   boxSizing: "border-box",
+};
+
+const selectStyle: React.CSSProperties = {
+  ...fieldStyle,
+  paddingInlineEnd: "1.75rem",
+  appearance: "none",
+  WebkitAppearance: "none",
+  MozAppearance: "none",
 };
 
 function initials(name: string | null, email: string): string {
@@ -163,12 +172,8 @@ function MechanicProfileEditor({
         })}
       </div>
       <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "10rem 1fr",
-          gap: "0.75rem",
-          marginBottom: "0.875rem",
-        }}
+        className="grid grid-cols-1 gap-3 sm:grid-cols-[10rem_1fr]"
+        style={{ marginBottom: "0.875rem" }}
       >
         <div>
           <label
@@ -289,7 +294,9 @@ export function GarageMechanicsView({
   }
 
   const [confirmTarget, setConfirmTarget] = useState<
-    { type: "member"; id: string; label: string } | { type: "invitation"; id: string; label: string } | null
+    | { type: "member"; id: string; label: string }
+    | { type: "invitation"; id: string; label: string }
+    | null
   >(null);
 
   function confirmPendingAction() {
@@ -303,14 +310,7 @@ export function GarageMechanicsView({
 
   return (
     <div>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
-          gap: "1rem",
-          marginBottom: "1.5rem",
-        }}
-      >
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3" style={{ marginBottom: "1.5rem" }}>
         {[
           { label: "Members", value: members.length },
           { label: "Mechanics", value: members.filter((m) => m.role === "MECHANIC").length },
@@ -377,12 +377,8 @@ export function GarageMechanicsView({
           }}
         >
           <div
-            style={{
-              display: "grid",
-              gap: "0 1rem",
-              gridTemplateColumns: "1fr 1fr",
-              marginBottom: "0.75rem",
-            }}
+            className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2"
+            style={{ marginBottom: "0.75rem" }}
           >
             <div>
               <label
@@ -416,13 +412,16 @@ export function GarageMechanicsView({
               >
                 Role *
               </label>
-              <select style={fieldStyle} {...register("role")}>
-                {staffRoleValues.map((r) => (
-                  <option key={r} value={r}>
-                    {ROLE_LABELS[r]}
-                  </option>
-                ))}
-              </select>
+              <div style={{ position: "relative" }}>
+                <select style={selectStyle} {...register("role")}>
+                  {staffRoleValues.map((r) => (
+                    <option key={r} value={r}>
+                      {ROLE_LABELS[r]}
+                    </option>
+                  ))}
+                </select>
+                <SelectChevron size={14} insetInlineEnd="0.625rem" />
+              </div>
             </div>
           </div>
           <p style={{ fontSize: "0.75rem", color: "#8a92a6", marginBottom: "1rem" }}>

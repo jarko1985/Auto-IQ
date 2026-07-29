@@ -10,6 +10,7 @@ import { Plus, CheckCircle2, XCircle, Boxes } from "lucide-react";
 import { createPartSchema, type CreatePartInput } from "@/features/catalog/schemas";
 import { getPartImage } from "@/features/catalog/part-image";
 import { InlineSpinner } from "@/components/ui/inline-spinner";
+import { SelectChevron } from "@/components/forms/field-styles";
 
 interface PartRow {
   id: string;
@@ -52,6 +53,14 @@ const fieldStyle: React.CSSProperties = {
   color: "var(--foreground)",
   outline: "none",
   boxSizing: "border-box",
+};
+
+const selectStyle: React.CSSProperties = {
+  ...fieldStyle,
+  paddingInlineEnd: "1.75rem",
+  appearance: "none",
+  WebkitAppearance: "none",
+  MozAppearance: "none",
 };
 
 const labelStyle: React.CSSProperties = {
@@ -186,28 +195,34 @@ export function AdminPartsCatalogView({ initialParts, categories }: Props) {
         }}
       >
         <div style={{ display: "flex", gap: "0.625rem", flexWrap: "wrap" }}>
-          <select
-            value={approvalFilter}
-            onChange={(e) => setApprovalFilter(e.target.value)}
-            style={{ ...fieldStyle, width: "auto" }}
-          >
-            <option value="">All statuses</option>
-            <option value="PENDING_REVIEW">Pending Review</option>
-            <option value="APPROVED">Approved</option>
-            <option value="REJECTED">Rejected</option>
-          </select>
-          <select
-            value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value)}
-            style={{ ...fieldStyle, width: "auto" }}
-          >
-            <option value="">All categories</option>
-            {categories.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
+          <div style={{ position: "relative" }}>
+            <select
+              value={approvalFilter}
+              onChange={(e) => setApprovalFilter(e.target.value)}
+              style={{ ...selectStyle, width: "auto" }}
+            >
+              <option value="">All statuses</option>
+              <option value="PENDING_REVIEW">Pending Review</option>
+              <option value="APPROVED">Approved</option>
+              <option value="REJECTED">Rejected</option>
+            </select>
+            <SelectChevron size={14} insetInlineEnd="0.625rem" />
+          </div>
+          <div style={{ position: "relative" }}>
+            <select
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              style={{ ...selectStyle, width: "auto" }}
+            >
+              <option value="">All categories</option>
+              {categories.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+            <SelectChevron size={14} insetInlineEnd="0.625rem" />
+          </div>
           <input
             placeholder="Search name, manufacturer, part #..."
             value={query}
@@ -251,42 +266,40 @@ export function AdminPartsCatalogView({ initialParts, categories }: Props) {
           }}
         >
           <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "0 1rem",
-              marginBottom: "1rem",
-            }}
+            className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2"
+            style={{ marginBottom: "1rem" }}
           >
             <div>
               <label style={labelStyle}>Category *</label>
-              <select style={fieldStyle} {...register("categoryId")}>
-                <option value="">Select category</option>
-                {categories.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
+              <div style={{ position: "relative" }}>
+                <select style={selectStyle} {...register("categoryId")}>
+                  <option value="">Select category</option>
+                  {categories.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+                <SelectChevron size={14} insetInlineEnd="0.625rem" />
+              </div>
               {errors.categoryId && (
                 <p style={{ fontSize: "0.75rem", color: "#dc2626" }}>{errors.categoryId.message}</p>
               )}
             </div>
             <div>
               <label style={labelStyle}>Origin *</label>
-              <select style={fieldStyle} {...register("origin")}>
-                <option value="OEM">OEM</option>
-                <option value="AFTERMARKET">Aftermarket</option>
-              </select>
+              <div style={{ position: "relative" }}>
+                <select style={selectStyle} {...register("origin")}>
+                  <option value="OEM">OEM</option>
+                  <option value="AFTERMARKET">Aftermarket</option>
+                </select>
+                <SelectChevron size={14} insetInlineEnd="0.625rem" />
+              </div>
             </div>
           </div>
           <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "0 1rem",
-              marginBottom: "1rem",
-            }}
+            className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2"
+            style={{ marginBottom: "1rem" }}
           >
             <div>
               <label style={labelStyle}>Manufacturer *</label>
@@ -348,7 +361,9 @@ export function AdminPartsCatalogView({ initialParts, categories }: Props) {
       )}
 
       {isRefetching && (
-        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.75rem" }}>
+        <div
+          style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.75rem" }}
+        >
           <InlineSpinner color="#5b6472" size={12} />
           <span style={{ fontSize: "0.8125rem", color: "#5b6472" }}>Refreshing...</span>
         </div>
@@ -357,9 +372,16 @@ export function AdminPartsCatalogView({ initialParts, categories }: Props) {
         <p style={{ fontSize: "0.875rem", color: "#8a92a6" }}>No parts match these filters.</p>
       ) : (
         <div
-          style={{ border: "1px solid var(--border)", borderRadius: "0.75rem", overflow: "hidden" }}
+          style={{ border: "1px solid var(--border)", borderRadius: "0.75rem", overflowX: "auto" }}
         >
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.8125rem" }}>
+          <table
+            style={{
+              width: "100%",
+              minWidth: "760px",
+              borderCollapse: "collapse",
+              fontSize: "0.8125rem",
+            }}
+          >
             <thead>
               <tr style={{ backgroundColor: "#f7fafd", textAlign: "start" }}>
                 {["Part", "Category", "Origin", "Status", "Submitted By", "Stock/Compat.", ""].map(

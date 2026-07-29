@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { SelectChevron } from "@/components/forms/field-styles";
 
 interface AuditEntry {
   id: string;
@@ -62,16 +63,21 @@ export function VendorInventoryAuditView({ initialEntries }: Props) {
 
   return (
     <div>
-      <div style={{ marginBottom: "1.25rem" }}>
+      <div style={{ marginBottom: "1.25rem", position: "relative", display: "inline-block" }}>
         <select
           value={changeTypeFilter}
           onChange={(e) => setChangeTypeFilter(e.target.value)}
           style={{
-            padding: "0.5rem 0.75rem",
+            paddingBlock: "0.5rem",
+            paddingInlineStart: "0.75rem",
+            paddingInlineEnd: "1.75rem",
             border: "1px solid var(--border)",
             borderRadius: "0.5rem",
             fontSize: "0.8125rem",
             backgroundColor: "transparent",
+            appearance: "none",
+            WebkitAppearance: "none",
+            MozAppearance: "none",
           }}
         >
           <option value="">All change types</option>
@@ -81,6 +87,7 @@ export function VendorInventoryAuditView({ initialEntries }: Props) {
             </option>
           ))}
         </select>
+        <SelectChevron size={14} insetInlineEnd="0.625rem" />
       </div>
 
       {filtered.length === 0 ? (
@@ -89,9 +96,16 @@ export function VendorInventoryAuditView({ initialEntries }: Props) {
         </p>
       ) : (
         <div
-          style={{ border: "1px solid var(--border)", borderRadius: "0.75rem", overflow: "hidden" }}
+          style={{ border: "1px solid var(--border)", borderRadius: "0.75rem", overflowX: "auto" }}
         >
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.8125rem" }}>
+          <table
+            style={{
+              width: "100%",
+              minWidth: "860px",
+              borderCollapse: "collapse",
+              fontSize: "0.8125rem",
+            }}
+          >
             <thead>
               <tr style={{ backgroundColor: "#f7fafd", textAlign: "start" }}>
                 {[

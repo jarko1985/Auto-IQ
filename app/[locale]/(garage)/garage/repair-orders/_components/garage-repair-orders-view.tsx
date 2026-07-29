@@ -6,6 +6,7 @@ import { useRouter } from "@/i18n/routing";
 import { formatCurrency } from "@/lib/utils";
 import { InlineSpinner } from "@/components/ui/inline-spinner";
 import { ClipboardList } from "lucide-react";
+import { SelectChevron } from "@/components/forms/field-styles";
 
 interface RepairOrderRow {
   id: string;
@@ -50,13 +51,26 @@ const DEFAULT_STATUS_STYLE = STATUS_STYLES.CREATED!;
 const TABS = [
   { value: "active", label: "Active", statuses: null },
   { value: "new", label: "New", statuses: ["CREATED"] },
-  { value: "estimate", label: "Estimate", statuses: ["DIAGNOSIS", "ESTIMATE_DRAFT", "AWAITING_APPROVAL", "REJECTED"] },
+  {
+    value: "estimate",
+    label: "Estimate",
+    statuses: ["DIAGNOSIS", "ESTIMATE_DRAFT", "AWAITING_APPROVAL", "REJECTED"],
+  },
   { value: "in_repair", label: "In Repair", statuses: ["APPROVED", "IN_REPAIR", "QUALITY_CHECK"] },
   { value: "done", label: "Completed", statuses: ["COMPLETED", "INVOICED"] },
   { value: "cancelled", label: "Cancelled", statuses: ["CANCELLED"] },
 ] as const;
 
-const ACTIVE_STATUSES = ["CREATED", "INSPECTION", "DIAGNOSIS", "ESTIMATE_DRAFT", "AWAITING_APPROVAL", "APPROVED", "IN_REPAIR", "QUALITY_CHECK"];
+const ACTIVE_STATUSES = [
+  "CREATED",
+  "INSPECTION",
+  "DIAGNOSIS",
+  "ESTIMATE_DRAFT",
+  "AWAITING_APPROVAL",
+  "APPROVED",
+  "IN_REPAIR",
+  "QUALITY_CHECK",
+];
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("en-AE", { day: "numeric", month: "short" });
@@ -121,13 +135,24 @@ export function GarageRepairOrdersView({ initialRepairOrders }: Props) {
 
   const activeTab = TABS.find((t) => t.value === tab) ?? TABS[0];
   const filtered = initialRepairOrders.filter((ro) =>
-    activeTab.statuses ? (activeTab.statuses as readonly string[]).includes(ro.status) : ACTIVE_STATUSES.includes(ro.status),
+    activeTab.statuses
+      ? (activeTab.statuses as readonly string[]).includes(ro.status)
+      : ACTIVE_STATUSES.includes(ro.status),
   );
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.25rem" }}>
-        <div style={{ display: "flex", gap: "0.375rem" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: "0.75rem",
+          flexWrap: "wrap",
+          marginBottom: "1.25rem",
+        }}
+      >
+        <div style={{ display: "flex", gap: "0.375rem", flexWrap: "wrap" }}>
           {TABS.map((t) => (
             <button
               key={t.value}
@@ -196,27 +221,34 @@ export function GarageRepairOrdersView({ initialRepairOrders }: Props) {
               No accepted bookings are available to check in right now.
             </p>
           ) : (
-            <select
-              value={selectedBookingId}
-              onChange={(e) => setSelectedBookingId(e.target.value)}
-              style={{
-                width: "100%",
-                maxWidth: "28rem",
-                padding: "0.5rem 0.75rem",
-                border: "1px solid var(--border)",
-                borderRadius: "0.5rem",
-                fontSize: "0.8125rem",
-                marginBottom: "0.875rem",
-                display: "block",
-              }}
-            >
-              <option value="">Select a booking…</option>
-              {bookings.map((b) => (
-                <option key={b.id} value={b.id}>
-                  #{b.bookingNumber} — {b.customerName} — {b.vehicleLabel}
-                </option>
-              ))}
-            </select>
+            <div style={{ position: "relative", maxWidth: "28rem", marginBottom: "0.875rem" }}>
+              <select
+                value={selectedBookingId}
+                onChange={(e) => setSelectedBookingId(e.target.value)}
+                style={{
+                  width: "100%",
+                  paddingBlock: "0.5rem",
+                  paddingInlineStart: "0.75rem",
+                  paddingInlineEnd: "1.75rem",
+                  border: "1px solid var(--border)",
+                  borderRadius: "0.5rem",
+                  fontSize: "0.8125rem",
+                  display: "block",
+                  appearance: "none",
+                  WebkitAppearance: "none",
+                  MozAppearance: "none",
+                  boxSizing: "border-box",
+                }}
+              >
+                <option value="">Select a booking…</option>
+                {bookings.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    #{b.bookingNumber} — {b.customerName} — {b.vehicleLabel}
+                  </option>
+                ))}
+              </select>
+              <SelectChevron size={14} insetInlineEnd="0.625rem" />
+            </div>
           )}
           <button
             type="button"
@@ -269,7 +301,9 @@ export function GarageRepairOrdersView({ initialRepairOrders }: Props) {
           </p>
         </div>
       ) : (
-        <div style={{ border: "1px solid var(--border)", borderRadius: "0.75rem", overflow: "hidden" }}>
+        <div
+          style={{ border: "1px solid var(--border)", borderRadius: "0.75rem", overflow: "hidden" }}
+        >
           {filtered.map((ro, i) => {
             const status = STATUS_STYLES[ro.status] ?? DEFAULT_STATUS_STYLE;
             return (
@@ -290,7 +324,16 @@ export function GarageRepairOrdersView({ initialRepairOrders }: Props) {
                   borderBottom: i < filtered.length - 1 ? "1px solid var(--border)" : "none",
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: "1.5rem", minWidth: 0, flex: 1 }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.75rem 1.5rem",
+                    minWidth: 0,
+                    flex: 1,
+                    flexWrap: "wrap",
+                  }}
+                >
                   <div style={{ minWidth: 0 }}>
                     <div style={{ fontSize: "0.875rem", fontWeight: 700, color: "#081a2f" }}>
                       #{ro.repairOrderNumber}
@@ -298,7 +341,9 @@ export function GarageRepairOrdersView({ initialRepairOrders }: Props) {
                     <div style={{ fontSize: "0.75rem", color: "#8a92a6" }}>{ro.vehicleLabel}</div>
                   </div>
                   <div style={{ fontSize: "0.8125rem", color: "#5b6472" }}>{ro.customerName}</div>
-                  <div style={{ fontSize: "0.8125rem", color: "#5b6472" }}>{formatDate(ro.createdAt)}</div>
+                  <div style={{ fontSize: "0.8125rem", color: "#5b6472" }}>
+                    {formatDate(ro.createdAt)}
+                  </div>
                   {ro.totalMinorUnits > 0 && (
                     <div style={{ fontSize: "0.8125rem", color: "#081a2f", fontWeight: 600 }}>
                       {formatCurrency(ro.totalMinorUnits, ro.currency)}

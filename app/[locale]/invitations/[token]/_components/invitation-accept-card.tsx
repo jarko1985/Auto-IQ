@@ -34,14 +34,13 @@ const cardStyle: React.CSSProperties = {
   maxWidth: "440px",
   border: "1px solid var(--border)",
   borderRadius: "1rem",
-  padding: "2rem",
   backgroundColor: "var(--card)",
   textAlign: "center",
 };
 
 function InvalidState({ message }: { message: string }) {
   return (
-    <div style={cardStyle}>
+    <div className="p-3 sm:p-8" style={cardStyle}>
       <XCircle size={40} color="#dc2626" style={{ margin: "0 auto 1rem" }} />
       <h1
         style={{ fontSize: "1.125rem", fontWeight: 700, color: "#081a2f", marginBottom: "0.5rem" }}
@@ -96,7 +95,7 @@ export function InvitationAcceptCard({ token, invitation, isSignedIn, sessionEma
   }
 
   return (
-    <div style={cardStyle}>
+    <div className="p-3 sm:p-8" style={cardStyle}>
       <Building2 size={40} color="#00b8d9" style={{ margin: "0 auto 1rem" }} />
       <h1
         style={{ fontSize: "1.125rem", fontWeight: 700, color: "#081a2f", marginBottom: "0.5rem" }}

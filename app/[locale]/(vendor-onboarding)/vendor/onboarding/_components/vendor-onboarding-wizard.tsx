@@ -12,6 +12,7 @@ import {
   vendorBusinessTypeValues,
   type CreateVendorProfileInput,
 } from "@/features/vendors/schemas";
+import { fieldFocusClass, SelectChevron } from "@/components/forms/field-styles";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -102,14 +103,23 @@ const DOCUMENT_ORDER = [
 
 const fieldStyle: React.CSSProperties = {
   width: "100%",
-  padding: "0.625rem 0.75rem",
+  padding: "0.75rem 0.875rem",
   border: "1px solid var(--border)",
   borderRadius: "0.5rem",
-  fontSize: "0.875rem",
+  // 16px prevents iOS Safari from auto-zooming the viewport on focus.
+  fontSize: "1rem",
   backgroundColor: "transparent",
   color: "var(--foreground)",
   outline: "none",
   boxSizing: "border-box",
+};
+
+const selectStyle: React.CSSProperties = {
+  ...fieldStyle,
+  paddingInlineEnd: "2.25rem",
+  appearance: "none",
+  WebkitAppearance: "none",
+  MozAppearance: "none",
 };
 
 const labelStyle: React.CSSProperties = {
@@ -305,7 +315,7 @@ export function VendorOnboardingWizard({ initialVendor }: Props) {
 
   if (step === 1) {
     return (
-      <div style={{ maxWidth: "640px", margin: "0 auto", padding: "2.5rem 1.5rem" }}>
+      <div className="px-4 py-8 sm:px-6 sm:py-10" style={{ maxWidth: "640px", margin: "0 auto" }}>
         <h1
           style={{
             fontSize: "1.5rem",
@@ -345,6 +355,7 @@ export function VendorOnboardingWizard({ initialVendor }: Props) {
           <div style={rowStyle}>
             <label style={labelStyle}>Business Name *</label>
             <input
+              className={fieldFocusClass}
               style={fieldStyle}
               placeholder="e.g. Al Futtaim Motors"
               {...register("businessName")}
@@ -353,50 +364,53 @@ export function VendorOnboardingWizard({ initialVendor }: Props) {
           </div>
 
           <div
-            style={{
-              display: "grid",
-              gap: "0 1rem",
-              gridTemplateColumns: "1fr 1fr",
-              marginBottom: "1.25rem",
-            }}
+            className="grid grid-cols-1 gap-x-4 gap-y-5 sm:grid-cols-2"
+            style={{ marginBottom: "1.25rem" }}
           >
             <div>
               <label style={labelStyle}>Business Type *</label>
-              <select style={fieldStyle} {...register("businessType")}>
-                <option value="">Select category</option>
-                {vendorBusinessTypeValues.map((v) => (
-                  <option key={v} value={v}>
-                    {BUSINESS_TYPE_LABELS[v]}
-                  </option>
-                ))}
-              </select>
+              <div style={{ position: "relative" }}>
+                <select
+                  className={fieldFocusClass}
+                  style={selectStyle}
+                  {...register("businessType")}
+                >
+                  <option value="">Select category</option>
+                  {vendorBusinessTypeValues.map((v) => (
+                    <option key={v} value={v}>
+                      {BUSINESS_TYPE_LABELS[v]}
+                    </option>
+                  ))}
+                </select>
+                <SelectChevron />
+              </div>
               {errors.businessType && <p style={errorStyle}>{errors.businessType.message}</p>}
             </div>
             <div>
               <label style={labelStyle}>Emirate *</label>
-              <select style={fieldStyle} {...register("emirate")}>
-                <option value="">Select emirate</option>
-                {emirateValues.map((v) => (
-                  <option key={v} value={v}>
-                    {EMIRATE_LABELS[v]}
-                  </option>
-                ))}
-              </select>
+              <div style={{ position: "relative" }}>
+                <select className={fieldFocusClass} style={selectStyle} {...register("emirate")}>
+                  <option value="">Select emirate</option>
+                  {emirateValues.map((v) => (
+                    <option key={v} value={v}>
+                      {EMIRATE_LABELS[v]}
+                    </option>
+                  ))}
+                </select>
+                <SelectChevron />
+              </div>
               {errors.emirate && <p style={errorStyle}>{errors.emirate.message}</p>}
             </div>
           </div>
 
           <div
-            style={{
-              display: "grid",
-              gap: "0 1rem",
-              gridTemplateColumns: "1fr 1fr",
-              marginBottom: "1.25rem",
-            }}
+            className="grid grid-cols-1 gap-x-4 gap-y-5 sm:grid-cols-2"
+            style={{ marginBottom: "1.25rem" }}
           >
             <div>
               <label style={labelStyle}>UAE Trade License Number *</label>
               <input
+                className={fieldFocusClass}
                 style={fieldStyle}
                 placeholder="e.g. TL-990234"
                 {...register("tradeLicenseNumber")}
@@ -407,7 +421,12 @@ export function VendorOnboardingWizard({ initialVendor }: Props) {
             </div>
             <div>
               <label style={labelStyle}>Trade License Expiry *</label>
-              <input style={fieldStyle} type="date" {...register("tradeLicenseExpiry")} />
+              <input
+                className={fieldFocusClass}
+                style={fieldStyle}
+                type="date"
+                {...register("tradeLicenseExpiry")}
+              />
               {errors.tradeLicenseExpiry && (
                 <p style={errorStyle}>{errors.tradeLicenseExpiry.message}</p>
               )}
@@ -417,6 +436,7 @@ export function VendorOnboardingWizard({ initialVendor }: Props) {
           <div style={rowStyle}>
             <label style={labelStyle}>Street Address *</label>
             <input
+              className={fieldFocusClass}
               style={fieldStyle}
               placeholder="e.g. Al Quoz Industrial 3, Warehouse 12"
               {...register("addressLine1")}
@@ -427,6 +447,7 @@ export function VendorOnboardingWizard({ initialVendor }: Props) {
           <div style={rowStyle}>
             <label style={labelStyle}>Contact Person Name *</label>
             <input
+              className={fieldFocusClass}
               style={fieldStyle}
               placeholder="e.g. Sara Al Zaabi"
               {...register("contactPersonName")}
@@ -437,21 +458,23 @@ export function VendorOnboardingWizard({ initialVendor }: Props) {
           </div>
 
           <div
-            style={{
-              display: "grid",
-              gap: "0 1rem",
-              gridTemplateColumns: "1fr 1fr",
-              marginBottom: "1.5rem",
-            }}
+            className="grid grid-cols-1 gap-x-4 gap-y-5 sm:grid-cols-2"
+            style={{ marginBottom: "1.5rem" }}
           >
             <div>
               <label style={labelStyle}>Contact Phone *</label>
-              <input style={fieldStyle} placeholder="+9715XXXXXXXX" {...register("contactPhone")} />
+              <input
+                className={fieldFocusClass}
+                style={fieldStyle}
+                placeholder="+9715XXXXXXXX"
+                {...register("contactPhone")}
+              />
               {errors.contactPhone && <p style={errorStyle}>{errors.contactPhone.message}</p>}
             </div>
             <div>
               <label style={labelStyle}>Contact Email *</label>
               <input
+                className={fieldFocusClass}
                 style={fieldStyle}
                 type="email"
                 placeholder="business@example.com"
@@ -487,7 +510,7 @@ export function VendorOnboardingWizard({ initialVendor }: Props) {
 
   if (step === 2) {
     return (
-      <div style={{ maxWidth: "640px", margin: "0 auto", padding: "2.5rem 1.5rem" }}>
+      <div className="px-4 py-8 sm:px-6 sm:py-10" style={{ maxWidth: "640px", margin: "0 auto" }}>
         <h1
           style={{
             fontSize: "1.5rem",
@@ -521,7 +544,8 @@ export function VendorOnboardingWizard({ initialVendor }: Props) {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
-                  gap: "1rem",
+                  gap: "0.75rem",
+                  flexWrap: "wrap",
                 }}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", minWidth: 0 }}>
@@ -613,10 +637,11 @@ export function VendorOnboardingWizard({ initialVendor }: Props) {
           >
             Authorized Signatory
           </p>
-          <div style={{ display: "grid", gap: "0 1rem", gridTemplateColumns: "1fr 1fr" }}>
+          <div className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2">
             <div style={rowStyle}>
               <label style={labelStyle}>Full Name (as on Emirates ID) *</label>
               <input
+                className={fieldFocusClass}
                 style={fieldStyle}
                 value={signatoryName}
                 onChange={(e) => setSignatoryName(e.target.value)}
@@ -626,6 +651,7 @@ export function VendorOnboardingWizard({ initialVendor }: Props) {
             <div style={rowStyle}>
               <label style={labelStyle}>Emirates ID Number *</label>
               <input
+                className={fieldFocusClass}
                 style={fieldStyle}
                 value={signatoryId}
                 onChange={(e) => setSignatoryId(e.target.value)}
@@ -683,7 +709,8 @@ export function VendorOnboardingWizard({ initialVendor }: Props) {
 
   return (
     <div
-      style={{ maxWidth: "560px", margin: "0 auto", padding: "3rem 1.5rem", textAlign: "center" }}
+      className="px-4 py-10 sm:px-6 sm:py-12"
+      style={{ maxWidth: "560px", margin: "0 auto", textAlign: "center" }}
     >
       <div
         style={{

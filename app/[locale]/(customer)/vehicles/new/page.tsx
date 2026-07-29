@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
 import { AddVehicleForm } from "./_components/add-vehicle-form";
+import { cardMobilePaddingClass } from "@/components/forms/field-styles";
 
 export default async function NewVehiclePage() {
   const session = await auth();
@@ -45,11 +46,11 @@ export default async function NewVehiclePage() {
 
       <div style={{ maxWidth: "48rem" }}>
         <div
+          className={cardMobilePaddingClass}
           style={{
             backgroundColor: "var(--card)",
             border: "1px solid var(--border)",
             borderRadius: "1rem",
-            padding: "2rem",
             boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
           }}
         >

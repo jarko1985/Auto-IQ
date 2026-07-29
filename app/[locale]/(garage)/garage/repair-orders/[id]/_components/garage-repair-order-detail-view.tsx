@@ -5,6 +5,7 @@ import Image from "next/image";
 import { toast } from "sonner";
 import { useRouter } from "@/i18n/routing";
 import { formatCurrency } from "@/lib/utils";
+import { SelectChevron } from "@/components/forms/field-styles";
 
 interface Job {
   id: string;
@@ -96,11 +97,18 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 function mapApiRepairOrder(data: Record<string, unknown>): RepairOrderDetail {
-  const vehicle = data.vehicle as { year: number; makeName: string; modelName: string; plateNumber: string | null };
+  const vehicle = data.vehicle as {
+    year: number;
+    makeName: string;
+    modelName: string;
+    plateNumber: string | null;
+  };
   const customer = data.customer as { name: string | null; email: string };
-  const leadMechanic = data.leadMechanic as
-    | { id: string; user: { name: string | null; email: string }; mechanicProfile: { bio: string | null } | null }
-    | null;
+  const leadMechanic = data.leadMechanic as {
+    id: string;
+    user: { name: string | null; email: string };
+    mechanicProfile: { bio: string | null } | null;
+  } | null;
   return {
     id: data.id as string,
     repairOrderNumber: data.repairOrderNumber as string,
@@ -142,7 +150,11 @@ const cardStyle: React.CSSProperties = {
   marginBottom: "1.25rem",
   backgroundColor: "#fff",
 };
-const labelStyle: React.CSSProperties = { fontSize: "0.75rem", color: "#8a92a6", marginBottom: "0.25rem" };
+const labelStyle: React.CSSProperties = {
+  fontSize: "0.75rem",
+  color: "#8a92a6",
+  marginBottom: "0.25rem",
+};
 const inputStyle: React.CSSProperties = {
   width: "100%",
   padding: "0.5rem 0.75rem",
@@ -150,6 +162,13 @@ const inputStyle: React.CSSProperties = {
   borderRadius: "0.5rem",
   fontSize: "0.8125rem",
   boxSizing: "border-box",
+};
+const selectStyle: React.CSSProperties = {
+  ...inputStyle,
+  paddingInlineEnd: "1.75rem",
+  appearance: "none",
+  WebkitAppearance: "none",
+  MozAppearance: "none",
 };
 const primaryBtn: React.CSSProperties = {
   padding: "0.625rem 1.125rem",
@@ -200,7 +219,10 @@ export function GarageRepairOrderDetailView({ repairOrder, mechanics }: Props) {
         headers: body !== undefined ? { "Content-Type": "application/json" } : undefined,
         body: body !== undefined ? JSON.stringify(body) : undefined,
       });
-      const json = (await res.json()) as { data?: Record<string, unknown>; error?: { message?: string } };
+      const json = (await res.json()) as {
+        data?: Record<string, unknown>;
+        error?: { message?: string };
+      };
       if (!res.ok || !json.data) {
         toast.error(json.error?.message ?? "Action failed.");
         return null;
@@ -252,7 +274,15 @@ export function GarageRepairOrderDetailView({ repairOrder, mechanics }: Props) {
             {ro.plateNumber && ` (Plate ${ro.plateNumber})`}
           </p>
         </div>
-        <div style={{ width: "2.75rem", height: "2.75rem", borderRadius: "9999px", overflow: "hidden", flexShrink: 0 }}>
+        <div
+          style={{
+            width: "2.75rem",
+            height: "2.75rem",
+            borderRadius: "9999px",
+            overflow: "hidden",
+            flexShrink: 0,
+          }}
+        >
           <Image
             src="/images/repair-orders/ro-detail-vehicle-land-cruiser.jpg"
             alt="Garage technician"
@@ -271,7 +301,16 @@ export function GarageRepairOrderDetailView({ repairOrder, mechanics }: Props) {
             const done = currentStepIdx > stepIdx || ro.status === "INVOICED";
             const active = currentStepIdx === stepIdx;
             return (
-              <div key={s.key} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.25rem", minWidth: "5rem" }}>
+              <div
+                key={s.key}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: "0.25rem",
+                  minWidth: "5rem",
+                }}
+              >
                 <div
                   style={{
                     width: active ? "0.875rem" : "0.625rem",
@@ -296,11 +335,22 @@ export function GarageRepairOrderDetailView({ repairOrder, mechanics }: Props) {
         </div>
       )}
 
-      <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "1.5rem", alignItems: "start" }}>
+      <div
+        className="grid grid-cols-1 gap-6 lg:grid-cols-[2fr_1fr]"
+        style={{ alignItems: "start" }}
+      >
         {/* Left column */}
         <div>
           <div style={cardStyle}>
-            <h3 style={{ fontSize: "1rem", fontWeight: 700, color: "#081a2f", marginTop: 0, marginBottom: "0.875rem" }}>
+            <h3
+              style={{
+                fontSize: "1rem",
+                fontWeight: 700,
+                color: "#081a2f",
+                marginTop: 0,
+                marginBottom: "0.875rem",
+              }}
+            >
               Initial Inspection
             </h3>
             {["CREATED", "INSPECTION"].includes(ro.status) ? (
@@ -340,13 +390,23 @@ export function GarageRepairOrderDetailView({ repairOrder, mechanics }: Props) {
             ) : (
               <>
                 <p style={{ fontSize: "0.8125rem", color: "#081a2f" }}>{ro.inspectionNotes}</p>
-                <p style={{ fontSize: "0.75rem", color: "#8a92a6" }}>Odometer: {ro.odometerReadingKm} KM</p>
+                <p style={{ fontSize: "0.75rem", color: "#8a92a6" }}>
+                  Odometer: {ro.odometerReadingKm} KM
+                </p>
               </>
             )}
           </div>
 
           <div style={cardStyle}>
-            <h3 style={{ fontSize: "1rem", fontWeight: 700, color: "#081a2f", marginTop: 0, marginBottom: "0.875rem" }}>
+            <h3
+              style={{
+                fontSize: "1rem",
+                fontWeight: 700,
+                color: "#081a2f",
+                marginTop: 0,
+                marginBottom: "0.875rem",
+              }}
+            >
               Diagnosis
             </h3>
             {ro.aiSuggestedDiagnosis && (
@@ -362,7 +422,9 @@ export function GarageRepairOrderDetailView({ repairOrder, mechanics }: Props) {
                 <div style={{ fontSize: "0.6875rem", color: "#00b8d9", fontWeight: 700 }}>
                   AI SUGGESTED {ro.aiConfidence != null && `· ${ro.aiConfidence}% CONFIDENCE`}
                 </div>
-                <div style={{ fontSize: "0.875rem", fontWeight: 700, color: "#081a2f" }}>{ro.aiSuggestedDiagnosis}</div>
+                <div style={{ fontSize: "0.875rem", fontWeight: 700, color: "#081a2f" }}>
+                  {ro.aiSuggestedDiagnosis}
+                </div>
               </div>
             )}
             {ro.garageSummary && !ro.diagnosticResultDegraded && (
@@ -374,10 +436,25 @@ export function GarageRepairOrderDetailView({ repairOrder, mechanics }: Props) {
                   marginBottom: "0.875rem",
                 }}
               >
-                <div style={{ fontSize: "0.6875rem", color: "#5b6472", fontWeight: 700, marginBottom: "0.25rem" }}>
+                <div
+                  style={{
+                    fontSize: "0.6875rem",
+                    color: "#5b6472",
+                    fontWeight: 700,
+                    marginBottom: "0.25rem",
+                  }}
+                >
                   AI TECHNICAL BRIEF
                 </div>
-                <p style={{ fontSize: "0.8125rem", color: "#081a2f", margin: 0, lineHeight: 1.55, whiteSpace: "pre-wrap" }}>
+                <p
+                  style={{
+                    fontSize: "0.8125rem",
+                    color: "#081a2f",
+                    margin: 0,
+                    lineHeight: 1.55,
+                    whiteSpace: "pre-wrap",
+                  }}
+                >
                   {ro.garageSummary}
                 </p>
               </div>
@@ -406,17 +483,33 @@ export function GarageRepairOrderDetailView({ repairOrder, mechanics }: Props) {
                 </button>
               </>
             ) : (
-              <p style={{ fontSize: "0.875rem", fontWeight: 700, color: "#081a2f" }}>{ro.confirmedDiagnosis}</p>
+              <p style={{ fontSize: "0.875rem", fontWeight: 700, color: "#081a2f" }}>
+                {ro.confirmedDiagnosis}
+              </p>
             )}
           </div>
 
           <div style={cardStyle}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.875rem" }}>
-              <h3 style={{ fontSize: "1rem", fontWeight: 700, color: "#081a2f", margin: 0 }}>Jobs &amp; Labor</h3>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "0.875rem",
+              }}
+            >
+              <h3 style={{ fontSize: "1rem", fontWeight: 700, color: "#081a2f", margin: 0 }}>
+                Jobs &amp; Labor
+              </h3>
               {ro.status === "IN_REPAIR" && (
                 <a
                   href={`/garage/repair-orders/${ro.id}/estimate` as never}
-                  style={{ fontSize: "0.75rem", color: "#00b8d9", textDecoration: "none", fontWeight: 600 }}
+                  style={{
+                    fontSize: "0.75rem",
+                    color: "#00b8d9",
+                    textDecoration: "none",
+                    fontWeight: 600,
+                  }}
                 >
                   View Estimate
                 </a>
@@ -425,11 +518,26 @@ export function GarageRepairOrderDetailView({ repairOrder, mechanics }: Props) {
             {ro.jobs.length === 0 ? (
               <p style={{ fontSize: "0.8125rem", color: "#8a92a6" }}>No jobs yet.</p>
             ) : (
-              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.8125rem", marginBottom: "0.875rem" }}>
+              <table
+                style={{
+                  width: "100%",
+                  borderCollapse: "collapse",
+                  fontSize: "0.8125rem",
+                  marginBottom: "0.875rem",
+                }}
+              >
                 <thead>
                   <tr style={{ textAlign: "start" }}>
                     {["Description", "Hours", "Total", "Status"].map((h) => (
-                      <th key={h} style={{ padding: "0.375rem 0", color: "#8a92a6", fontWeight: 600, borderBottom: "1px solid var(--border)" }}>
+                      <th
+                        key={h}
+                        style={{
+                          padding: "0.375rem 0",
+                          color: "#8a92a6",
+                          fontWeight: 600,
+                          borderBottom: "1px solid var(--border)",
+                        }}
+                      >
                         {h}
                       </th>
                     ))}
@@ -445,20 +553,37 @@ export function GarageRepairOrderDetailView({ repairOrder, mechanics }: Props) {
                       </td>
                       <td style={{ padding: "0.5rem 0" }}>
                         {ro.status === "IN_REPAIR" ? (
-                          <select
-                            value={j.status}
-                            onChange={async (e) => {
-                              const ok = await api(`/jobs/${j.id}/status`, "PUT", { status: e.target.value });
-                              if (ok) toast.success("Job status updated.");
-                            }}
-                            style={{ fontSize: "0.75rem", padding: "0.25rem", borderRadius: "0.375rem", border: "1px solid var(--border)" }}
-                          >
-                            <option value="PENDING">Pending</option>
-                            <option value="IN_PROGRESS">In Progress</option>
-                            <option value="DONE">Done</option>
-                          </select>
+                          <div style={{ position: "relative", display: "inline-block" }}>
+                            <select
+                              value={j.status}
+                              onChange={async (e) => {
+                                const ok = await api(`/jobs/${j.id}/status`, "PUT", {
+                                  status: e.target.value,
+                                });
+                                if (ok) toast.success("Job status updated.");
+                              }}
+                              style={{
+                                fontSize: "0.75rem",
+                                paddingBlock: "0.25rem",
+                                paddingInlineStart: "0.375rem",
+                                paddingInlineEnd: "1.25rem",
+                                borderRadius: "0.375rem",
+                                border: "1px solid var(--border)",
+                                appearance: "none",
+                                WebkitAppearance: "none",
+                                MozAppearance: "none",
+                              }}
+                            >
+                              <option value="PENDING">Pending</option>
+                              <option value="IN_PROGRESS">In Progress</option>
+                              <option value="DONE">Done</option>
+                            </select>
+                            <SelectChevron size={12} insetInlineEnd="0.375rem" />
+                          </div>
                         ) : (
-                          <span style={{ fontSize: "0.6875rem", color: "#8a92a6" }}>{j.status}</span>
+                          <span style={{ fontSize: "0.6875rem", color: "#8a92a6" }}>
+                            {j.status}
+                          </span>
                         )}
                         {estimateEditable && (
                           <button
@@ -467,7 +592,14 @@ export function GarageRepairOrderDetailView({ repairOrder, mechanics }: Props) {
                               const ok = await api(`/jobs/${j.id}`, "DELETE");
                               if (ok) toast.success("Job removed.");
                             }}
-                            style={{ marginInlineStart: "0.5rem", border: "none", background: "none", color: "#dc2626", cursor: "pointer", fontSize: "0.75rem" }}
+                            style={{
+                              marginInlineStart: "0.5rem",
+                              border: "none",
+                              background: "none",
+                              color: "#dc2626",
+                              cursor: "pointer",
+                              fontSize: "0.75rem",
+                            }}
                           >
                             Remove
                           </button>
@@ -479,18 +611,44 @@ export function GarageRepairOrderDetailView({ repairOrder, mechanics }: Props) {
               </table>
             )}
             {estimateEditable && (
-              <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr auto", gap: "0.5rem", alignItems: "center" }}>
-                <input placeholder="Description" value={jobDesc} onChange={(e) => setJobDesc(e.target.value)} style={inputStyle} />
-                <select value={jobMechanic} onChange={(e) => setJobMechanic(e.target.value)} style={inputStyle}>
-                  <option value="">Mechanic</option>
-                  {mechanics.map((m) => (
-                    <option key={m.membershipId} value={m.membershipId}>
-                      {m.name}
-                    </option>
-                  ))}
-                </select>
-                <input type="number" placeholder="Hours" value={jobHours} onChange={(e) => setJobHours(e.target.value)} style={inputStyle} />
-                <input type="number" placeholder="Rate/hr" value={jobRate} onChange={(e) => setJobRate(e.target.value)} style={inputStyle} />
+              <div className="grid grid-cols-1 items-center gap-2 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr_auto]">
+                <input
+                  placeholder="Description"
+                  value={jobDesc}
+                  onChange={(e) => setJobDesc(e.target.value)}
+                  style={inputStyle}
+                />
+                <div style={{ position: "relative" }}>
+                  <select
+                    value={jobMechanic}
+                    onChange={(e) => setJobMechanic(e.target.value)}
+                    style={selectStyle}
+                  >
+                    <option value="">Mechanic</option>
+                    {mechanics.map((m) => (
+                      <option key={m.membershipId} value={m.membershipId}>
+                        {m.name}
+                      </option>
+                    ))}
+                  </select>
+                  <SelectChevron size={14} insetInlineEnd="0.625rem" />
+                </div>
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  placeholder="Hours"
+                  value={jobHours}
+                  onChange={(e) => setJobHours(e.target.value)}
+                  style={inputStyle}
+                />
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  placeholder="Rate/hr"
+                  value={jobRate}
+                  onChange={(e) => setJobRate(e.target.value)}
+                  style={inputStyle}
+                />
                 <button
                   type="button"
                   disabled={busy || !jobDesc.trim()}
@@ -518,17 +676,40 @@ export function GarageRepairOrderDetailView({ repairOrder, mechanics }: Props) {
           </div>
 
           <div style={cardStyle}>
-            <h3 style={{ fontSize: "1rem", fontWeight: 700, color: "#081a2f", marginTop: 0, marginBottom: "0.875rem" }}>
+            <h3
+              style={{
+                fontSize: "1rem",
+                fontWeight: 700,
+                color: "#081a2f",
+                marginTop: 0,
+                marginBottom: "0.875rem",
+              }}
+            >
               Parts Used
             </h3>
             {ro.parts.length === 0 ? (
               <p style={{ fontSize: "0.8125rem", color: "#8a92a6" }}>No parts yet.</p>
             ) : (
-              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.8125rem", marginBottom: "0.875rem" }}>
+              <table
+                style={{
+                  width: "100%",
+                  borderCollapse: "collapse",
+                  fontSize: "0.8125rem",
+                  marginBottom: "0.875rem",
+                }}
+              >
                 <thead>
                   <tr style={{ textAlign: "start" }}>
                     {["Part", "Qty", "Unit Price", "Total"].map((h) => (
-                      <th key={h} style={{ padding: "0.375rem 0", color: "#8a92a6", fontWeight: 600, borderBottom: "1px solid var(--border)" }}>
+                      <th
+                        key={h}
+                        style={{
+                          padding: "0.375rem 0",
+                          color: "#8a92a6",
+                          fontWeight: 600,
+                          borderBottom: "1px solid var(--border)",
+                        }}
+                      >
                         {h}
                       </th>
                     ))}
@@ -540,8 +721,12 @@ export function GarageRepairOrderDetailView({ repairOrder, mechanics }: Props) {
                     <tr key={p.id} style={{ borderBottom: "1px solid var(--border)" }}>
                       <td style={{ padding: "0.5rem 0", color: "#081a2f" }}>{p.partName}</td>
                       <td style={{ padding: "0.5rem 0", color: "#5b6472" }}>{p.quantity}</td>
-                      <td style={{ padding: "0.5rem 0", color: "#5b6472" }}>{formatCurrency(p.unitPriceMinorUnits, ro.currency)}</td>
-                      <td style={{ padding: "0.5rem 0", color: "#081a2f", fontWeight: 600 }}>{formatCurrency(p.totalMinorUnits, ro.currency)}</td>
+                      <td style={{ padding: "0.5rem 0", color: "#5b6472" }}>
+                        {formatCurrency(p.unitPriceMinorUnits, ro.currency)}
+                      </td>
+                      <td style={{ padding: "0.5rem 0", color: "#081a2f", fontWeight: 600 }}>
+                        {formatCurrency(p.totalMinorUnits, ro.currency)}
+                      </td>
                       <td>
                         {estimateEditable && (
                           <button
@@ -550,7 +735,13 @@ export function GarageRepairOrderDetailView({ repairOrder, mechanics }: Props) {
                               const ok = await api(`/parts/${p.id}`, "DELETE");
                               if (ok) toast.success("Part removed.");
                             }}
-                            style={{ border: "none", background: "none", color: "#dc2626", cursor: "pointer", fontSize: "0.75rem" }}
+                            style={{
+                              border: "none",
+                              background: "none",
+                              color: "#dc2626",
+                              cursor: "pointer",
+                              fontSize: "0.75rem",
+                            }}
                           >
                             Remove
                           </button>
@@ -561,7 +752,10 @@ export function GarageRepairOrderDetailView({ repairOrder, mechanics }: Props) {
                 </tbody>
                 <tfoot>
                   <tr>
-                    <td colSpan={3} style={{ padding: "0.5rem 0", textAlign: "end", color: "#5b6472" }}>
+                    <td
+                      colSpan={3}
+                      style={{ padding: "0.5rem 0", textAlign: "end", color: "#5b6472" }}
+                    >
                       Total Parts Cost:
                     </td>
                     <td style={{ padding: "0.5rem 0", fontWeight: 700, color: "#081a2f" }}>
@@ -573,11 +767,35 @@ export function GarageRepairOrderDetailView({ repairOrder, mechanics }: Props) {
               </table>
             )}
             {estimateEditable && (
-              <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr auto", gap: "0.5rem" }}>
-                <input placeholder="Part name" value={partName} onChange={(e) => setPartName(e.target.value)} style={inputStyle} />
-                <input placeholder="SKU (optional)" value={partSku} onChange={(e) => setPartSku(e.target.value)} style={inputStyle} />
-                <input type="number" placeholder="Qty" value={partQty} onChange={(e) => setPartQty(e.target.value)} style={inputStyle} />
-                <input type="number" placeholder="Unit price" value={partPrice} onChange={(e) => setPartPrice(e.target.value)} style={inputStyle} />
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr_auto]">
+                <input
+                  placeholder="Part name"
+                  value={partName}
+                  onChange={(e) => setPartName(e.target.value)}
+                  style={inputStyle}
+                />
+                <input
+                  placeholder="SKU (optional)"
+                  value={partSku}
+                  onChange={(e) => setPartSku(e.target.value)}
+                  style={inputStyle}
+                />
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  placeholder="Qty"
+                  value={partQty}
+                  onChange={(e) => setPartQty(e.target.value)}
+                  style={inputStyle}
+                />
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  placeholder="Unit price"
+                  value={partPrice}
+                  onChange={(e) => setPartPrice(e.target.value)}
+                  style={inputStyle}
+                />
                 <button
                   type="button"
                   disabled={busy || !partName.trim()}
@@ -606,11 +824,21 @@ export function GarageRepairOrderDetailView({ repairOrder, mechanics }: Props) {
 
           {(ro.status === "IN_REPAIR" || ro.status === "QUALITY_CHECK") && (
             <div style={cardStyle}>
-              <h3 style={{ fontSize: "1rem", fontWeight: 700, color: "#081a2f", marginTop: 0, marginBottom: "0.875rem" }}>
+              <h3
+                style={{
+                  fontSize: "1rem",
+                  fontWeight: 700,
+                  color: "#081a2f",
+                  marginTop: 0,
+                  marginBottom: "0.875rem",
+                }}
+              >
                 Quality Check
               </h3>
               {ro.qualityChecks.length === 0 ? (
-                <p style={{ fontSize: "0.8125rem", color: "#8a92a6", marginBottom: "0.75rem" }}>No checklist items yet.</p>
+                <p style={{ fontSize: "0.8125rem", color: "#8a92a6", marginBottom: "0.75rem" }}>
+                  No checklist items yet.
+                </p>
               ) : (
                 <div style={{ marginBottom: "0.875rem" }}>
                   {ro.qualityChecks.map((q) => (
@@ -633,8 +861,13 @@ export function GarageRepairOrderDetailView({ repairOrder, mechanics }: Props) {
                         checked={q.isChecked}
                         onChange={async (e) => {
                           const checked = e.target.checked;
-                          const ok = await api(`/quality-checks/${q.id}`, "PUT", { isChecked: checked });
-                          if (ok) toast.success(checked ? "Checklist item checked." : "Checklist item unchecked.");
+                          const ok = await api(`/quality-checks/${q.id}`, "PUT", {
+                            isChecked: checked,
+                          });
+                          if (ok)
+                            toast.success(
+                              checked ? "Checklist item checked." : "Checklist item unchecked.",
+                            );
                         }}
                       />
                       {q.label}
@@ -644,7 +877,12 @@ export function GarageRepairOrderDetailView({ repairOrder, mechanics }: Props) {
               )}
               {ro.status === "IN_REPAIR" && (
                 <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.875rem" }}>
-                  <input placeholder="Checklist item" value={qcLabel} onChange={(e) => setQcLabel(e.target.value)} style={inputStyle} />
+                  <input
+                    placeholder="Checklist item"
+                    value={qcLabel}
+                    onChange={(e) => setQcLabel(e.target.value)}
+                    style={inputStyle}
+                  />
                   <button
                     type="button"
                     disabled={busy || !qcLabel.trim()}
@@ -664,7 +902,11 @@ export function GarageRepairOrderDetailView({ repairOrder, mechanics }: Props) {
               {ro.status === "IN_REPAIR" && (
                 <button
                   type="button"
-                  disabled={busy || ro.qualityChecks.length === 0 || ro.qualityChecks.some((q) => !q.isChecked)}
+                  disabled={
+                    busy ||
+                    ro.qualityChecks.length === 0 ||
+                    ro.qualityChecks.some((q) => !q.isChecked)
+                  }
                   style={primaryBtn}
                   onClick={async () => {
                     const ok = await api("/send-for-quality-check", "POST");
@@ -694,12 +936,36 @@ export function GarageRepairOrderDetailView({ repairOrder, mechanics }: Props) {
         {/* Right column */}
         <div>
           <div style={cardStyle}>
-            <h3 style={{ fontSize: "0.75rem", color: "#8a92a6", textTransform: "uppercase", letterSpacing: "0.03em", marginTop: 0, marginBottom: "0.875rem" }}>
+            <h3
+              style={{
+                fontSize: "0.75rem",
+                color: "#8a92a6",
+                textTransform: "uppercase",
+                letterSpacing: "0.03em",
+                marginTop: 0,
+                marginBottom: "0.875rem",
+              }}
+            >
               Lead Mechanic
             </h3>
             {ro.leadMechanic ? (
-              <div style={{ display: "flex", alignItems: "center", gap: "0.875rem", marginBottom: "1rem" }}>
-                <div style={{ width: "3.5rem", height: "3.5rem", borderRadius: "9999px", overflow: "hidden", flexShrink: 0 }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.875rem",
+                  marginBottom: "1rem",
+                }}
+              >
+                <div
+                  style={{
+                    width: "3.5rem",
+                    height: "3.5rem",
+                    borderRadius: "9999px",
+                    overflow: "hidden",
+                    flexShrink: 0,
+                  }}
+                >
                   <Image
                     src="/images/repair-orders/ro-detail-mechanic-avatar.jpg"
                     alt={ro.leadMechanic.name}
@@ -709,23 +975,38 @@ export function GarageRepairOrderDetailView({ repairOrder, mechanics }: Props) {
                   />
                 </div>
                 <div>
-                  <div style={{ fontSize: "0.9375rem", fontWeight: 700, color: "#081a2f" }}>{ro.leadMechanic.name}</div>
-                  {ro.leadMechanic.bio && <div style={{ fontSize: "0.75rem", color: "#8a92a6" }}>{ro.leadMechanic.bio}</div>}
+                  <div style={{ fontSize: "0.9375rem", fontWeight: 700, color: "#081a2f" }}>
+                    {ro.leadMechanic.name}
+                  </div>
+                  {ro.leadMechanic.bio && (
+                    <div style={{ fontSize: "0.75rem", color: "#8a92a6" }}>
+                      {ro.leadMechanic.bio}
+                    </div>
+                  )}
                 </div>
               </div>
             ) : (
-              <p style={{ fontSize: "0.8125rem", color: "#8a92a6", marginBottom: "0.875rem" }}>No mechanic assigned yet.</p>
+              <p style={{ fontSize: "0.8125rem", color: "#8a92a6", marginBottom: "0.875rem" }}>
+                No mechanic assigned yet.
+              </p>
             )}
             {!["COMPLETED", "INVOICED", "CANCELLED"].includes(ro.status) && (
               <div style={{ display: "flex", gap: "0.5rem" }}>
-                <select value={reassignMechanic} onChange={(e) => setReassignMechanic(e.target.value)} style={inputStyle}>
-                  <option value="">Select mechanic…</option>
-                  {mechanics.map((m) => (
-                    <option key={m.membershipId} value={m.membershipId}>
-                      {m.name}
-                    </option>
-                  ))}
-                </select>
+                <div style={{ position: "relative", flex: 1 }}>
+                  <select
+                    value={reassignMechanic}
+                    onChange={(e) => setReassignMechanic(e.target.value)}
+                    style={selectStyle}
+                  >
+                    <option value="">Select mechanic…</option>
+                    {mechanics.map((m) => (
+                      <option key={m.membershipId} value={m.membershipId}>
+                        {m.name}
+                      </option>
+                    ))}
+                  </select>
+                  <SelectChevron size={14} insetInlineEnd="0.625rem" />
+                </div>
                 <button
                   type="button"
                   disabled={busy || !reassignMechanic}
@@ -733,7 +1014,8 @@ export function GarageRepairOrderDetailView({ repairOrder, mechanics }: Props) {
                   onClick={async () => {
                     const wasAssigned = ro.leadMechanic !== null;
                     const ok = await api("/mechanic", "PUT", { membershipId: reassignMechanic });
-                    if (ok) toast.success(wasAssigned ? "Mechanic reassigned." : "Mechanic assigned.");
+                    if (ok)
+                      toast.success(wasAssigned ? "Mechanic reassigned." : "Mechanic assigned.");
                   }}
                 >
                   {ro.leadMechanic ? "Reassign" : "Assign"}
@@ -743,12 +1025,24 @@ export function GarageRepairOrderDetailView({ repairOrder, mechanics }: Props) {
           </div>
 
           <div style={cardStyle}>
-            <h3 style={{ fontSize: "0.75rem", color: "#8a92a6", textTransform: "uppercase", letterSpacing: "0.03em", marginTop: 0, marginBottom: "0.875rem" }}>
+            <h3
+              style={{
+                fontSize: "0.75rem",
+                color: "#8a92a6",
+                textTransform: "uppercase",
+                letterSpacing: "0.03em",
+                marginTop: 0,
+                marginBottom: "0.875rem",
+              }}
+            >
               Actions
             </h3>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.625rem" }}>
               {["DIAGNOSIS", "ESTIMATE_DRAFT", "REJECTED"].includes(ro.status) && (
-                <a href={`/garage/repair-orders/${ro.id}/estimate` as never} style={{ ...primaryBtn, textAlign: "center", textDecoration: "none" }}>
+                <a
+                  href={`/garage/repair-orders/${ro.id}/estimate` as never}
+                  style={{ ...primaryBtn, textAlign: "center", textDecoration: "none" }}
+                >
                   Open Estimate Builder
                 </a>
               )}
@@ -766,13 +1060,22 @@ export function GarageRepairOrderDetailView({ repairOrder, mechanics }: Props) {
                 </button>
               )}
               {(ro.status === "COMPLETED" || ro.status === "INVOICED") && (
-                <a href={`/garage/repair-orders/${ro.id}/invoice` as never} style={{ ...primaryBtn, textAlign: "center", textDecoration: "none" }}>
+                <a
+                  href={`/garage/repair-orders/${ro.id}/invoice` as never}
+                  style={{ ...primaryBtn, textAlign: "center", textDecoration: "none" }}
+                >
                   {ro.status === "COMPLETED" ? "Finalize Invoice" : "View Invoice"}
                 </a>
               )}
-              {["CREATED", "INSPECTION", "DIAGNOSIS", "ESTIMATE_DRAFT", "AWAITING_APPROVAL", "REJECTED", "APPROVED"].includes(
-                ro.status,
-              ) && (
+              {[
+                "CREATED",
+                "INSPECTION",
+                "DIAGNOSIS",
+                "ESTIMATE_DRAFT",
+                "AWAITING_APPROVAL",
+                "REJECTED",
+                "APPROVED",
+              ].includes(ro.status) && (
                 <>
                   {cancelReason === null ? (
                     <button type="button" style={secondaryBtn} onClick={() => setCancelReason("")}>
@@ -805,17 +1108,40 @@ export function GarageRepairOrderDetailView({ repairOrder, mechanics }: Props) {
           </div>
 
           <div style={cardStyle}>
-            <h3 style={{ fontSize: "0.75rem", color: "#8a92a6", textTransform: "uppercase", letterSpacing: "0.03em", marginTop: 0, marginBottom: "0.875rem" }}>
+            <h3
+              style={{
+                fontSize: "0.75rem",
+                color: "#8a92a6",
+                textTransform: "uppercase",
+                letterSpacing: "0.03em",
+                marginTop: 0,
+                marginBottom: "0.875rem",
+              }}
+            >
               Status History
             </h3>
             {ro.statusHistory
               .slice()
               .reverse()
               .map((h) => (
-                <div key={h.id} style={{ padding: "0.5rem 0", fontSize: "0.8125rem", borderBottom: "1px solid var(--border)" }}>
-                  <div style={{ fontWeight: 600, color: "#081a2f" }}>{STATUS_LABELS[h.toStatus] ?? h.toStatus}</div>
+                <div
+                  key={h.id}
+                  style={{
+                    padding: "0.5rem 0",
+                    fontSize: "0.8125rem",
+                    borderBottom: "1px solid var(--border)",
+                  }}
+                >
+                  <div style={{ fontWeight: 600, color: "#081a2f" }}>
+                    {STATUS_LABELS[h.toStatus] ?? h.toStatus}
+                  </div>
                   <div style={{ fontSize: "0.6875rem", color: "#8a92a6" }}>
-                    {new Date(h.createdAt).toLocaleString("en-AE", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+                    {new Date(h.createdAt).toLocaleString("en-AE", {
+                      day: "numeric",
+                      month: "short",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
                     {h.note ? ` · ${h.note}` : ""}
                   </div>
                 </div>

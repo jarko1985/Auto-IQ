@@ -8,6 +8,7 @@ import { Package, Search } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { getPartImage } from "@/features/catalog/part-image";
 import { InlineSpinner } from "@/components/ui/inline-spinner";
+import { SelectChevron } from "@/components/forms/field-styles";
 
 interface PartResult {
   id: string;
@@ -45,6 +46,14 @@ const fieldStyle: React.CSSProperties = {
   backgroundColor: "transparent",
   color: "var(--foreground)",
   outline: "none",
+};
+
+const selectStyle: React.CSSProperties = {
+  ...fieldStyle,
+  paddingInlineEnd: "1.75rem",
+  appearance: "none",
+  WebkitAppearance: "none",
+  MozAppearance: "none",
 };
 
 export function MarketplaceView({ initialResults, categories, vehicles }: Props) {
@@ -94,29 +103,42 @@ export function MarketplaceView({ initialResults, categories, vehicles }: Props)
         <div style={{ position: "relative", flex: "1 1 260px" }}>
           <Search
             size={14}
-            style={{ position: "absolute", insetInlineStart: "0.75rem", top: "0.625rem", color: "#8a92a6" }}
+            style={{
+              position: "absolute",
+              insetInlineStart: "0.75rem",
+              top: "0.625rem",
+              color: "#8a92a6",
+            }}
           />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && void search()}
             placeholder="Search parts, manufacturer, part number..."
-            style={{ ...fieldStyle, width: "100%", paddingInlineStart: "2rem", boxSizing: "border-box" }}
+            style={{
+              ...fieldStyle,
+              width: "100%",
+              paddingInlineStart: "2rem",
+              boxSizing: "border-box",
+            }}
           />
         </div>
         {vehicles.length > 0 && (
-          <select
-            value={vehicleId}
-            onChange={(e) => setVehicleId(e.target.value)}
-            style={fieldStyle}
-          >
-            <option value="">All vehicles</option>
-            {vehicles.map((v) => (
-              <option key={v.id} value={v.id}>
-                Compatible with {v.label}
-              </option>
-            ))}
-          </select>
+          <div style={{ position: "relative" }}>
+            <select
+              value={vehicleId}
+              onChange={(e) => setVehicleId(e.target.value)}
+              style={selectStyle}
+            >
+              <option value="">All vehicles</option>
+              {vehicles.map((v) => (
+                <option key={v.id} value={v.id}>
+                  Compatible with {v.label}
+                </option>
+              ))}
+            </select>
+            <SelectChevron size={14} insetInlineEnd="0.625rem" />
+          </div>
         )}
         <button
           type="button"
@@ -191,78 +213,78 @@ export function MarketplaceView({ initialResults, categories, vehicles }: Props)
           {results.map((p) => {
             const photo = getPartImage({ partNumber: p.partNumber });
             return (
-            <Link
-              key={p.id}
-              href={`/marketplace/${p.id}` as never}
-              style={{
-                display: "block",
-                border: "1px solid var(--border)",
-                borderRadius: "0.75rem",
-                padding: "1rem",
-                textDecoration: "none",
-                color: "inherit",
-              }}
-            >
-              <div
+              <Link
+                key={p.id}
+                href={`/marketplace/${p.id}` as never}
                 style={{
-                  position: "relative",
-                  width: "100%",
-                  height: "120px",
-                  borderRadius: "0.5rem",
-                  backgroundColor: "#f7fafd",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginBottom: "0.75rem",
-                  overflow: "hidden",
+                  display: "block",
+                  border: "1px solid var(--border)",
+                  borderRadius: "0.75rem",
+                  padding: "1rem",
+                  textDecoration: "none",
+                  color: "inherit",
                 }}
               >
-                {photo ? (
-                  <Image
-                    src={photo}
-                    alt={p.name}
-                    fill
-                    sizes="240px"
-                    style={{ objectFit: "cover" }}
-                  />
-                ) : (
-                  <Package size={32} color="#8a92a6" />
-                )}
-              </div>
-              <div
-                style={{
-                  fontSize: "0.6875rem",
-                  color: "#00b8d9",
-                  fontWeight: 700,
-                  marginBottom: "0.25rem",
-                }}
-              >
-                {p.manufacturerName}
-              </div>
-              <div
-                style={{
-                  fontSize: "0.875rem",
-                  fontWeight: 600,
-                  color: "#081a2f",
-                  marginBottom: "0.25rem",
-                }}
-              >
-                {p.name}
-              </div>
-              <div style={{ fontSize: "0.75rem", color: "#8a92a6", marginBottom: "0.5rem" }}>
-                {p.categoryName} · {p.origin === "OEM" ? "OEM" : "Aftermarket"}
-              </div>
-              <div style={{ fontSize: "0.8125rem", fontWeight: 700, color: "#081a2f" }}>
-                {p.minPriceMinorUnits !== null
-                  ? p.minPriceMinorUnits === p.maxPriceMinorUnits
-                    ? formatCurrency(p.minPriceMinorUnits, p.currency)
-                    : `${formatCurrency(p.minPriceMinorUnits, p.currency)} – ${formatCurrency(p.maxPriceMinorUnits ?? p.minPriceMinorUnits, p.currency)}`
-                  : "No offers"}
-              </div>
-              <div style={{ fontSize: "0.75rem", color: "#8a92a6" }}>
-                {p.vendorCount} vendor{p.vendorCount === 1 ? "" : "s"}
-              </div>
-            </Link>
+                <div
+                  style={{
+                    position: "relative",
+                    width: "100%",
+                    height: "120px",
+                    borderRadius: "0.5rem",
+                    backgroundColor: "#f7fafd",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: "0.75rem",
+                    overflow: "hidden",
+                  }}
+                >
+                  {photo ? (
+                    <Image
+                      src={photo}
+                      alt={p.name}
+                      fill
+                      sizes="240px"
+                      style={{ objectFit: "cover" }}
+                    />
+                  ) : (
+                    <Package size={32} color="#8a92a6" />
+                  )}
+                </div>
+                <div
+                  style={{
+                    fontSize: "0.6875rem",
+                    color: "#00b8d9",
+                    fontWeight: 700,
+                    marginBottom: "0.25rem",
+                  }}
+                >
+                  {p.manufacturerName}
+                </div>
+                <div
+                  style={{
+                    fontSize: "0.875rem",
+                    fontWeight: 600,
+                    color: "#081a2f",
+                    marginBottom: "0.25rem",
+                  }}
+                >
+                  {p.name}
+                </div>
+                <div style={{ fontSize: "0.75rem", color: "#8a92a6", marginBottom: "0.5rem" }}>
+                  {p.categoryName} · {p.origin === "OEM" ? "OEM" : "Aftermarket"}
+                </div>
+                <div style={{ fontSize: "0.8125rem", fontWeight: 700, color: "#081a2f" }}>
+                  {p.minPriceMinorUnits !== null
+                    ? p.minPriceMinorUnits === p.maxPriceMinorUnits
+                      ? formatCurrency(p.minPriceMinorUnits, p.currency)
+                      : `${formatCurrency(p.minPriceMinorUnits, p.currency)} – ${formatCurrency(p.maxPriceMinorUnits ?? p.minPriceMinorUnits, p.currency)}`
+                    : "No offers"}
+                </div>
+                <div style={{ fontSize: "0.75rem", color: "#8a92a6" }}>
+                  {p.vendorCount} vendor{p.vendorCount === 1 ? "" : "s"}
+                </div>
+              </Link>
             );
           })}
         </div>

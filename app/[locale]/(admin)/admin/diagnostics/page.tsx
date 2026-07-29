@@ -10,7 +10,8 @@ const DEFAULT_MAX_RATING = 3;
 export default async function AdminDiagnosticFeedbackPage() {
   const session = await auth();
   if (!session?.user) redirect("/sign-in");
-  if (!hasPermission(session.user.role, PERMISSIONS.ADMIN_DIAGNOSTICS_MANAGE)) redirect("/dashboard");
+  if (!hasPermission(session.user.role, PERMISSIONS.ADMIN_DIAGNOSTICS_MANAGE))
+    redirect("/dashboard");
 
   const { feedback, total } = await listDiagnosticFeedback({
     maxRating: DEFAULT_MAX_RATING,
@@ -19,7 +20,7 @@ export default async function AdminDiagnosticFeedbackPage() {
   });
 
   return (
-    <div style={{ padding: "2rem 2.5rem", maxWidth: "1100px" }}>
+    <div className="px-4 py-6 sm:px-10 sm:py-8" style={{ maxWidth: "1100px" }}>
       <h1
         style={{ fontSize: "1.5rem", fontWeight: 700, color: "#081a2f", marginBottom: "0.25rem" }}
       >

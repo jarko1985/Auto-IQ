@@ -8,6 +8,7 @@ import { InlineSpinner } from "@/components/ui/inline-spinner";
 import { GarageMap } from "@/components/maps/garage-map";
 import { RatingSummary } from "@/components/garages/rating-summary";
 import { useGeolocation } from "@/lib/hooks/use-geolocation";
+import { SelectChevron } from "@/components/forms/field-styles";
 import type { GarageSearchResult } from "@/features/bookings/service";
 
 type GarageCard = GarageSearchResult;
@@ -86,6 +87,17 @@ const fieldStyle: React.CSSProperties = {
   fontSize: "0.8125rem",
   color: "#081a2f",
   backgroundColor: "#fff",
+};
+
+// Native <select> arrows render flush against the border regardless of
+// padding — this reserves room on the end side for a positioned chevron
+// (see <SelectChevron>) instead of relying on the OS-drawn one.
+const selectStyle: React.CSSProperties = {
+  ...fieldStyle,
+  paddingInlineEnd: "1.75rem",
+  appearance: "none",
+  WebkitAppearance: "none",
+  MozAppearance: "none",
 };
 
 export function GarageSearchView({ initialGarages, initialTotal, makes, initialFilters }: Props) {
@@ -204,36 +216,45 @@ export function GarageSearchView({ initialGarages, initialTotal, makes, initialF
           />
         </div>
 
-        <select value={emirate} onChange={(e) => setEmirate(e.target.value)} style={fieldStyle}>
-          <option value="">All Emirates</option>
-          {Object.entries(EMIRATE_LABELS).map(([value, label]) => (
-            <option key={value} value={value}>
-              {label}
-            </option>
-          ))}
-        </select>
+        <div style={{ position: "relative" }}>
+          <select value={emirate} onChange={(e) => setEmirate(e.target.value)} style={selectStyle}>
+            <option value="">All Emirates</option>
+            {Object.entries(EMIRATE_LABELS).map(([value, label]) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </select>
+          <SelectChevron size={14} insetInlineEnd="0.625rem" />
+        </div>
 
-        <select
-          value={vehicleType}
-          onChange={(e) => setVehicleType(e.target.value)}
-          style={fieldStyle}
-        >
-          <option value="">All Vehicle Types</option>
-          {Object.entries(VEHICLE_TYPE_LABELS).map(([value, label]) => (
-            <option key={value} value={value}>
-              {label}
-            </option>
-          ))}
-        </select>
+        <div style={{ position: "relative" }}>
+          <select
+            value={vehicleType}
+            onChange={(e) => setVehicleType(e.target.value)}
+            style={selectStyle}
+          >
+            <option value="">All Vehicle Types</option>
+            {Object.entries(VEHICLE_TYPE_LABELS).map(([value, label]) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </select>
+          <SelectChevron size={14} insetInlineEnd="0.625rem" />
+        </div>
 
-        <select value={makeId} onChange={(e) => setMakeId(e.target.value)} style={fieldStyle}>
-          <option value="">All Makes</option>
-          {makes.map((m) => (
-            <option key={m.id} value={m.id}>
-              {m.name}
-            </option>
-          ))}
-        </select>
+        <div style={{ position: "relative" }}>
+          <select value={makeId} onChange={(e) => setMakeId(e.target.value)} style={selectStyle}>
+            <option value="">All Makes</option>
+            {makes.map((m) => (
+              <option key={m.id} value={m.id}>
+                {m.name}
+              </option>
+            ))}
+          </select>
+          <SelectChevron size={14} insetInlineEnd="0.625rem" />
+        </div>
 
         <button
           type="button"
@@ -295,20 +316,23 @@ export function GarageSearchView({ initialGarages, initialTotal, makes, initialF
         </button>
 
         {geo.status === "granted" && (
-          <select
-            value={radiusKm}
-            onChange={(e) => {
-              setRadiusKm(Number(e.target.value));
-              void runSearch(0);
-            }}
-            style={fieldStyle}
-          >
-            {RADIUS_OPTIONS.map((r) => (
-              <option key={r} value={r}>
-                Within {r} km
-              </option>
-            ))}
-          </select>
+          <div style={{ position: "relative" }}>
+            <select
+              value={radiusKm}
+              onChange={(e) => {
+                setRadiusKm(Number(e.target.value));
+                void runSearch(0);
+              }}
+              style={selectStyle}
+            >
+              {RADIUS_OPTIONS.map((r) => (
+                <option key={r} value={r}>
+                  Within {r} km
+                </option>
+              ))}
+            </select>
+            <SelectChevron size={14} insetInlineEnd="0.625rem" />
+          </div>
         )}
 
         {geo.status === "denied" && (

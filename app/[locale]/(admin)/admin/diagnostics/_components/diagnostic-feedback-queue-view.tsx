@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Star, MessageCircle, Flag, Meh } from "lucide-react";
 import { Link } from "@/i18n/routing";
+import { SelectChevron } from "@/components/forms/field-styles";
 
 interface FeedbackItem {
   id: string;
@@ -141,27 +142,37 @@ export function DiagnosticFeedbackQueueView({
           <Flag size={14} /> {total} Flagged
         </div>
 
-        <select
-          value={maxRating ?? "all"}
-          onChange={(e) => void applyFilter(e.target.value === "all" ? null : Number(e.target.value))}
-          disabled={loading}
-          style={{
-            padding: "0.5rem 0.875rem",
-            border: "1px solid var(--border)",
-            borderRadius: "0.625rem",
-            fontSize: "0.8125rem",
-            fontWeight: 600,
-            color: "#081a2f",
-            backgroundColor: "#fff",
-            cursor: loading ? "not-allowed" : "pointer",
-          }}
-        >
-          {RATING_FILTERS.map((f) => (
-            <option key={f.label} value={f.value ?? "all"}>
-              {f.label}
-            </option>
-          ))}
-        </select>
+        <div style={{ position: "relative" }}>
+          <select
+            value={maxRating ?? "all"}
+            onChange={(e) =>
+              void applyFilter(e.target.value === "all" ? null : Number(e.target.value))
+            }
+            disabled={loading}
+            style={{
+              paddingBlock: "0.5rem",
+              paddingInlineStart: "0.875rem",
+              paddingInlineEnd: "2rem",
+              border: "1px solid var(--border)",
+              borderRadius: "0.625rem",
+              fontSize: "0.8125rem",
+              fontWeight: 600,
+              color: "#081a2f",
+              backgroundColor: "#fff",
+              cursor: loading ? "not-allowed" : "pointer",
+              appearance: "none",
+              WebkitAppearance: "none",
+              MozAppearance: "none",
+            }}
+          >
+            {RATING_FILTERS.map((f) => (
+              <option key={f.label} value={f.value ?? "all"}>
+                {f.label}
+              </option>
+            ))}
+          </select>
+          <SelectChevron size={14} insetInlineEnd="0.75rem" />
+        </div>
       </div>
 
       {feedback.length === 0 ? (
@@ -190,7 +201,9 @@ export function DiagnosticFeedbackQueueView({
           <h4 style={{ fontSize: "1rem", fontWeight: 700, color: "#081a2f", margin: "0 0 0.5rem" }}>
             No feedback matches this filter
           </h4>
-          <p style={{ fontSize: "0.8125rem", color: "#8a92a6", maxWidth: "320px", margin: "0 auto" }}>
+          <p
+            style={{ fontSize: "0.8125rem", color: "#8a92a6", maxWidth: "320px", margin: "0 auto" }}
+          >
             All low-rated diagnostic feedback has been reviewed for this filter.
           </p>
         </div>
@@ -263,12 +276,8 @@ export function DiagnosticFeedbackQueueView({
                   </div>
 
                   <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: "1fr 1fr",
-                      gap: "1rem",
-                      marginBottom: "0.875rem",
-                    }}
+                    className="grid grid-cols-1 gap-4 sm:grid-cols-2"
+                    style={{ marginBottom: "0.875rem" }}
                   >
                     <div>
                       <p
@@ -282,7 +291,14 @@ export function DiagnosticFeedbackQueueView({
                       >
                         VEHICLE
                       </p>
-                      <p style={{ fontSize: "0.9375rem", fontWeight: 700, color: "#081a2f", margin: 0 }}>
+                      <p
+                        style={{
+                          fontSize: "0.9375rem",
+                          fontWeight: 700,
+                          color: "#081a2f",
+                          margin: 0,
+                        }}
+                      >
                         {f.vehicleLabel}
                       </p>
                     </div>
@@ -298,7 +314,14 @@ export function DiagnosticFeedbackQueueView({
                       >
                         SYMPTOM
                       </p>
-                      <p style={{ fontSize: "0.9375rem", fontWeight: 700, color: "#081a2f", margin: 0 }}>
+                      <p
+                        style={{
+                          fontSize: "0.9375rem",
+                          fontWeight: 700,
+                          color: "#081a2f",
+                          margin: 0,
+                        }}
+                      >
                         {f.symptomLabel}
                       </p>
                     </div>
@@ -325,7 +348,14 @@ export function DiagnosticFeedbackQueueView({
                       >
                         <MessageCircle size={13} /> Customer Comment
                       </p>
-                      <p style={{ fontSize: "0.875rem", color: "#181c1e", fontStyle: "italic", margin: 0 }}>
+                      <p
+                        style={{
+                          fontSize: "0.875rem",
+                          color: "#181c1e",
+                          fontStyle: "italic",
+                          margin: 0,
+                        }}
+                      >
                         &ldquo;{f.comment}&rdquo;
                       </p>
                     </div>
@@ -342,7 +372,8 @@ export function DiagnosticFeedbackQueueView({
                         color: "#5b6472",
                       }}
                     >
-                      Top AI-ranked cause: <strong style={{ color: "#081a2f" }}>{f.topCauseLabel}</strong>
+                      Top AI-ranked cause:{" "}
+                      <strong style={{ color: "#081a2f" }}>{f.topCauseLabel}</strong>
                     </div>
                   )}
 

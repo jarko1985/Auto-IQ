@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { AlertTriangle, Boxes, Plus, Wallet } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { getPartImage } from "@/features/catalog/part-image";
+import { SelectChevron } from "@/components/forms/field-styles";
 
 interface InventoryRow {
   id: string;
@@ -46,6 +47,14 @@ const fieldStyle: React.CSSProperties = {
   backgroundColor: "transparent",
   color: "var(--foreground)",
   outline: "none",
+};
+
+const selectStyle: React.CSSProperties = {
+  ...fieldStyle,
+  paddingInlineEnd: "1.75rem",
+  appearance: "none",
+  WebkitAppearance: "none",
+  MozAppearance: "none",
 };
 
 export function VendorInventoryView({ initialItems, locations }: Props) {
@@ -140,14 +149,7 @@ export function VendorInventoryView({ initialItems, locations }: Props) {
 
   return (
     <div>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
-          gap: "1rem",
-          marginBottom: "1.5rem",
-        }}
-      >
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3" style={{ marginBottom: "1.5rem" }}>
         <div
           style={{
             border: "1px solid var(--border)",
@@ -233,28 +235,34 @@ export function VendorInventoryView({ initialItems, locations }: Props) {
         }}
       >
         <div style={{ display: "flex", gap: "0.625rem", flexWrap: "wrap" }}>
-          <select
-            value={locationFilter}
-            onChange={(e) => setLocationFilter(e.target.value)}
-            style={fieldStyle}
-          >
-            <option value="">All locations</option>
-            {locations.map((l) => (
-              <option key={l.id} value={l.id}>
-                {l.name}
-              </option>
-            ))}
-          </select>
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            style={fieldStyle}
-          >
-            <option value="">All stock statuses</option>
-            <option value="IN_STOCK">In Stock</option>
-            <option value="LOW_STOCK">Low Stock</option>
-            <option value="OUT_OF_STOCK">Out of Stock</option>
-          </select>
+          <div style={{ position: "relative" }}>
+            <select
+              value={locationFilter}
+              onChange={(e) => setLocationFilter(e.target.value)}
+              style={selectStyle}
+            >
+              <option value="">All locations</option>
+              {locations.map((l) => (
+                <option key={l.id} value={l.id}>
+                  {l.name}
+                </option>
+              ))}
+            </select>
+            <SelectChevron size={14} insetInlineEnd="0.625rem" />
+          </div>
+          <div style={{ position: "relative" }}>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              style={selectStyle}
+            >
+              <option value="">All stock statuses</option>
+              <option value="IN_STOCK">In Stock</option>
+              <option value="LOW_STOCK">Low Stock</option>
+              <option value="OUT_OF_STOCK">Out of Stock</option>
+            </select>
+            <SelectChevron size={14} insetInlineEnd="0.625rem" />
+          </div>
           <input
             placeholder="Search parts..."
             value={query}
@@ -288,9 +296,20 @@ export function VendorInventoryView({ initialItems, locations }: Props) {
         </p>
       ) : (
         <div
-          style={{ border: "1px solid var(--border)", borderRadius: "0.75rem", overflow: "hidden" }}
+          style={{
+            border: "1px solid var(--border)",
+            borderRadius: "0.75rem",
+            overflowX: "auto",
+          }}
         >
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.8125rem" }}>
+          <table
+            style={{
+              width: "100%",
+              minWidth: "720px",
+              borderCollapse: "collapse",
+              fontSize: "0.8125rem",
+            }}
+          >
             <thead>
               <tr style={{ backgroundColor: "#f7fafd", textAlign: "start" }}>
                 {[
@@ -433,15 +452,20 @@ export function VendorInventoryView({ initialItems, locations }: Props) {
                               >
                                 Type
                               </label>
-                              <select
-                                value={adjustType}
-                                onChange={(e) => setAdjustType(e.target.value as typeof adjustType)}
-                                style={fieldStyle}
-                              >
-                                <option value="RESTOCK">Restock</option>
-                                <option value="ADJUSTMENT">Correction (+/-)</option>
-                                <option value="DAMAGE">Mark Damaged</option>
-                              </select>
+                              <div style={{ position: "relative" }}>
+                                <select
+                                  value={adjustType}
+                                  onChange={(e) =>
+                                    setAdjustType(e.target.value as typeof adjustType)
+                                  }
+                                  style={selectStyle}
+                                >
+                                  <option value="RESTOCK">Restock</option>
+                                  <option value="ADJUSTMENT">Correction (+/-)</option>
+                                  <option value="DAMAGE">Mark Damaged</option>
+                                </select>
+                                <SelectChevron size={14} insetInlineEnd="0.625rem" />
+                              </div>
                             </div>
                             <div>
                               <label

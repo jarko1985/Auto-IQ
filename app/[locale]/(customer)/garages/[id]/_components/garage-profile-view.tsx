@@ -6,6 +6,7 @@ import { CheckCircle2, MapPin, Phone, Mail, Calendar, Star } from "lucide-react"
 import { SERVICE_LABELS, EMIRATE_LABELS } from "../../_components/garage-search-view";
 import { RatingSummary } from "@/components/garages/rating-summary";
 import { GarageMap } from "@/components/maps/garage-map";
+import { SelectChevron } from "@/components/forms/field-styles";
 
 const VEHICLE_TYPE_LABELS: Record<string, string> = {
   SEDAN: "Sedan",
@@ -162,22 +163,30 @@ export function GarageProfileView({ garage, primaryLocationId }: Props) {
           >
             Location
           </label>
-          <select
-            value={locationId}
-            onChange={(e) => setLocationId(e.target.value)}
-            style={{
-              padding: "0.4375rem 0.75rem",
-              border: "1px solid var(--border)",
-              borderRadius: "0.5rem",
-              fontSize: "0.8125rem",
-            }}
-          >
-            {garage.locations.map((l) => (
-              <option key={l.id} value={l.id}>
-                {l.name}
-              </option>
-            ))}
-          </select>
+          <div style={{ position: "relative", display: "inline-block" }}>
+            <select
+              value={locationId}
+              onChange={(e) => setLocationId(e.target.value)}
+              style={{
+                paddingBlock: "0.4375rem",
+                paddingInlineStart: "0.75rem",
+                paddingInlineEnd: "1.75rem",
+                border: "1px solid var(--border)",
+                borderRadius: "0.5rem",
+                fontSize: "0.8125rem",
+                appearance: "none",
+                WebkitAppearance: "none",
+                MozAppearance: "none",
+              }}
+            >
+              {garage.locations.map((l) => (
+                <option key={l.id} value={l.id}>
+                  {l.name}
+                </option>
+              ))}
+            </select>
+            <SelectChevron size={14} insetInlineEnd="0.625rem" />
+          </div>
         </div>
       )}
 
@@ -194,7 +203,10 @@ export function GarageProfileView({ garage, primaryLocationId }: Props) {
         <span style={{ display: "flex", alignItems: "center", gap: "0.375rem" }}>
           <Phone size={13} /> {garage.contactPhone}
         </span>
-        <span className="overflow-wrap-anywhere" style={{ display: "flex", alignItems: "center", gap: "0.375rem" }}>
+        <span
+          className="overflow-wrap-anywhere"
+          style={{ display: "flex", alignItems: "center", gap: "0.375rem" }}
+        >
           <Mail size={13} /> {garage.contactEmail}
         </span>
       </div>

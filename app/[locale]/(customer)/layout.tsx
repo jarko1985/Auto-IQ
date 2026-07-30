@@ -1,8 +1,14 @@
 import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
-import { CustomerSidebar } from "@/components/layout/customer-sidebar";
+import {
+  CustomerSidebar,
+  customerNavItems,
+  customerSecondaryItems,
+} from "@/components/layout/customer-sidebar";
 import { PortalTopbar } from "@/components/layout/portal-topbar";
+
+const BRAND_ICON = <span style={{ color: "#fff", fontWeight: 700, fontSize: "0.875rem" }}>A</span>;
 
 export default async function CustomerLayout({ children }: { children: ReactNode }) {
   const session = await auth();
@@ -23,6 +29,10 @@ export default async function CustomerLayout({ children }: { children: ReactNode
           notificationsHref="/dashboard/notifications"
           profileHref="/dashboard/profile"
           settingsHref="/dashboard/settings"
+          brandIcon={BRAND_ICON}
+          brandLabel="AutoIQ"
+          navItems={customerNavItems}
+          secondaryItems={customerSecondaryItems}
         />
         <main style={{ flex: 1, minWidth: 0, overflowY: "auto" }}>{children}</main>
       </div>

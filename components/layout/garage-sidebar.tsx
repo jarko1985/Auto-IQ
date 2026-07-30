@@ -13,38 +13,50 @@ import {
   Bell,
 } from "lucide-react";
 import { useIsDesktop } from "@/lib/hooks/use-is-desktop";
-import { SidebarNavLink } from "@/components/layout/sidebar-nav-link";
+import { SidebarNavLink, type PortalNavItem } from "@/components/layout/sidebar-nav-link";
+import { resolveOrgStatusBadge } from "@/components/layout/org-status-badge";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
-const navItems = [
-  { href: "/garage/dashboard", label: "Dashboard", icon: LayoutDashboard, soon: false },
-  { href: "/garage/locations", label: "Locations & Hours", icon: MapPin, soon: false },
-  { href: "/garage/services", label: "Services & Capabilities", icon: Wrench, soon: false },
-  { href: "/garage/mechanics", label: "Mechanics", icon: Users, soon: false },
-  { href: "/garage/calendar", label: "Calendar", icon: CalendarDays, soon: false },
-  { href: "/garage/appointments", label: "Appointments", icon: CalendarClock, soon: false },
-  { href: "/garage/repair-orders", label: "Repair Orders", icon: ClipboardList, soon: false },
-  { href: "/garage/notifications", label: "Notifications", icon: Bell, soon: false },
-] as const;
+export const garageNavItems: readonly PortalNavItem[] = [
+  { href: "/garage/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/garage/locations", label: "Locations & Hours", icon: MapPin },
+  { href: "/garage/services", label: "Services & Capabilities", icon: Wrench },
+  { href: "/garage/mechanics", label: "Mechanics", icon: Users },
+  { href: "/garage/calendar", label: "Calendar", icon: CalendarDays },
+  { href: "/garage/appointments", label: "Appointments", icon: CalendarClock },
+  { href: "/garage/repair-orders", label: "Repair Orders", icon: ClipboardList },
+  { href: "/garage/notifications", label: "Notifications", icon: Bell },
+];
+
+export const garageSecondaryItems: readonly PortalNavItem[] = [
+  { href: "/garage/onboarding", label: "Business Profile", icon: Settings },
+];
 
 interface Props {
   organizationName: string;
   organizationStatus: string;
 }
 
+/** Desktop-only (>= lg) — below that breakpoint, PortalMobileDrawer (opened
+ * from PortalTopbar's burger button) carries this same nav data instead of
+ * an icon-only rail. */
 export function GarageSidebar({ organizationName, organizationStatus }: Props) {
   const pathname = usePathname();
-  const collapsed = !useIsDesktop();
+  const isDesktop = useIsDesktop();
+
+  if (!isDesktop) return null;
 
   function isActive(href: string) {
     return pathname.includes(href);
   }
 
+  const badge = resolveOrgStatusBadge(organizationName, organizationStatus, "Verified Garage");
+
   return (
     <aside
       style={{
-        width: collapsed ? "4.5rem" : "240px",
-        minWidth: collapsed ? "4.5rem" : "240px",
+        width: "240px",
+        minWidth: "240px",
         height: "100vh",
         position: "sticky",
         top: 0,
@@ -54,12 +66,11 @@ export function GarageSidebar({ organizationName, organizationStatus }: Props) {
         overflowY: "auto",
         overflowX: "hidden",
         flexShrink: 0,
-        transition: "width 0.15s, min-width 0.15s",
       }}
     >
       <div
         style={{
-          padding: collapsed ? "1.5rem 0" : "1.5rem 1.25rem",
+          padding: "1.5rem 1.25rem",
           borderBottom: "1px solid rgba(255,255,255,0.08)",
           flexShrink: 0,
         }}
@@ -68,9 +79,8 @@ export function GarageSidebar({ organizationName, organizationStatus }: Props) {
           style={{
             display: "flex",
             alignItems: "center",
-            justifyContent: collapsed ? "center" : "flex-start",
             gap: "0.625rem",
-            marginBottom: collapsed ? 0 : "0.875rem",
+            marginBottom: "0.875rem",
           }}
         >
           <div
@@ -87,61 +97,39 @@ export function GarageSidebar({ organizationName, organizationStatus }: Props) {
           >
             <span style={{ color: "#fff", fontWeight: 700, fontSize: "0.875rem" }}>A</span>
           </div>
-          {!collapsed && (
-            <span
-              style={{ color: "#fff", fontWeight: 700, fontSize: "1rem", letterSpacing: "-0.01em" }}
-            >
-              AutoIQ Garage
-            </span>
-          )}
+          <span style={{ color: "#fff", fontWeight: 700, fontSize: "1rem", letterSpacing: "-0.01em" }}>
+            AutoIQ Garage
+          </span>
         </div>
-        {!collapsed && (
-          <>
-            <p style={{ color: "#fff", fontSize: "0.8125rem", fontWeight: 600, margin: 0 }}>
-              {organizationName}
-            </p>
-            <span
-              style={{
-                display: "inline-block",
-                marginTop: "0.375rem",
-                fontSize: "0.6875rem",
-                fontWeight: 700,
-                padding: "0.125rem 0.5rem",
-                borderRadius: "9999px",
-                backgroundColor:
-                  organizationStatus === "ACTIVE"
-                    ? "rgba(22,163,74,0.2)"
-                    : organizationStatus === "REJECTED"
-                      ? "rgba(220,38,38,0.2)"
-                      : "rgba(217,119,6,0.2)",
-                color:
-                  organizationStatus === "ACTIVE"
-                    ? "#4ade80"
-                    : organizationStatus === "REJECTED"
-                      ? "#f87171"
-                      : "#fbbf24",
-              }}
-            >
-              {organizationStatus === "ACTIVE"
-                ? "Verified Garage"
-                : organizationStatus === "REJECTED"
-                  ? "Rejected"
-                  : "Pending Approval"}
-            </span>
-          </>
-        )}
+        <p style={{ color: "#fff", fontSize: "0.8125rem", fontWeight: 600, margin: 0 }}>
+          {badge.name}
+        </p>
+        <span
+          style={{
+            display: "inline-block",
+            marginTop: "0.375rem",
+            fontSize: "0.6875rem",
+            fontWeight: 700,
+            padding: "0.125rem 0.5rem",
+            borderRadius: "9999px",
+            backgroundColor: badge.backgroundColor,
+            color: badge.color,
+          }}
+        >
+          {badge.label}
+        </span>
       </div>
 
       <TooltipProvider>
-        <nav style={{ flex: 1, padding: collapsed ? "1rem 0.625rem 0.75rem" : "1rem 0.75rem 0.75rem" }}>
-          {navItems.map(({ href, label, icon, soon }) => (
+        <nav style={{ flex: 1, padding: "1rem 0.75rem 0.75rem" }}>
+          {garageNavItems.map(({ href, label, icon, soon }) => (
             <SidebarNavLink
               key={href}
-              href={soon ? "/garage/dashboard" : href}
+              href={href}
               label={label}
               icon={icon}
               active={isActive(href)}
-              collapsed={collapsed}
+              collapsed={false}
               soon={soon}
             />
           ))}
@@ -150,13 +138,17 @@ export function GarageSidebar({ organizationName, organizationStatus }: Props) {
             style={{ height: "1px", backgroundColor: "rgba(255,255,255,0.08)", margin: "0.75rem 0" }}
           />
 
-          <SidebarNavLink
-            href="/garage/onboarding"
-            label="Business Profile"
-            icon={Settings}
-            active={isActive("/garage/onboarding")}
-            collapsed={collapsed}
-          />
+          {garageSecondaryItems.map(({ href, label, icon, soon }) => (
+            <SidebarNavLink
+              key={href}
+              href={href}
+              label={label}
+              icon={icon}
+              active={isActive(href)}
+              collapsed={false}
+              soon={soon}
+            />
+          ))}
         </nav>
       </TooltipProvider>
     </aside>

@@ -2,8 +2,15 @@ import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { getMyGarageDashboard } from "@/features/garages/service";
-import { GarageSidebar } from "@/components/layout/garage-sidebar";
+import {
+  GarageSidebar,
+  garageNavItems,
+  garageSecondaryItems,
+} from "@/components/layout/garage-sidebar";
+import { resolveOrgStatusBadge } from "@/components/layout/org-status-badge";
 import { PortalTopbar } from "@/components/layout/portal-topbar";
+
+const BRAND_ICON = <span style={{ color: "#fff", fontWeight: 700, fontSize: "0.875rem" }}>A</span>;
 
 export default async function GarageLayout({ children }: { children: ReactNode }) {
   const session = await auth();
@@ -24,6 +31,15 @@ export default async function GarageLayout({ children }: { children: ReactNode }
           notificationsHref="/garage/notifications"
           profileHref="/garage/profile"
           settingsHref="/garage/settings"
+          brandIcon={BRAND_ICON}
+          brandLabel="AutoIQ Garage"
+          orgBadge={resolveOrgStatusBadge(
+            dashboard.organization.name,
+            dashboard.organization.status,
+            "Verified Garage",
+          )}
+          navItems={garageNavItems}
+          secondaryItems={garageSecondaryItems}
         />
         <main style={{ flex: 1, minWidth: 0, overflowY: "auto" }}>{children}</main>
       </div>

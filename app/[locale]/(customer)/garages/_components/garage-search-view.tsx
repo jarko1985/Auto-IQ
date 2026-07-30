@@ -1,14 +1,16 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Search, MapPin, Wrench, LocateFixed } from "lucide-react";
-import { InlineSpinner } from "@/components/ui/inline-spinner";
+import { Search, MapPin, Wrench, LocateFixed, X } from "lucide-react";
 import { GarageMap } from "@/components/maps/garage-map";
 import { RatingSummary } from "@/components/garages/rating-summary";
 import { useGeolocation } from "@/lib/hooks/use-geolocation";
+import { useIsMobile } from "@/lib/hooks/use-is-mobile";
 import { SelectChevron } from "@/components/forms/field-styles";
+import { SearchableSelect } from "@/components/ui/searchable-select";
+import { LiveResultsDropdown, type LiveResultItem } from "@/components/search/live-results-dropdown";
 import type { GarageSearchResult } from "@/features/bookings/service";
 
 type GarageCard = GarageSearchResult;
@@ -79,6 +81,8 @@ const VEHICLE_TYPE_LABELS: Record<string, string> = {
 };
 
 const RADIUS_OPTIONS = [5, 10, 25, 50];
+const DEBOUNCE_MS = 300;
+const DROPDOWN_LIMIT = 6;
 
 const fieldStyle: React.CSSProperties = {
   padding: "0.5rem 0.75rem",
@@ -100,6 +104,8 @@ const selectStyle: React.CSSProperties = {
   MozAppearance: "none",
 };
 
+const SERVICE_OPTIONS = Object.entries(SERVICE_LABELS).map(([value, label]) => ({ value, label }));
+
 export function GarageSearchView({ initialGarages, initialTotal, makes, initialFilters }: Props) {
   const [garages, setGarages] = useState(initialGarages);
   const [total, setTotal] = useState(initialTotal);
@@ -111,8 +117,13 @@ export function GarageSearchView({ initialGarages, initialTotal, makes, initialF
   const [radiusKm, setRadiusKm] = useState(25);
   const [offset, setOffset] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [inputFocused, setInputFocused] = useState(false);
   const limit = 12;
   const geo = useGeolocation();
+  const isMobile = useIsMobile();
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const blurTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isFirstRunRef = useRef(true);
 
   // Re-run the search once geolocation resolves, so "Use my location" doesn't
   // require a second manual click to actually apply distance sorting.
@@ -120,6 +131,21 @@ export function GarageSearchView({ initialGarages, initialTotal, makes, initialF
     if (geo.status === "granted") void runSearch(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [geo.status]);
+
+  // Elastic search: every filter change re-runs the search automatically
+  // (debounced) — no manual "Search" trigger needed anywhere in this view.
+  useEffect(() => {
+    if (isFirstRunRef.current) {
+      isFirstRunRef.current = false;
+      return;
+    }
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => void runSearch(0), DEBOUNCE_MS);
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query, emirate, serviceTypes, vehicleType, makeId]);
 
   async function runSearch(nextOffset = 0) {
     setLoading(true);
@@ -160,6 +186,29 @@ export function GarageSearchView({ initialGarages, initialTotal, makes, initialF
   function useMyLocation() {
     geo.request();
   }
+
+  function clearFilters() {
+    setQuery("");
+    setEmirate("");
+    setServiceTypes([]);
+    setVehicleType("");
+    setMakeId("");
+  }
+
+  const hasActiveFilters =
+    query !== "" || emirate !== "" || serviceTypes.length > 0 || vehicleType !== "" || makeId !== "";
+
+  const dropdownItems: LiveResultItem[] = garages.slice(0, DROPDOWN_LIMIT).map((g) => ({
+    id: g.id,
+    href: `/garages/${g.id}`,
+    title: g.businessName,
+    subtitle: g.addressLine1
+      ? `${g.addressLine1}, ${g.emirate ? EMIRATE_LABELS[g.emirate] : ""}`
+      : "Verified garage",
+    imageUrl: null,
+    meta: g.averageRating > 0 ? `★ ${g.averageRating.toFixed(1)}` : undefined,
+  }));
+  const showDropdown = inputFocused && query.trim().length >= 2;
 
   const mapPins = useMemo(
     () =>
@@ -203,17 +252,51 @@ export function GarageSearchView({ initialGarages, initialTotal, makes, initialF
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") void runSearch(0);
+            onFocus={() => {
+              if (blurTimeoutRef.current) clearTimeout(blurTimeoutRef.current);
+              setInputFocused(true);
+            }}
+            onBlur={() => {
+              blurTimeoutRef.current = setTimeout(() => setInputFocused(false), 150);
             }}
             placeholder="Search garage name..."
             style={{
               ...fieldStyle,
               width: "100%",
               paddingInlineStart: "2rem",
+              paddingInlineEnd: query ? "2rem" : "0.75rem",
               boxSizing: "border-box",
             }}
           />
+          {query && (
+            <button
+              type="button"
+              aria-label="Clear search"
+              onClick={() => setQuery("")}
+              style={{
+                position: "absolute",
+                insetInlineEnd: "0.625rem",
+                top: "50%",
+                transform: "translateY(-50%)",
+                border: "none",
+                background: "none",
+                cursor: "pointer",
+                color: "#8a92a6",
+                display: "flex",
+              }}
+            >
+              <X size={14} />
+            </button>
+          )}
+          {showDropdown && (
+            <LiveResultsDropdown
+              items={dropdownItems}
+              loading={loading}
+              query={query}
+              onSelect={() => setInputFocused(false)}
+              fallbackIcon={<Wrench size={16} color="#8a92a6" />}
+            />
+          )}
         </div>
 
         <div style={{ position: "relative" }}>
@@ -256,27 +339,27 @@ export function GarageSearchView({ initialGarages, initialTotal, makes, initialF
           <SelectChevron size={14} insetInlineEnd="0.625rem" />
         </div>
 
-        <button
-          type="button"
-          onClick={() => void runSearch(0)}
-          disabled={loading}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "0.5rem",
-            padding: "0.5rem 1.25rem",
-            backgroundColor: "#081a2f",
-            color: "#fff",
-            border: "none",
-            borderRadius: "0.5rem",
-            fontSize: "0.8125rem",
-            fontWeight: 600,
-            cursor: loading ? "not-allowed" : "pointer",
-          }}
-        >
-          {loading && <InlineSpinner />} {loading ? "Searching..." : "Search"}
-        </button>
+        {hasActiveFilters && (
+          <button
+            type="button"
+            onClick={clearFilters}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.375rem",
+              padding: "0.5rem 1rem",
+              backgroundColor: "transparent",
+              color: "#5b6472",
+              border: "1px solid var(--border)",
+              borderRadius: "0.5rem",
+              fontSize: "0.8125rem",
+              fontWeight: 600,
+              cursor: "pointer",
+            }}
+          >
+            <X size={14} /> Clear Filters
+          </button>
+        )}
       </div>
 
       {/* Location / distance controls */}
@@ -347,33 +430,43 @@ export function GarageSearchView({ initialGarages, initialTotal, makes, initialF
         )}
       </div>
 
-      {/* Service chips (multi-select) */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginBottom: "1.5rem" }}>
-        {Object.entries(SERVICE_LABELS).map(([value, label]) => {
-          const selected = serviceTypes.includes(value);
-          return (
-            <button
-              key={value}
-              type="button"
-              onClick={() => {
-                toggleService(value);
-                void runSearch(0);
-              }}
-              style={{
-                padding: "0.375rem 0.875rem",
-                borderRadius: "9999px",
-                border: "1px solid var(--border)",
-                backgroundColor: selected ? "#081a2f" : "transparent",
-                color: selected ? "#fff" : "#5b6472",
-                fontSize: "0.75rem",
-                fontWeight: 600,
-                cursor: "pointer",
-              }}
-            >
-              {label}
-            </button>
-          );
-        })}
+      {/* Service filter — pills on tablet/desktop, a searchable multi-select on mobile */}
+      <div style={{ marginBottom: "1.5rem" }}>
+        {isMobile ? (
+          <SearchableSelect
+            multiple
+            options={SERVICE_OPTIONS}
+            value={serviceTypes}
+            onChange={setServiceTypes}
+            placeholder="All Services"
+            searchPlaceholder="Search services..."
+          />
+        ) : (
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+            {SERVICE_OPTIONS.map(({ value, label }) => {
+              const selected = serviceTypes.includes(value);
+              return (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => toggleService(value)}
+                  style={{
+                    padding: "0.375rem 0.875rem",
+                    borderRadius: "9999px",
+                    border: "1px solid var(--border)",
+                    backgroundColor: selected ? "#081a2f" : "transparent",
+                    color: selected ? "#fff" : "#5b6472",
+                    fontSize: "0.75rem",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                  }}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Map */}

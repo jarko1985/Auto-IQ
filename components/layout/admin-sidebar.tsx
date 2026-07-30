@@ -3,21 +3,32 @@
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, Package, Store, Wrench, ShieldCheck, Bell, Star } from "lucide-react";
 import { useIsDesktop } from "@/lib/hooks/use-is-desktop";
-import { SidebarNavLink } from "@/components/layout/sidebar-nav-link";
+import { SidebarNavLink, type PortalNavItem } from "@/components/layout/sidebar-nav-link";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
-const navItems = [
-  { href: "/admin/vendors", label: "Vendor Approvals", icon: Store, soon: false },
-  { href: "/admin/garages", label: "Garage Approvals", icon: Wrench, soon: false },
-  { href: "/admin/parts", label: "Parts Catalog", icon: Package, soon: false },
-  { href: "/admin/diagnostics", label: "Diagnostic Feedback", icon: Star, soon: false },
-  { href: "/admin/notifications", label: "Notifications", icon: Bell, soon: false },
-  { href: "/admin/dashboard", label: "Operations", icon: LayoutDashboard, soon: true },
-] as const;
+export const adminNavItems: readonly PortalNavItem[] = [
+  { href: "/admin/vendors", label: "Vendor Approvals", icon: Store },
+  { href: "/admin/garages", label: "Garage Approvals", icon: Wrench },
+  { href: "/admin/parts", label: "Parts Catalog", icon: Package },
+  { href: "/admin/diagnostics", label: "Diagnostic Feedback", icon: Star },
+  { href: "/admin/notifications", label: "Notifications", icon: Bell },
+  {
+    href: "/admin/dashboard",
+    label: "Operations",
+    icon: LayoutDashboard,
+    soon: true,
+    navigateHref: "/admin/vendors",
+  },
+];
 
+/** Desktop-only (>= lg) — below that breakpoint, PortalMobileDrawer (opened
+ * from PortalTopbar's burger button) carries this same nav data instead of
+ * an icon-only rail. */
 export function AdminSidebar() {
   const pathname = usePathname();
-  const collapsed = !useIsDesktop();
+  const isDesktop = useIsDesktop();
+
+  if (!isDesktop) return null;
 
   function isActive(href: string) {
     return pathname.includes(href);
@@ -26,8 +37,8 @@ export function AdminSidebar() {
   return (
     <aside
       style={{
-        width: collapsed ? "4.5rem" : "240px",
-        minWidth: collapsed ? "4.5rem" : "240px",
+        width: "240px",
+        minWidth: "240px",
         height: "100vh",
         position: "sticky",
         top: 0,
@@ -37,24 +48,16 @@ export function AdminSidebar() {
         overflowY: "auto",
         overflowX: "hidden",
         flexShrink: 0,
-        transition: "width 0.15s, min-width 0.15s",
       }}
     >
       <div
         style={{
-          padding: collapsed ? "1.5rem 0" : "1.5rem 1.25rem",
+          padding: "1.5rem 1.25rem",
           borderBottom: "1px solid rgba(255,255,255,0.08)",
           flexShrink: 0,
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: collapsed ? "center" : "flex-start",
-            gap: "0.625rem",
-          }}
-        >
+        <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
           <div
             style={{
               width: "2rem",
@@ -69,26 +72,22 @@ export function AdminSidebar() {
           >
             <ShieldCheck size={16} color="#fff" />
           </div>
-          {!collapsed && (
-            <span
-              style={{ color: "#fff", fontWeight: 700, fontSize: "1rem", letterSpacing: "-0.01em" }}
-            >
-              AutoIQ Admin
-            </span>
-          )}
+          <span style={{ color: "#fff", fontWeight: 700, fontSize: "1rem", letterSpacing: "-0.01em" }}>
+            AutoIQ Admin
+          </span>
         </div>
       </div>
 
       <TooltipProvider>
-        <nav style={{ flex: 1, padding: collapsed ? "1rem 0.625rem 0.75rem" : "1rem 0.75rem 0.75rem" }}>
-          {navItems.map(({ href, label, icon, soon }) => (
+        <nav style={{ flex: 1, padding: "1rem 0.75rem 0.75rem" }}>
+          {adminNavItems.map(({ href, label, icon, soon, navigateHref }) => (
             <SidebarNavLink
               key={href}
-              href={soon ? "/admin/vendors" : href}
+              href={navigateHref ?? href}
               label={label}
               icon={icon}
               active={isActive(href)}
-              collapsed={collapsed}
+              collapsed={false}
               soon={soon}
             />
           ))}

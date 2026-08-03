@@ -2210,7 +2210,39 @@ outcome-correlation report is read-only against existing production data —
 it is calibration reporting, not model retraining.
 ```
 
-## Prompt 30 — CI/CD
+## Prompt 30 — Security Review
+
+```text
+Read CLAUDE.md.
+
+Perform a security review of the entire repository.
+
+Check:
+
+- authentication;
+- authorization;
+- IDOR;
+- tenant isolation;
+- CSRF;
+- XSS;
+- SSRF;
+- SQL injection;
+- file upload;
+- prompt injection;
+- LLM data leakage;
+- rate limiting;
+- payment tampering;
+- webhook verification;
+- secrets;
+- logs;
+- audit;
+- dependency risks;
+- insecure defaults.
+
+Return findings by severity and provide concrete patches for critical and high issues.
+```
+
+## Prompt 31 — CI/CD
 
 ```text
 Read CLAUDE.md.
@@ -2246,7 +2278,7 @@ Document rollback.
 Do not expose secrets in logs.
 ```
 
-## Prompt 31 — Docker and AWS Readiness
+## Prompt 32 — Docker and AWS Readiness
 
 ```text
 Read CLAUDE.md.
@@ -2269,7 +2301,7 @@ Create:
 Do not migrate to AWS yet.
 ```
 
-## Prompt 32 — AWS Infrastructure Design
+## Prompt 33 — AWS Infrastructure Design
 
 ```text
 Read CLAUDE.md.
@@ -2304,38 +2336,6 @@ Include:
 
 Produce Mermaid diagrams and an implementation backlog.
 Do not provision infrastructure yet.
-```
-
-## Prompt 33 — Security Review
-
-```text
-Read CLAUDE.md.
-
-Perform a security review of the entire repository.
-
-Check:
-
-- authentication;
-- authorization;
-- IDOR;
-- tenant isolation;
-- CSRF;
-- XSS;
-- SSRF;
-- SQL injection;
-- file upload;
-- prompt injection;
-- LLM data leakage;
-- rate limiting;
-- payment tampering;
-- webhook verification;
-- secrets;
-- logs;
-- audit;
-- dependency risks;
-- insecure defaults.
-
-Return findings by severity and provide concrete patches for critical and high issues.
 ```
 
 ## Prompt 34 — Launch Readiness

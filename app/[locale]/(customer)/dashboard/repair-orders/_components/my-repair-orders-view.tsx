@@ -5,6 +5,8 @@ import Image from "next/image";
 import { useRouter } from "@/i18n/routing";
 import { formatCurrency } from "@/lib/utils";
 import { ClipboardList } from "lucide-react";
+import { useIsMobile } from "@/lib/hooks/use-is-mobile";
+import { SearchableSelect } from "@/components/ui/searchable-select";
 
 interface RepairOrderRow {
   id: string;
@@ -61,6 +63,7 @@ const TABS = [
 export function MyRepairOrdersView({ initialRepairOrders }: Props) {
   const router = useRouter();
   const [tab, setTab] = useState<(typeof TABS)[number]["value"]>("all");
+  const isMobile = useIsMobile();
 
   const activeTab = TABS.find((t) => t.value === tab) ?? TABS[0];
   const filtered = initialRepairOrders.filter((ro) =>
@@ -69,28 +72,41 @@ export function MyRepairOrdersView({ initialRepairOrders }: Props) {
 
   return (
     <div>
-      <div style={{ display: "flex", gap: "0.375rem", marginBottom: "1.5rem", overflowX: "auto" }}>
-        {TABS.map((t) => (
-          <button
-            key={t.value}
-            type="button"
-            onClick={() => setTab(t.value)}
-            style={{
-              padding: "0.375rem 0.875rem",
-              borderRadius: "9999px",
-              border: "1px solid var(--border)",
-              backgroundColor: tab === t.value ? "#081a2f" : "transparent",
-              color: tab === t.value ? "#fff" : "#5b6472",
-              fontSize: "0.75rem",
-              fontWeight: 600,
-              cursor: "pointer",
-              whiteSpace: "nowrap",
-              flexShrink: 0,
-            }}
-          >
-            {t.label}
-          </button>
-        ))}
+      <div style={{ marginBottom: "1.5rem" }}>
+        {isMobile ? (
+          <SearchableSelect
+            options={TABS.filter((t) => t.value !== "all").map((t) => ({ value: t.value, label: t.label }))}
+            value={tab === "all" ? "" : tab}
+            onChange={(value) => setTab((value || "all") as (typeof TABS)[number]["value"])}
+            placeholder="All Orders"
+            allLabel="All Orders"
+            searchPlaceholder="Search statuses..."
+          />
+        ) : (
+          <div style={{ display: "flex", gap: "0.375rem", overflowX: "auto" }}>
+            {TABS.map((t) => (
+              <button
+                key={t.value}
+                type="button"
+                onClick={() => setTab(t.value)}
+                style={{
+                  padding: "0.375rem 0.875rem",
+                  borderRadius: "9999px",
+                  border: "1px solid var(--border)",
+                  backgroundColor: tab === t.value ? "#081a2f" : "transparent",
+                  color: tab === t.value ? "#fff" : "#5b6472",
+                  fontSize: "0.75rem",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  whiteSpace: "nowrap",
+                  flexShrink: 0,
+                }}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {filtered.length === 0 ? (

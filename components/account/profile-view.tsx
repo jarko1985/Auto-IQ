@@ -131,7 +131,7 @@ export function ProfileView() {
   if (loading || !account) return null;
 
   return (
-    <div style={{ padding: "2rem 1.5rem 6rem", margin: "0 auto", maxWidth: "72rem" }}>
+    <div style={{ padding: "2rem 1.5rem 6rem" }} className="max-w-6xl">
       <h1 style={{ margin: "0 0 0.375rem", fontSize: "1.5rem", fontWeight: 700, color: "#081a2f" }}>
         Profile
       </h1>
@@ -139,7 +139,30 @@ export function ProfileView() {
         Manage your personal information and account security
       </p>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 280px", gap: "1.5rem", alignItems: "start" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "1.5rem", alignItems: "start" }}>
+         <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+          <div style={{ ...CARD_STYLE, textAlign: "center" }}>
+            <Avatar style={{ width: "4.5rem", height: "4.5rem", margin: "0 auto 0.75rem" }}>
+              {account.image && <AvatarImage src={account.image} alt={account.name ?? account.email} />}
+              <AvatarFallback style={{ backgroundColor: "#081a2f", color: "#fff", fontSize: "1.25rem", fontWeight: 700 }}>
+                {initials(account.name, account.email)}
+              </AvatarFallback>
+            </Avatar>
+            <p style={{ margin: "0 0 0.125rem", fontWeight: 700, color: "#081a2f" }}>
+              {account.name ?? "Unnamed"}
+            </p>
+            <p style={{ margin: "0 0 0.75rem", fontSize: "0.8125rem", color: "#75859f" }}>{account.email}</p>
+            <p style={{ margin: 0, fontSize: "0.75rem", color: "#9aa3af" }}>
+              Member since {formatDate(account.createdAt)}
+            </p>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
+            <StatTile  icon={Car} label="Vehicles" value={account.stats.vehicleCount} />
+            <StatTile icon={CalendarCheck} label="Bookings" value={account.stats.completedBookingCount} />
+            <StatTile icon={Brain} label="Diagnostics" value={account.stats.diagnosticSessionCount} />
+            <StatTile icon={Coins} label="AutoIQ Points" value={account.stats.autoIqPoints} />
+          </div>
+        </div>
         <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem", minWidth: 0 }}>
           {/* Personal Information */}
           <section style={CARD_STYLE}>
@@ -355,32 +378,8 @@ export function ProfileView() {
             )}
           </section>
         </div>
-
-        {/* Sidebar */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-          <div style={{ ...CARD_STYLE, textAlign: "center" }}>
-            <Avatar style={{ width: "4.5rem", height: "4.5rem", margin: "0 auto 0.75rem" }}>
-              {account.image && <AvatarImage src={account.image} alt={account.name ?? account.email} />}
-              <AvatarFallback style={{ backgroundColor: "#081a2f", color: "#fff", fontSize: "1.25rem", fontWeight: 700 }}>
-                {initials(account.name, account.email)}
-              </AvatarFallback>
-            </Avatar>
-            <p style={{ margin: "0 0 0.125rem", fontWeight: 700, color: "#081a2f" }}>
-              {account.name ?? "Unnamed"}
-            </p>
-            <p style={{ margin: "0 0 0.75rem", fontSize: "0.8125rem", color: "#75859f" }}>{account.email}</p>
-            <p style={{ margin: 0, fontSize: "0.75rem", color: "#9aa3af" }}>
-              Member since {formatDate(account.createdAt)}
-            </p>
-          </div>
-
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
-            <StatTile icon={Car} label="Vehicles" value={account.stats.vehicleCount} />
-            <StatTile icon={CalendarCheck} label="Bookings" value={account.stats.completedBookingCount} />
-            <StatTile icon={Brain} label="Diagnostics" value={account.stats.diagnosticSessionCount} />
-            <StatTile icon={Coins} label="AutoIQ Points" value={account.stats.autoIqPoints} />
-          </div>
-        </div>
+       
+       
       </div>
     </div>
   );
@@ -397,7 +396,7 @@ function StatTile({
 }) {
   return (
     <div style={{ ...CARD_STYLE, padding: "1rem", textAlign: "center" }}>
-      <Icon size={18} color="#00b8d9" style={{ margin: "0 auto 0.5rem" }} />
+      <Icon size={24} color="#00b8d9" style={{ margin: "0 auto 0.5rem" }} />
       <p style={{ margin: 0, fontSize: "1.25rem", fontWeight: 700, color: "#081a2f" }}>{value}</p>
       <p style={{ margin: 0, fontSize: "0.6875rem", color: "#75859f" }}>{label}</p>
     </div>

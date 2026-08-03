@@ -63,7 +63,7 @@ export function SettingsView({ notificationPreferencesHref }: Props) {
   const localeChanged = selectedLocale !== account.locale;
 
   return (
-    <div style={{ padding: "2rem 1.5rem 6rem", margin: "0 auto", maxWidth: "48rem" }}>
+    <div style={{ padding: "2rem 1.5rem 6rem", maxWidth: "6xl" }}>
       <h1 style={{ margin: "0 0 0.375rem", fontSize: "1.5rem", fontWeight: 700, color: "#081a2f" }}>
         Settings
       </h1>
@@ -84,14 +84,15 @@ export function SettingsView({ notificationPreferencesHref }: Props) {
               <p style={{ margin: "0 0 0.5rem", fontSize: "0.875rem", fontWeight: 600, color: "#181c1e" }}>
                 Interface Language
               </p>
+              <div className="flex gap-2 align-center justify-start">
               <div style={{ display: "flex", gap: "0.5rem" }}>
                 {routing.locales.map((locale) => (
                   <button
                     key={locale}
                     onClick={() => setSelectedLocale(locale)}
                     style={{
-                      padding: "0.5rem 1.25rem",
-                      borderRadius: "9999px",
+                      padding:selectedLocale === locale ? "0.2rem 1.25rem" : "0.2rem 1.25rem",
+                      borderRadius: "10px",
                       border: selectedLocale === locale ? "1px solid #00b8d9" : "1px solid #e5e8eb",
                       backgroundColor: selectedLocale === locale ? "rgba(0,184,217,0.08)" : "#fff",
                       color: selectedLocale === locale ? "#00b8d9" : "#44474d",
@@ -105,10 +106,11 @@ export function SettingsView({ notificationPreferencesHref }: Props) {
                 ))}
               </div>
               {localeChanged && (
-                <Button onClick={() => void handleSaveLocale()} disabled={saving} size="sm" style={{ marginTop: "0.875rem" }}>
+                <Button onClick={() => void handleSaveLocale()} disabled={saving} size="sm" style={{ padding: "0.875rem" }}>
                   {saving ? "Saving..." : "Save Language"}
                 </Button>
               )}
+              </div>
             </div>
 
             <div>

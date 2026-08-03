@@ -1,14 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { toast } from "sonner";
-import { Package, Search } from "lucide-react";
+import { Package, Search, X } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { getPartImage } from "@/features/catalog/part-image";
-import { InlineSpinner } from "@/components/ui/inline-spinner";
 import { SelectChevron } from "@/components/forms/field-styles";
+import { useIsMobile } from "@/lib/hooks/use-is-mobile";
+import { SearchableSelect } from "@/components/ui/searchable-select";
+import { LiveResultsDropdown, type LiveResultItem } from "@/components/search/live-results-dropdown";
 
 interface PartResult {
   id: string;
@@ -38,6 +40,9 @@ interface Props {
   vehicles: Vehicle[];
 }
 
+const DEBOUNCE_MS = 300;
+const DROPDOWN_LIMIT = 6;
+
 const fieldStyle: React.CSSProperties = {
   padding: "0.5rem 0.75rem",
   border: "1px solid var(--border)",
@@ -62,6 +67,11 @@ export function MarketplaceView({ initialResults, categories, vehicles }: Props)
   const [categoryId, setCategoryId] = useState("");
   const [vehicleId, setVehicleId] = useState("");
   const [loading, setLoading] = useState(false);
+  const [inputFocused, setInputFocused] = useState(false);
+  const isMobile = useIsMobile();
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const blurTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isFirstRunRef = useRef(true);
 
   async function search() {
     setLoading(true);
@@ -89,6 +99,41 @@ export function MarketplaceView({ initialResults, categories, vehicles }: Props)
     }
   }
 
+  // Elastic search: every filter change re-runs the search automatically
+  // (debounced for the free-text query, immediate for category/vehicle
+  // pickers) — no manual "Search" trigger needed anywhere in this view.
+  useEffect(() => {
+    if (isFirstRunRef.current) {
+      isFirstRunRef.current = false;
+      return;
+    }
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => void search(), DEBOUNCE_MS);
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query, categoryId, vehicleId]);
+
+  function clearFilters() {
+    setQuery("");
+    setCategoryId("");
+    setVehicleId("");
+  }
+
+  const hasActiveFilters = query !== "" || categoryId !== "" || vehicleId !== "";
+
+  const dropdownItems: LiveResultItem[] = results.slice(0, DROPDOWN_LIMIT).map((p) => ({
+    id: p.id,
+    href: `/marketplace/${p.id}`,
+    title: p.name,
+    subtitle: `${p.manufacturerName} · ${p.categoryName}`,
+    imageUrl: getPartImage({ partNumber: p.partNumber }),
+    meta:
+      p.minPriceMinorUnits !== null ? formatCurrency(p.minPriceMinorUnits, p.currency) : undefined,
+  }));
+  const showDropdown = inputFocused && query.trim().length >= 2;
+
   return (
     <div>
       <div
@@ -113,15 +158,50 @@ export function MarketplaceView({ initialResults, categories, vehicles }: Props)
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && void search()}
+            onFocus={() => {
+              if (blurTimeoutRef.current) clearTimeout(blurTimeoutRef.current);
+              setInputFocused(true);
+            }}
+            onBlur={() => {
+              blurTimeoutRef.current = setTimeout(() => setInputFocused(false), 150);
+            }}
             placeholder="Search parts, manufacturer, part number..."
             style={{
               ...fieldStyle,
               width: "100%",
               paddingInlineStart: "2rem",
+              paddingInlineEnd: query ? "2rem" : "0.75rem",
               boxSizing: "border-box",
             }}
           />
+          {query && (
+            <button
+              type="button"
+              aria-label="Clear search"
+              onClick={() => setQuery("")}
+              style={{
+                position: "absolute",
+                insetInlineEnd: "0.625rem",
+                top: "0.5rem",
+                border: "none",
+                background: "none",
+                cursor: "pointer",
+                color: "#8a92a6",
+                display: "flex",
+              }}
+            >
+              <X size={14} />
+            </button>
+          )}
+          {showDropdown && (
+            <LiveResultsDropdown
+              items={dropdownItems}
+              loading={loading}
+              query={query}
+              onSelect={() => setInputFocused(false)}
+              fallbackIcon={<Package size={16} color="#8a92a6" />}
+            />
+          )}
         </div>
         {vehicles.length > 0 && (
           <div style={{ position: "relative" }}>
@@ -140,52 +220,62 @@ export function MarketplaceView({ initialResults, categories, vehicles }: Props)
             <SelectChevron size={14} insetInlineEnd="0.625rem" />
           </div>
         )}
-        <button
-          type="button"
-          onClick={() => void search()}
-          disabled={loading}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "0.5rem",
-            padding: "0.5rem 1.25rem",
-            backgroundColor: loading ? "#94a3b8" : "#00b8d9",
-            color: "#fff",
-            border: "none",
-            borderRadius: "0.5rem",
-            fontSize: "0.8125rem",
-            fontWeight: 600,
-            cursor: loading ? "not-allowed" : "pointer",
-          }}
-        >
-          {loading && <InlineSpinner />} {loading ? "Searching..." : "Search"}
-        </button>
-      </div>
-
-      <div style={{ display: "flex", gap: "0.375rem", marginBottom: "1.5rem", flexWrap: "wrap" }}>
-        {[{ id: "", name: "All" }, ...categories].map((c) => (
+        {hasActiveFilters && (
           <button
-            key={c.id}
             type="button"
-            onClick={() => {
-              setCategoryId(c.id);
-              setTimeout(() => void search(), 0);
-            }}
+            onClick={clearFilters}
             style={{
-              padding: "0.375rem 0.875rem",
-              borderRadius: "9999px",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.375rem",
+              padding: "0.5rem 1rem",
+              backgroundColor: "transparent",
+              color: "#5b6472",
               border: "1px solid var(--border)",
-              backgroundColor: categoryId === c.id ? "#081a2f" : "transparent",
-              color: categoryId === c.id ? "#fff" : "#5b6472",
-              fontSize: "0.75rem",
+              borderRadius: "0.5rem",
+              fontSize: "0.8125rem",
               fontWeight: 600,
               cursor: "pointer",
             }}
           >
-            {c.name}
+            <X size={14} /> Clear Filters
           </button>
-        ))}
+        )}
+      </div>
+
+      <div style={{ marginBottom: "1.5rem" }}>
+        {isMobile ? (
+          <SearchableSelect
+            options={categories.map((c) => ({ value: c.id, label: c.name }))}
+            value={categoryId}
+            onChange={setCategoryId}
+            placeholder="All Categories"
+            allLabel="All Categories"
+            searchPlaceholder="Search categories..."
+          />
+        ) : (
+          <div style={{ display: "flex", gap: "0.375rem", flexWrap: "wrap" }}>
+            {[{ id: "", name: "All" }, ...categories].map((c) => (
+              <button
+                key={c.id}
+                type="button"
+                onClick={() => setCategoryId(c.id)}
+                style={{
+                  padding: "0.375rem 0.875rem",
+                  borderRadius: "9999px",
+                  border: "1px solid var(--border)",
+                  backgroundColor: categoryId === c.id ? "#081a2f" : "transparent",
+                  color: categoryId === c.id ? "#fff" : "#5b6472",
+                  fontSize: "0.75rem",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+              >
+                {c.name}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {results.length === 0 ? (

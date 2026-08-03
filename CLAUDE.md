@@ -45,6 +45,23 @@ npm run db:studio         # Open Prisma Studio
 
 ---
 
+## Deployment
+
+**Production:** deployed on Vercel — **https://auto-iq-lyart.vercel.app**. Database is Vercel-provisioned Postgres (separate from the Neon project this machine's local dev points at — see "Local dev database" under Known Conventions).
+
+Vercel doesn't read `.env`/`.env.local` — every var in `.env.example` with a real value must be set in the Vercel project's Environment Variables settings (`APP_URL` set to the production URL above, not localhost; `NEXT_PUBLIC_*` vars must be present at build time since they're baked into the client bundle). The Stripe webhook needs its own production endpoint (`https://auto-iq-lyart.vercel.app/api/v1/payments/webhooks/stripe`) registered in the Stripe dashboard with its own `PAYMENT_WEBHOOK_SECRET` — the local `stripe listen` secret only works locally. Google OAuth needs the prod callback URL (`https://auto-iq-lyart.vercel.app/api/auth/callback/google`) added in Google Cloud Console alongside the localhost one.
+
+Schema changes don't auto-deploy — this repo has never used `prisma migrate`, only `db:push` (see "Fixed Since Sprint 6" note below), so after any schema change reaching production, `db:push` (and `db:vector-index` for the HNSW index, which Prisma's DSL can't express) must be run manually against the production `DATABASE_URL`.
+
+**Known open gaps as of the Sprint 21 deploy, not yet fixed:**
+
+- `package.json` has no `postinstall: "prisma generate"` — if the Vercel Build Command is ever just the default `next build` with a clean install, this needs adding (or the Build Command overridden to `npx prisma generate && next build`).
+- `lib/storage/`'s `getStorageProvider()` still always returns `ConsoleStorageProvider`, which writes uploads to a local `.local-storage/` directory (Sprint 16) — Vercel's serverless filesystem is read-only outside `/tmp`, and `/tmp` doesn't persist across invocations, so document/attachment uploads do not durably work in production yet. Needs a real provider (e.g. Vercel Blob) wired in before upload-dependent features (vendor/garage documents, diagnostic attachments) are usable in prod. This is separate from the Postgres/DB storage already provisioned.
+- `.env.example` was found to have real Neon `DATABASE_URL`/`DIRECT_URL` credentials committed in the initial commit (should be blanked and that Neon password rotated).
+- `proxy.ts` pulls in the full `auth.ts` (`PrismaAdapter`, bcryptjs) with no explicit middleware runtime override — worth confirming it's actually executing on the Node.js runtime rather than Edge in production, since a standard `prisma-client-js` client isn't Edge-compatible.
+
+---
+
 ## Architecture
 
 Modular monolith with explicit domain boundaries. Each domain in `features/` owns:
@@ -334,6 +351,7 @@ An ad-hoc rework requested directly by the user, not part of the numbered Prompt
 
 ## Known Conventions (accumulated)
 
+- **Production URL:** https://auto-iq-lyart.vercel.app (Vercel) — see Deployment section above for env var / migration / open-gap details.
 - **Middleware:** `proxy.ts` not `middleware.ts` — Next.js 16 renamed the convention.
 - **UI layout:** Use inline `style={{}}` props for page-level layout/centering — Tailwind v4 flex centering has edge-case issues. Tailwind classes are fine for color, typography, and spacing _within_ components.
 - **shadcn Card:** Avoid `Card`/`CardHeader` for page layout — `@container/card-header` applies CSS size containment that collapses layouts in Tailwind v4. Use plain `<div>` with inline styles instead.

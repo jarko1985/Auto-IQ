@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
 import { getPartImage } from "@/features/catalog/part-image";
+import { useIsMobile } from "@/lib/hooks/use-is-mobile";
+import { SearchableSelect } from "@/components/ui/searchable-select";
 
 interface OrderRow {
   id: string;
@@ -52,30 +54,44 @@ function formatDate(iso: string): string {
 
 export function MyOrdersView({ initialOrders }: Props) {
   const [tab, setTab] = useState("");
+  const isMobile = useIsMobile();
   const filtered = tab ? initialOrders.filter((o) => o.status === tab) : initialOrders;
 
   return (
     <div>
-      <div style={{ display: "flex", gap: "0.375rem", marginBottom: "1.5rem", flexWrap: "wrap" }}>
-        {TABS.map((t) => (
-          <button
-            key={t.value}
-            type="button"
-            onClick={() => setTab(t.value)}
-            style={{
-              padding: "0.375rem 0.875rem",
-              borderRadius: "9999px",
-              border: "1px solid var(--border)",
-              backgroundColor: tab === t.value ? "#081a2f" : "transparent",
-              color: tab === t.value ? "#fff" : "#5b6472",
-              fontSize: "0.75rem",
-              fontWeight: 600,
-              cursor: "pointer",
-            }}
-          >
-            {t.label}
-          </button>
-        ))}
+      <div style={{ marginBottom: "1.5rem" }}>
+        {isMobile ? (
+          <SearchableSelect
+            options={TABS.filter((t) => t.value !== "").map((t) => ({ value: t.value, label: t.label }))}
+            value={tab}
+            onChange={setTab}
+            placeholder="All"
+            allLabel="All"
+            searchPlaceholder="Search statuses..."
+          />
+        ) : (
+          <div style={{ display: "flex", gap: "0.375rem", flexWrap: "wrap" }}>
+            {TABS.map((t) => (
+              <button
+                key={t.value}
+                type="button"
+                onClick={() => setTab(t.value)}
+                style={{
+                  padding: "0.375rem 0.875rem",
+                  borderRadius: "9999px",
+                  border: "1px solid var(--border)",
+                  backgroundColor: tab === t.value ? "#081a2f" : "transparent",
+                  color: tab === t.value ? "#fff" : "#5b6472",
+                  fontSize: "0.75rem",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {filtered.length === 0 ? (

@@ -5,6 +5,17 @@ import { useIsRtl } from "@/i18n/direction";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import type { LucideIcon } from "lucide-react";
 
+export interface PortalNavItem {
+  href: string;
+  label: string;
+  icon: LucideIcon;
+  soon?: boolean;
+  /** Actual navigation target for a `soon` item whose real `href` doesn't
+   * exist yet (e.g. AdminSidebar's "Operations") — `href` is still what
+   * drives the isActive check, this is only where the link points. */
+  navigateHref?: string;
+}
+
 interface Props {
   href: string;
   label: string;
@@ -12,19 +23,24 @@ interface Props {
   active: boolean;
   collapsed: boolean;
   soon?: boolean;
+  /** Fired when the link is clicked — used by PortalMobileDrawer to close
+   * itself on navigation. No-op for the desktop sidebar's own usage. */
+  onNavigate?: () => void;
 }
 
-/** One sidebar row, shared by all four portal sidebars. Expanded: icon +
- * label (+ "Soon" badge). Collapsed (tablet/mobile icon rail): icon only,
- * with the label surfaced as a tooltip on hover — pointed toward the
- * content edge (away from the sidebar), which flips with RTL. */
-export function SidebarNavLink({ href, label, icon: Icon, active, collapsed, soon }: Props) {
+/** One sidebar row, shared by all four portal sidebars (desktop) and by
+ * PortalMobileDrawer (mobile/tablet). Expanded: icon + label (+ "Soon"
+ * badge). Collapsed (icon rail): icon only, with the label surfaced as a
+ * tooltip on hover — pointed toward the content edge (away from the
+ * sidebar), which flips with RTL. */
+export function SidebarNavLink({ href, label, icon: Icon, active, collapsed, soon, onNavigate }: Props) {
   const isRtl = useIsRtl();
 
   const link = (
     <Link
       href={href as never}
       aria-label={label}
+      onClick={onNavigate}
       style={{
         display: "flex",
         alignItems: "center",

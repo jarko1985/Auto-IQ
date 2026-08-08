@@ -85,7 +85,10 @@ export function EstimateBuilderView({ repairOrder, mechanics }: Props) {
         headers: body !== undefined ? { "Content-Type": "application/json" } : undefined,
         body: body !== undefined ? JSON.stringify(body) : undefined,
       });
-      const json = (await res.json()) as { data?: Record<string, unknown>; error?: { message?: string } };
+      const json = (await res.json()) as {
+        data?: Record<string, unknown>;
+        error?: { message?: string };
+      };
       if (!res.ok || !json.data) {
         toast.error(json.error?.message ?? "Action failed.");
         return null;
@@ -111,7 +114,9 @@ export function EstimateBuilderView({ repairOrder, mechanics }: Props) {
   return (
     <div>
       <div style={{ marginBottom: "1.5rem" }}>
-        <h1 style={{ fontSize: "1.5rem", fontWeight: 700, color: "#081a2f", marginBottom: "0.25rem" }}>
+        <h1
+          style={{ fontSize: "1.5rem", fontWeight: 700, color: "#081a2f", marginBottom: "0.25rem" }}
+        >
           Estimate Builder — #{ro.repairOrderNumber}
         </h1>
         <p style={{ fontSize: "0.875rem", color: "#5b6472" }}>
@@ -120,17 +125,35 @@ export function EstimateBuilderView({ repairOrder, mechanics }: Props) {
         </p>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "1.5rem", alignItems: "start" }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "2fr 1fr",
+          gap: "1.5rem",
+          alignItems: "start",
+        }}
+      >
         <div>
           <div style={cardStyle}>
-            <div style={{ padding: "1rem 1.25rem", borderBottom: "1px solid var(--border)", backgroundColor: "#f7fafd" }}>
-              <h3 style={{ fontSize: "0.9375rem", fontWeight: 700, color: "#081a2f", margin: 0 }}>Labor Allocation</h3>
+            <div
+              style={{
+                padding: "1rem 1.25rem",
+                borderBottom: "1px solid var(--border)",
+                backgroundColor: "#f7fafd",
+              }}
+            >
+              <h3 style={{ fontSize: "0.9375rem", fontWeight: 700, color: "#081a2f", margin: 0 }}>
+                Labor Allocation
+              </h3>
             </div>
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.8125rem" }}>
               <thead>
                 <tr style={{ textAlign: "start" }}>
                   {["Description", "Mechanic", "Hours", "Rate", "Subtotal", ""].map((h) => (
-                    <th key={h} style={{ padding: "0.5rem 1rem", color: "#8a92a6", fontWeight: 600 }}>
+                    <th
+                      key={h}
+                      style={{ padding: "0.5rem 1rem", color: "#8a92a6", fontWeight: 600 }}
+                    >
                       {h}
                     </th>
                   ))}
@@ -141,10 +164,13 @@ export function EstimateBuilderView({ repairOrder, mechanics }: Props) {
                   <tr key={j.id} style={{ borderTop: "1px solid var(--border)" }}>
                     <td style={{ padding: "0.5rem 1rem", color: "#081a2f" }}>{j.description}</td>
                     <td style={{ padding: "0.5rem 1rem", color: "#5b6472" }}>
-                      {mechanics.find((m) => m.membershipId === j.mechanicMembershipId)?.name ?? "—"}
+                      {mechanics.find((m) => m.membershipId === j.mechanicMembershipId)?.name ??
+                        "—"}
                     </td>
                     <td style={{ padding: "0.5rem 1rem", color: "#5b6472" }}>{j.hours}</td>
-                    <td style={{ padding: "0.5rem 1rem", color: "#5b6472" }}>{formatCurrency(j.rateMinorUnits, ro.currency)}</td>
+                    <td style={{ padding: "0.5rem 1rem", color: "#5b6472" }}>
+                      {formatCurrency(j.rateMinorUnits, ro.currency)}
+                    </td>
                     <td style={{ padding: "0.5rem 1rem", fontWeight: 700, color: "#081a2f" }}>
                       {formatCurrency(j.totalMinorUnits, ro.currency)}
                     </td>
@@ -157,7 +183,12 @@ export function EstimateBuilderView({ repairOrder, mechanics }: Props) {
                               (ok) => ok && toast.success("Labor item removed."),
                             )
                           }
-                          style={{ border: "none", background: "none", color: "#dc2626", cursor: "pointer" }}
+                          style={{
+                            border: "none",
+                            background: "none",
+                            color: "#dc2626",
+                            cursor: "pointer",
+                          }}
                         >
                           ✕
                         </button>
@@ -168,15 +199,49 @@ export function EstimateBuilderView({ repairOrder, mechanics }: Props) {
               </tbody>
             </table>
             {editable && (
-              <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr auto", gap: "0.5rem", padding: "0.875rem 1.25rem" }}>
-                <input placeholder="Description" value={jobDesc} onChange={(e) => setJobDesc(e.target.value)} style={inputStyle} />
-                <input type="number" placeholder="Hours" step="0.5" value={jobHours} onChange={(e) => setJobHours(e.target.value)} style={inputStyle} />
-                <input type="number" placeholder="Rate/hr" value={jobRate} onChange={(e) => setJobRate(e.target.value)} style={inputStyle} />
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "2fr 1fr 1fr 1fr auto",
+                  gap: "0.5rem",
+                  padding: "0.875rem 1.25rem",
+                }}
+              >
+                <input
+                  placeholder="Description"
+                  value={jobDesc}
+                  onChange={(e) => setJobDesc(e.target.value)}
+                  style={inputStyle}
+                />
+                <input
+                  type="number"
+                  placeholder="Hours"
+                  step="0.5"
+                  value={jobHours}
+                  onChange={(e) => setJobHours(e.target.value)}
+                  style={inputStyle}
+                />
+                <input
+                  type="number"
+                  placeholder="Rate/hr"
+                  value={jobRate}
+                  onChange={(e) => setJobRate(e.target.value)}
+                  style={inputStyle}
+                />
                 <div />
                 <button
                   type="button"
                   disabled={busy || !jobDesc.trim()}
-                  style={{ padding: "0.375rem 0.75rem", backgroundColor: "#00b8d9", color: "#fff", border: "none", borderRadius: "0.375rem", fontSize: "0.75rem", fontWeight: 600, cursor: "pointer" }}
+                  style={{
+                    padding: "0.375rem 0.75rem",
+                    backgroundColor: "#00b8d9",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "0.375rem",
+                    fontSize: "0.75rem",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                  }}
                   onClick={async () => {
                     const ok = await api("/jobs", "POST", {
                       description: jobDesc.trim(),
@@ -198,14 +263,25 @@ export function EstimateBuilderView({ repairOrder, mechanics }: Props) {
           </div>
 
           <div style={cardStyle}>
-            <div style={{ padding: "1rem 1.25rem", borderBottom: "1px solid var(--border)", backgroundColor: "#f7fafd" }}>
-              <h3 style={{ fontSize: "0.9375rem", fontWeight: 700, color: "#081a2f", margin: 0 }}>Parts &amp; Materials</h3>
+            <div
+              style={{
+                padding: "1rem 1.25rem",
+                borderBottom: "1px solid var(--border)",
+                backgroundColor: "#f7fafd",
+              }}
+            >
+              <h3 style={{ fontSize: "0.9375rem", fontWeight: 700, color: "#081a2f", margin: 0 }}>
+                Parts &amp; Materials
+              </h3>
             </div>
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.8125rem" }}>
               <thead>
                 <tr style={{ textAlign: "start" }}>
                   {["Part / SKU", "Qty", "Unit Price", "Subtotal", ""].map((h) => (
-                    <th key={h} style={{ padding: "0.5rem 1rem", color: "#8a92a6", fontWeight: 600 }}>
+                    <th
+                      key={h}
+                      style={{ padding: "0.5rem 1rem", color: "#8a92a6", fontWeight: 600 }}
+                    >
                       {h}
                     </th>
                   ))}
@@ -216,10 +292,14 @@ export function EstimateBuilderView({ repairOrder, mechanics }: Props) {
                   <tr key={p.id} style={{ borderTop: "1px solid var(--border)" }}>
                     <td style={{ padding: "0.5rem 1rem", color: "#081a2f" }}>
                       {p.partName}
-                      {p.sku && <div style={{ fontSize: "0.6875rem", color: "#8a92a6" }}>SKU: {p.sku}</div>}
+                      {p.sku && (
+                        <div style={{ fontSize: "0.6875rem", color: "#8a92a6" }}>SKU: {p.sku}</div>
+                      )}
                     </td>
                     <td style={{ padding: "0.5rem 1rem", color: "#5b6472" }}>{p.quantity}</td>
-                    <td style={{ padding: "0.5rem 1rem", color: "#5b6472" }}>{formatCurrency(p.unitPriceMinorUnits, ro.currency)}</td>
+                    <td style={{ padding: "0.5rem 1rem", color: "#5b6472" }}>
+                      {formatCurrency(p.unitPriceMinorUnits, ro.currency)}
+                    </td>
                     <td style={{ padding: "0.5rem 1rem", fontWeight: 700, color: "#081a2f" }}>
                       {formatCurrency(p.totalMinorUnits, ro.currency)}
                     </td>
@@ -232,7 +312,12 @@ export function EstimateBuilderView({ repairOrder, mechanics }: Props) {
                               (ok) => ok && toast.success("Part item removed."),
                             )
                           }
-                          style={{ border: "none", background: "none", color: "#dc2626", cursor: "pointer" }}
+                          style={{
+                            border: "none",
+                            background: "none",
+                            color: "#dc2626",
+                            cursor: "pointer",
+                          }}
                         >
                           ✕
                         </button>
@@ -243,14 +328,47 @@ export function EstimateBuilderView({ repairOrder, mechanics }: Props) {
               </tbody>
             </table>
             {editable && (
-              <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr auto", gap: "0.5rem", padding: "0.875rem 1.25rem" }}>
-                <input placeholder="Part name" value={partName} onChange={(e) => setPartName(e.target.value)} style={inputStyle} />
-                <input type="number" placeholder="Qty" value={partQty} onChange={(e) => setPartQty(e.target.value)} style={inputStyle} />
-                <input type="number" placeholder="Unit price" value={partPrice} onChange={(e) => setPartPrice(e.target.value)} style={inputStyle} />
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "2fr 1fr 1fr auto",
+                  gap: "0.5rem",
+                  padding: "0.875rem 1.25rem",
+                }}
+              >
+                <input
+                  placeholder="Part name"
+                  value={partName}
+                  onChange={(e) => setPartName(e.target.value)}
+                  style={inputStyle}
+                />
+                <input
+                  type="number"
+                  placeholder="Qty"
+                  value={partQty}
+                  onChange={(e) => setPartQty(e.target.value)}
+                  style={inputStyle}
+                />
+                <input
+                  type="number"
+                  placeholder="Unit price"
+                  value={partPrice}
+                  onChange={(e) => setPartPrice(e.target.value)}
+                  style={inputStyle}
+                />
                 <button
                   type="button"
                   disabled={busy || !partName.trim()}
-                  style={{ padding: "0.375rem 0.75rem", backgroundColor: "#00b8d9", color: "#fff", border: "none", borderRadius: "0.375rem", fontSize: "0.75rem", fontWeight: 600, cursor: "pointer" }}
+                  style={{
+                    padding: "0.375rem 0.75rem",
+                    backgroundColor: "#00b8d9",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "0.375rem",
+                    fontSize: "0.75rem",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                  }}
                   onClick={async () => {
                     const ok = await api("/parts", "POST", {
                       partName: partName.trim(),
@@ -272,7 +390,15 @@ export function EstimateBuilderView({ repairOrder, mechanics }: Props) {
           </div>
 
           <div style={{ ...cardStyle, padding: "1.25rem" }}>
-            <h3 style={{ fontSize: "0.9375rem", fontWeight: 700, color: "#081a2f", marginTop: 0, marginBottom: "0.75rem" }}>
+            <h3
+              style={{
+                fontSize: "0.9375rem",
+                fontWeight: 700,
+                color: "#081a2f",
+                marginTop: 0,
+                marginBottom: "0.75rem",
+              }}
+            >
               Additional Notes to Customer
             </h3>
             <textarea
@@ -286,23 +412,71 @@ export function EstimateBuilderView({ repairOrder, mechanics }: Props) {
         </div>
 
         <div style={{ position: "sticky", top: "1.5rem" }}>
-          <div style={{ backgroundColor: "#081a2f", color: "#fff", borderRadius: "0.75rem", padding: "1.5rem", marginBottom: "1.25rem" }}>
-            <h3 style={{ fontSize: "0.9375rem", fontWeight: 700, color: "#00b8d9", marginTop: 0, marginBottom: "1.25rem" }}>
+          <div
+            style={{
+              backgroundColor: "#081a2f",
+              color: "#fff",
+              borderRadius: "0.75rem",
+              padding: "1.5rem",
+              marginBottom: "1.25rem",
+            }}
+          >
+            <h3
+              style={{
+                fontSize: "0.9375rem",
+                fontWeight: 700,
+                color: "#00b8d9",
+                marginTop: 0,
+                marginBottom: "1.25rem",
+              }}
+            >
               Financial Summary
             </h3>
-            <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8125rem", opacity: 0.85, marginBottom: "0.625rem" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                fontSize: "0.8125rem",
+                opacity: 0.85,
+                marginBottom: "0.625rem",
+              }}
+            >
               <span>Labor Subtotal</span>
               <span>{formatCurrency(ro.laborSubtotalMinorUnits, ro.currency)}</span>
             </div>
-            <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8125rem", opacity: 0.85, marginBottom: "0.625rem" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                fontSize: "0.8125rem",
+                opacity: 0.85,
+                marginBottom: "0.625rem",
+              }}
+            >
               <span>Parts Subtotal</span>
               <span>{formatCurrency(ro.partsSubtotalMinorUnits, ro.currency)}</span>
             </div>
-            <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8125rem", opacity: 0.85, marginBottom: "1rem" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                fontSize: "0.8125rem",
+                opacity: 0.85,
+                marginBottom: "1rem",
+              }}
+            >
               <span>VAT (5%)</span>
               <span>{formatCurrency(ro.vatMinorUnits, ro.currency)}</span>
             </div>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", paddingTop: "1rem", borderTop: "1px solid rgba(255,255,255,0.15)" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "baseline",
+                paddingTop: "1rem",
+                borderTop: "1px solid rgba(255,255,255,0.15)",
+              }}
+            >
               <span style={{ fontSize: "0.9375rem", fontWeight: 700 }}>Grand Total</span>
               <span style={{ fontSize: "1.5rem", fontWeight: 800, color: "#00b8d9" }}>
                 {formatCurrency(ro.totalMinorUnits, ro.currency)}
@@ -325,9 +499,9 @@ export function EstimateBuilderView({ repairOrder, mechanics }: Props) {
                   cursor: "pointer",
                 }}
                 onClick={() =>
-                  void api("/send-estimate", "POST", { customerNotes: notes.trim() || undefined }).then(
-                    (ok) => ok && toast.success("Estimate sent to customer."),
-                  )
+                  void api("/send-estimate", "POST", {
+                    customerNotes: notes.trim() || undefined,
+                  }).then((ok) => ok && toast.success("Estimate sent to customer."))
                 }
               >
                 Send Estimate to Customer
@@ -340,7 +514,15 @@ export function EstimateBuilderView({ repairOrder, mechanics }: Props) {
             )}
           </div>
 
-          <div style={{ borderRadius: "0.75rem", overflow: "hidden", border: "1px solid var(--border)", aspectRatio: "16/10", position: "relative" }}>
+          <div
+            style={{
+              borderRadius: "0.75rem",
+              overflow: "hidden",
+              border: "1px solid var(--border)",
+              aspectRatio: "16/10",
+              position: "relative",
+            }}
+          >
             <Image
               src="/images/repair-orders/estimate-builder-history-thumb.jpg"
               alt={ro.vehicleLabel}

@@ -50,7 +50,9 @@ export function SearchableSelect(props: SearchableSelectProps) {
   const [open, setOpen] = useState(false);
 
   const selectedValues = props.multiple ? props.value : props.value ? [props.value] : [];
-  const selectedLabels = options.filter((o) => selectedValues.includes(o.value)).map((o) => o.label);
+  const selectedLabels = options
+    .filter((o) => selectedValues.includes(o.value))
+    .map((o) => o.label);
 
   const triggerLabel = props.multiple
     ? selectedValues.length === 0
@@ -154,7 +156,10 @@ export function SearchableSelect(props: SearchableSelectProps) {
                         {selected && <Check size={11} color="#fff" />}
                       </span>
                     ) : (
-                      <Check size={15} className={cn("me-2", selected ? "opacity-100" : "opacity-0")} />
+                      <Check
+                        size={15}
+                        className={cn("me-2", selected ? "opacity-100" : "opacity-0")}
+                      />
                     )}
                     {option.label}
                   </CommandItem>

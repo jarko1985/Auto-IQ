@@ -10,7 +10,10 @@ import { getPartImage } from "@/features/catalog/part-image";
 import { SelectChevron } from "@/components/forms/field-styles";
 import { useIsMobile } from "@/lib/hooks/use-is-mobile";
 import { SearchableSelect } from "@/components/ui/searchable-select";
-import { LiveResultsDropdown, type LiveResultItem } from "@/components/search/live-results-dropdown";
+import {
+  LiveResultsDropdown,
+  type LiveResultItem,
+} from "@/components/search/live-results-dropdown";
 
 interface PartResult {
   id: string;

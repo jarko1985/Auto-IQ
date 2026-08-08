@@ -68,8 +68,7 @@ const SAFETY_RULES: Record<string, SafetyEvaluation> = {
     safeToDrive: null,
     emergencyAction:
       "Do not ignore brake warning lights. Have the brake system inspected before your next long drive.",
-    emergencyActionAr:
-      "لا تتجاهل تحذير لمبة الفرامل. افحص نظام الفرامل قبل رحلتك الطويلة القادمة.",
+    emergencyActionAr: "لا تتجاهل تحذير لمبة الفرامل. افحص نظام الفرامل قبل رحلتك الطويلة القادمة.",
   },
   TRANSMISSION_SLIPPING: {
     severity: "HIGH",

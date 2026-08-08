@@ -284,7 +284,7 @@ export function MyBookingDetailView({ booking }: Props) {
           Appointment Details
         </h2>
         <div
-          className="grid grid-cols-1 gap-y-3.5 gap-x-6 sm:grid-cols-2"
+          className="grid grid-cols-1 gap-x-6 gap-y-3.5 sm:grid-cols-2"
           style={{ fontSize: "0.8125rem" }}
         >
           <div>

@@ -38,7 +38,9 @@ export function UserAvatarMenu({ profileHref, settingsHref }: Props) {
           }}
         >
           <Avatar>
-            {account?.image && <AvatarImage src={account.image} alt={account.name ?? account.email} />}
+            {account?.image && (
+              <AvatarImage src={account.image} alt={account.name ?? account.email} />
+            )}
             <AvatarFallback style={{ backgroundColor: "#081a2f", color: "#fff", fontWeight: 700 }}>
               {account ? initials(account.name, account.email) : ""}
             </AvatarFallback>
@@ -58,13 +60,19 @@ export function UserAvatarMenu({ profileHref, settingsHref }: Props) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href={profileHref as never} style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
+          <Link
+            href={profileHref as never}
+            style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}
+          >
             <UserIcon size={16} />
             Profile
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href={settingsHref as never} style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
+          <Link
+            href={settingsHref as never}
+            style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}
+          >
             <SettingsIcon size={16} />
             Settings
           </Link>

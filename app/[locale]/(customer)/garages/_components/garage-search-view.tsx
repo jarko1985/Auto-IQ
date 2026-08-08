@@ -10,7 +10,10 @@ import { useGeolocation } from "@/lib/hooks/use-geolocation";
 import { useIsMobile } from "@/lib/hooks/use-is-mobile";
 import { SelectChevron } from "@/components/forms/field-styles";
 import { SearchableSelect } from "@/components/ui/searchable-select";
-import { LiveResultsDropdown, type LiveResultItem } from "@/components/search/live-results-dropdown";
+import {
+  LiveResultsDropdown,
+  type LiveResultItem,
+} from "@/components/search/live-results-dropdown";
 import type { GarageSearchResult } from "@/features/bookings/service";
 
 type GarageCard = GarageSearchResult;
@@ -196,7 +199,11 @@ export function GarageSearchView({ initialGarages, initialTotal, makes, initialF
   }
 
   const hasActiveFilters =
-    query !== "" || emirate !== "" || serviceTypes.length > 0 || vehicleType !== "" || makeId !== "";
+    query !== "" ||
+    emirate !== "" ||
+    serviceTypes.length > 0 ||
+    vehicleType !== "" ||
+    makeId !== "";
 
   const dropdownItems: LiveResultItem[] = garages.slice(0, DROPDOWN_LIMIT).map((g) => ({
     id: g.id,

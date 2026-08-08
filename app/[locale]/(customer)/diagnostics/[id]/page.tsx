@@ -11,12 +11,12 @@ import {
   AlertTriangle,
   XCircle,
   Brain,
-  Car,
   ChevronRight,
   FileText,
   Image as ImageIcon,
   Video,
 } from "lucide-react";
+import { MakeLogoBadge } from "@/components/vehicles/make-logo-badge";
 import { DiagnosticResultView } from "@/components/diagnostics/diagnostic-result-view";
 import { DiagnosticFeedbackForm } from "@/components/diagnostics/diagnostic-feedback-form";
 import { DiagnosticAnalyzeTrigger } from "@/components/diagnostics/diagnostic-analyze-trigger";
@@ -124,46 +124,51 @@ export default async function DiagnosticSessionPage({ params }: Props) {
           marginBottom: "1.75rem",
         }}
       >
-        <div>
-          <h1
-            className="text-fluid-page-title break-words"
-            style={{
-              fontWeight: 700,
-              color: "#081a2f",
-              margin: "0 0 0.375rem",
-              letterSpacing: "-0.02em",
-            }}
-          >
-            {diagSession.vehicle.year} {diagSession.vehicle.makeName}{" "}
-            {diagSession.vehicle.modelName}
-          </h1>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", flexWrap: "wrap" }}>
-            <span
+        <div style={{ display: "flex", alignItems: "flex-start", gap: "0.875rem" }}>
+          <MakeLogoBadge makeName={diagSession.vehicle.makeName} size={70} />
+          <div style={{ minWidth: 0 }}>
+            <h1
+              className="text-fluid-page-title break-words"
               style={{
-                fontSize: "0.8125rem",
-                fontWeight: 600,
-                color: meta.color,
-                backgroundColor: `${meta.color}18`,
-                borderRadius: "9999px",
-                padding: "0.25rem 0.625rem",
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "0.3rem",
+                fontWeight: 700,
+                color: "#081a2f",
+                margin: "0 0 0.375rem",
+                letterSpacing: "-0.02em",
               }}
             >
-              <Icon size={11} /> {meta.label}
-            </span>
-            <span style={{ fontSize: "0.8125rem", color: "#74777d" }}>
-              {diagSession.category.label}
-              {diagSession.symptom ? ` · ${diagSession.symptom.label}` : ""}
-            </span>
-            <span style={{ fontSize: "0.8125rem", color: "#74777d" }}>
-              {new Date(diagSession.createdAt).toLocaleDateString("en-AE", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              })}
-            </span>
+              {diagSession.vehicle.year} {diagSession.vehicle.makeName}{" "}
+              {diagSession.vehicle.modelName}
+            </h1>
+            <div
+              style={{ display: "flex", alignItems: "center", gap: "0.625rem", flexWrap: "wrap" }}
+            >
+              <span
+                style={{
+                  fontSize: "0.8125rem",
+                  fontWeight: 600,
+                  color: meta.color,
+                  backgroundColor: `${meta.color}18`,
+                  borderRadius: "9999px",
+                  padding: "0.25rem 0.625rem",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "0.3rem",
+                }}
+              >
+                <Icon size={11} /> {meta.label}
+              </span>
+              <span style={{ fontSize: "0.8125rem", color: "#74777d" }}>
+                {diagSession.category.label}
+                {diagSession.symptom ? ` · ${diagSession.symptom.label}` : ""}
+              </span>
+              <span style={{ fontSize: "0.8125rem", color: "#74777d" }}>
+                {new Date(diagSession.createdAt).toLocaleDateString("en-AE", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })}
+              </span>
+            </div>
           </div>
         </div>
 
@@ -332,20 +337,7 @@ export default async function DiagnosticSessionPage({ params }: Props) {
           <div style={cardStyle}>
             <p style={{ ...sectionLabelStyle, marginBottom: "0.75rem" }}>VEHICLE</p>
             <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
-              <div
-                style={{
-                  width: "2.75rem",
-                  height: "2.75rem",
-                  borderRadius: "0.75rem",
-                  background: "linear-gradient(135deg, #0f2744, #1a3a5c)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                }}
-              >
-                <Car size={16} color="rgba(255,255,255,0.6)" />
-              </div>
+              <MakeLogoBadge makeName={diagSession.vehicle.makeName} size={44} />
               <div>
                 <p
                   style={{

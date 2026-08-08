@@ -61,7 +61,9 @@ function generatedQuestion(overrides: Record<string, unknown> = {}) {
 }
 
 beforeEach(() => {
-  vi.mocked(repo.getSessionById).mockReset().mockResolvedValue(baseSession() as never);
+  vi.mocked(repo.getSessionById)
+    .mockReset()
+    .mockResolvedValue(baseSession() as never);
   vi.mocked(repo.getSessionQuestions).mockReset().mockResolvedValue([]);
   vi.mocked(repo.getGenericFallbackQuestions)
     .mockReset()
@@ -69,9 +71,7 @@ beforeEach(() => {
   vi.mocked(repo.createSessionQuestions)
     .mockReset()
     .mockImplementation((_sessionId, questions) =>
-      Promise.resolve(
-        questions.map((q, i) => ({ id: `generated-${i}`, ...q })) as never,
-      ),
+      Promise.resolve(questions.map((q, i) => ({ id: `generated-${i}`, ...q })) as never),
     );
   vi.mocked(getActivePrompt)
     .mockReset()
@@ -93,7 +93,9 @@ describe("generateSessionQuestions", () => {
   });
 
   it("is idempotent — returns the already-generated session questions without calling the AI router", async () => {
-    vi.mocked(repo.getSessionQuestions).mockResolvedValue([fallbackQuestion({ id: "q-1" })] as never);
+    vi.mocked(repo.getSessionQuestions).mockResolvedValue([
+      fallbackQuestion({ id: "q-1" }),
+    ] as never);
 
     const result = await generateSessionQuestions("session-1", "user-1");
 

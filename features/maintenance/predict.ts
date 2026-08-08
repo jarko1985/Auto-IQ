@@ -50,7 +50,8 @@ function daysBetween(from: Date, to: Date): number {
 
 function urgencyFor(remainingKm: number, remainingDays: number): MaintenanceUrgency {
   if (remainingKm <= 0 || remainingDays <= 0) return "OVERDUE";
-  if (remainingKm <= DUE_SOON_KM_THRESHOLD || remainingDays <= DUE_SOON_DAYS_THRESHOLD) return "DUE_SOON";
+  if (remainingKm <= DUE_SOON_KM_THRESHOLD || remainingDays <= DUE_SOON_DAYS_THRESHOLD)
+    return "DUE_SOON";
   return "OK";
 }
 

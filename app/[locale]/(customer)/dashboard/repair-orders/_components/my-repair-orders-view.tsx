@@ -28,7 +28,11 @@ const STATUS_STYLES: Record<string, { bg: string; color: string; label: string }
   INSPECTION: { bg: "rgba(0,184,217,0.12)", color: "#00b8d9", label: "In Inspection" },
   DIAGNOSIS: { bg: "rgba(0,184,217,0.12)", color: "#00b8d9", label: "Diagnosing" },
   ESTIMATE_DRAFT: { bg: "rgba(217,119,6,0.12)", color: "#d97706", label: "Preparing Estimate" },
-  AWAITING_APPROVAL: { bg: "rgba(217,119,6,0.12)", color: "#d97706", label: "Awaiting Your Approval" },
+  AWAITING_APPROVAL: {
+    bg: "rgba(217,119,6,0.12)",
+    color: "#d97706",
+    label: "Awaiting Your Approval",
+  },
   APPROVED: { bg: "rgba(22,163,74,0.12)", color: "#16a34a", label: "Approved" },
   REJECTED: { bg: "rgba(220,38,38,0.12)", color: "#dc2626", label: "Estimate Declined" },
   IN_REPAIR: { bg: "rgba(0,184,217,0.12)", color: "#00b8d9", label: "In Repair" },
@@ -53,7 +57,15 @@ const TABS = [
   {
     value: "active",
     label: "Active",
-    statuses: ["CREATED", "INSPECTION", "DIAGNOSIS", "ESTIMATE_DRAFT", "APPROVED", "IN_REPAIR", "QUALITY_CHECK"],
+    statuses: [
+      "CREATED",
+      "INSPECTION",
+      "DIAGNOSIS",
+      "ESTIMATE_DRAFT",
+      "APPROVED",
+      "IN_REPAIR",
+      "QUALITY_CHECK",
+    ],
   },
   { value: "approval", label: "Awaiting Approval", statuses: ["AWAITING_APPROVAL"] },
   { value: "completed", label: "Completed", statuses: ["COMPLETED", "INVOICED"] },
@@ -75,7 +87,10 @@ export function MyRepairOrdersView({ initialRepairOrders }: Props) {
       <div style={{ marginBottom: "1.5rem" }}>
         {isMobile ? (
           <SearchableSelect
-            options={TABS.filter((t) => t.value !== "all").map((t) => ({ value: t.value, label: t.label }))}
+            options={TABS.filter((t) => t.value !== "all").map((t) => ({
+              value: t.value,
+              label: t.label,
+            }))}
             value={tab === "all" ? "" : tab}
             onChange={(value) => setTab((value || "all") as (typeof TABS)[number]["value"])}
             placeholder="All Orders"
@@ -141,14 +156,34 @@ export function MyRepairOrdersView({ initialRepairOrders }: Props) {
                   backgroundColor: "#fff",
                 }}
               >
-                <div style={{ width: "10rem", height: "7rem", borderRadius: "0.625rem", overflow: "hidden", flexShrink: 0, position: "relative" }}>
+                <div
+                  style={{
+                    width: "10rem",
+                    height: "7rem",
+                    borderRadius: "0.625rem",
+                    overflow: "hidden",
+                    flexShrink: 0,
+                    position: "relative",
+                  }}
+                >
                   <Image src={image} alt={ro.vehicleLabel} fill style={{ objectFit: "cover" }} />
                 </div>
                 <div style={{ flex: "1 1 200px", minWidth: 0 }}>
-                  <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-start", gap: "0.5rem", marginBottom: "0.5rem" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      justifyContent: "space-between",
+                      alignItems: "flex-start",
+                      gap: "0.5rem",
+                      marginBottom: "0.5rem",
+                    }}
+                  >
                     <div>
                       <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                        <span style={{ fontSize: "1rem", fontWeight: 700, color: "#081a2f" }}>#{ro.repairOrderNumber}</span>
+                        <span style={{ fontSize: "1rem", fontWeight: 700, color: "#081a2f" }}>
+                          #{ro.repairOrderNumber}
+                        </span>
                         <span
                           style={{
                             padding: "0.1875rem 0.625rem",
@@ -162,27 +197,47 @@ export function MyRepairOrdersView({ initialRepairOrders }: Props) {
                           {status.label}
                         </span>
                       </div>
-                      <p style={{ fontSize: "0.8125rem", color: "#5b6472", margin: "0.25rem 0 0" }}>{ro.garageName}</p>
+                      <p style={{ fontSize: "0.8125rem", color: "#5b6472", margin: "0.25rem 0 0" }}>
+                        {ro.garageName}
+                      </p>
                     </div>
                     {ro.totalMinorUnits > 0 && (
                       <div style={{ textAlign: "end" }}>
                         <div style={{ fontSize: "1rem", fontWeight: 700, color: "#081a2f" }}>
                           {formatCurrency(ro.totalMinorUnits, ro.currency)}
                         </div>
-                        <div style={{ fontSize: "0.6875rem", color: "#8a92a6" }}>Estimated Total</div>
+                        <div style={{ fontSize: "0.6875rem", color: "#8a92a6" }}>
+                          Estimated Total
+                        </div>
                       </div>
                     )}
                   </div>
                   <div className="mb-3.5 grid grid-cols-1 gap-3 text-[0.8125rem] sm:grid-cols-2">
                     <div>
-                      <div style={{ color: "#8a92a6", fontSize: "0.6875rem", textTransform: "uppercase" }}>Vehicle</div>
+                      <div
+                        style={{
+                          color: "#8a92a6",
+                          fontSize: "0.6875rem",
+                          textTransform: "uppercase",
+                        }}
+                      >
+                        Vehicle
+                      </div>
                       <div style={{ color: "#081a2f", fontWeight: 600 }}>
                         {ro.vehicleLabel}
                         {ro.plateNumber && ` (${ro.plateNumber})`}
                       </div>
                     </div>
                     <div>
-                      <div style={{ color: "#8a92a6", fontSize: "0.6875rem", textTransform: "uppercase" }}>Diagnosis</div>
+                      <div
+                        style={{
+                          color: "#8a92a6",
+                          fontSize: "0.6875rem",
+                          textTransform: "uppercase",
+                        }}
+                      >
+                        Diagnosis
+                      </div>
                       <div style={{ color: "#081a2f" }}>{ro.confirmedDiagnosis ?? "Pending"}</div>
                     </div>
                   </div>

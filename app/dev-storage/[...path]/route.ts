@@ -30,6 +30,9 @@ export async function GET(_request: Request, { params }: Params) {
       headers: { "Content-Type": contentType, "Cache-Control": "private, max-age=3600" },
     });
   } catch {
-    return NextResponse.json({ error: { code: "NOT_FOUND", message: "File not found" } }, { status: 404 });
+    return NextResponse.json(
+      { error: { code: "NOT_FOUND", message: "File not found" } },
+      { status: 404 },
+    );
   }
 }

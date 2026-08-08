@@ -38,9 +38,18 @@ export function MobileAccountPanel({ profileHref, settingsHref, onNavigate }: Pr
 
   return (
     <div>
-      <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", padding: "0.5rem 0.25rem 1rem" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "0.75rem",
+          padding: "0.5rem 0.25rem 1rem",
+        }}
+      >
         <Avatar>
-          {account?.image && <AvatarImage src={account.image} alt={account.name ?? account.email} />}
+          {account?.image && (
+            <AvatarImage src={account.image} alt={account.name ?? account.email} />
+          )}
           <AvatarFallback style={{ backgroundColor: "#081a2f", color: "#fff", fontWeight: 700 }}>
             {account ? initials(account.name, account.email) : ""}
           </AvatarFallback>

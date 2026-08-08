@@ -193,7 +193,9 @@ export function GarageAppointmentsView({ initialBookings }: Props) {
           }}
         >
           <CalendarClock size={32} color="#8a92a6" style={{ margin: "0 auto 0.75rem" }} />
-          <p style={{ fontSize: "0.875rem", color: "#5b6472" }}>No appointments in this category.</p>
+          <p style={{ fontSize: "0.875rem", color: "#5b6472" }}>
+            No appointments in this category.
+          </p>
         </div>
       ) : (
         <div

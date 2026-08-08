@@ -141,7 +141,11 @@ export function GarageMap({ pins, userLocation, height = "320px", selectedId, on
               title={`${pin.name} — open in Google Maps`}
               onClick={() => {
                 onPinClick?.(pin.id);
-                window.open(buildGoogleMapsLink(pin.latitude, pin.longitude), "_blank", "noopener,noreferrer");
+                window.open(
+                  buildGoogleMapsLink(pin.latitude, pin.longitude),
+                  "_blank",
+                  "noopener,noreferrer",
+                );
               }}
             >
               <Pin

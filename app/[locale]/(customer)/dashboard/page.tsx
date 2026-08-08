@@ -1,16 +1,17 @@
 import { auth } from "@/auth";
 import { getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
-import Image from "next/image";
-import { Car } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import { listUserVehicles } from "@/features/vehicles/service";
-import { getVehicleImage } from "@/features/vehicles/vehicle-image";
+import { MakeLogoBadge } from "@/components/vehicles/make-logo-badge";
 import { getVehicleMaintenanceSummary } from "@/features/maintenance/service";
 import type { MaintenanceSummary, MaintenanceUrgency } from "@/features/maintenance/predict";
 import { DUE_SOON_KM_THRESHOLD, DUE_SOON_DAYS_THRESHOLD } from "@/features/maintenance/intervals";
 
-const STATUS_BADGE: Record<MaintenanceUrgency | "NO_DATA", { label: string; bg: string; fg: string }> = {
+const STATUS_BADGE: Record<
+  MaintenanceUrgency | "NO_DATA",
+  { label: string; bg: string; fg: string }
+> = {
   OK: { label: "GOOD", bg: "rgba(34,197,94,0.1)", fg: "#16a34a" },
   DUE_SOON: { label: "DUE SOON", bg: "rgba(245,158,11,0.1)", fg: "#d97706" },
   OVERDUE: { label: "ATTENTION NEEDED", bg: "rgba(220,38,38,0.1)", fg: "#dc2626" },
@@ -214,38 +215,7 @@ export default async function DashboardPage() {
                   </div>
                 </div>
 
-                {(() => {
-                  const vehicleImage = getVehicleImage(defaultVehicle);
-                  return (
-                    <div
-                      style={{
-                        width: "64px",
-                        height: "64px",
-                        borderRadius: "0.625rem",
-                        position: "relative",
-                        overflow: "hidden",
-                        flexShrink: 0,
-                        background: vehicleImage
-                          ? undefined
-                          : "linear-gradient(135deg, #0f2744 0%, #1a3a5c 100%)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      {vehicleImage ? (
-                        <Image
-                          src={vehicleImage}
-                          alt={`${defaultVehicle.makeName} ${defaultVehicle.modelName}`}
-                          fill
-                          style={{ objectFit: "cover" }}
-                        />
-                      ) : (
-                        <Car size={24} color="rgba(255,255,255,0.6)" />
-                      )}
-                    </div>
-                  );
-                })()}
+                <MakeLogoBadge makeName={defaultVehicle.makeName} size={80} />
 
                 <div style={{ minWidth: "140px", flex: "1 1 140px" }}>
                   <p
@@ -317,7 +287,9 @@ export default async function DashboardPage() {
                               flexShrink: 0,
                             }}
                           />
-                          <span style={{ fontSize: "0.8125rem", fontWeight: 600, color: "var(--navy)" }}>
+                          <span
+                            style={{ fontSize: "0.8125rem", fontWeight: 600, color: "var(--navy)" }}
+                          >
                             {humanizeServiceType(p.serviceType)}
                           </span>
                         </div>

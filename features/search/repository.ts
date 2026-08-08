@@ -13,7 +13,12 @@ export async function searchCustomerVehicles(userId: string, query: string) {
     where: {
       userId,
       deletedAt: null,
-      OR: [{ plateNumber: ci(query) }, { vin: ci(query) }, { makeName: ci(query) }, { modelName: ci(query) }],
+      OR: [
+        { plateNumber: ci(query) },
+        { vin: ci(query) },
+        { makeName: ci(query) },
+        { modelName: ci(query) },
+      ],
     },
     select: { id: true, makeName: true, modelName: true, year: true, plateNumber: true },
     take: RESULTS_PER_CATEGORY,
@@ -23,7 +28,12 @@ export async function searchCustomerVehicles(userId: string, query: string) {
 export async function searchCustomerBookings(userId: string, query: string) {
   return db.appointment.findMany({
     where: { customerId: userId, bookingNumber: ci(query) },
-    select: { id: true, bookingNumber: true, status: true, garage: { select: { businessName: true } } },
+    select: {
+      id: true,
+      bookingNumber: true,
+      status: true,
+      garage: { select: { businessName: true } },
+    },
     take: RESULTS_PER_CATEGORY,
     orderBy: { createdAt: "desc" },
   });
@@ -41,7 +51,12 @@ export async function searchCustomerRepairOrders(userId: string, query: string) 
 export async function searchCustomerOrders(userId: string, query: string) {
   return db.vendorOrder.findMany({
     where: { customerId: userId, orderNumber: ci(query) },
-    select: { id: true, orderNumber: true, status: true, vendor: { select: { businessName: true } } },
+    select: {
+      id: true,
+      orderNumber: true,
+      status: true,
+      vendor: { select: { businessName: true } },
+    },
     take: RESULTS_PER_CATEGORY,
     orderBy: { createdAt: "desc" },
   });
@@ -159,7 +174,10 @@ export async function searchAdminGarages(query: string) {
 
 export async function searchAdminParts(query: string) {
   return db.part.findMany({
-    where: { deletedAt: null, OR: [{ name: ci(query) }, { partNumber: ci(query) }, { manufacturerName: ci(query) }] },
+    where: {
+      deletedAt: null,
+      OR: [{ name: ci(query) }, { partNumber: ci(query) }, { manufacturerName: ci(query) }],
+    },
     select: { id: true, name: true, manufacturerName: true, approvalState: true },
     take: RESULTS_PER_CATEGORY,
   });
@@ -168,7 +186,12 @@ export async function searchAdminParts(query: string) {
 export async function searchAdminDiagnosticFeedback(query: string) {
   return db.diagnosticFeedback.findMany({
     where: { comment: ci(query) },
-    select: { id: true, rating: true, sessionId: true, session: { select: { vehicle: { select: { makeName: true, modelName: true } } } } },
+    select: {
+      id: true,
+      rating: true,
+      sessionId: true,
+      session: { select: { vehicle: { select: { makeName: true, modelName: true } } } },
+    },
     take: RESULTS_PER_CATEGORY,
     orderBy: { createdAt: "desc" },
   });

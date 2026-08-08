@@ -36,11 +36,19 @@ export async function updatePasswordHash(userId: string, passwordHash: string) {
 }
 
 export async function updateAvatar(userId: string, image: string) {
-  return db.user.update({ where: { id: userId }, data: { image }, select: { id: true, image: true } });
+  return db.user.update({
+    where: { id: userId },
+    data: { image },
+    select: { id: true, image: true },
+  });
 }
 
 export async function updateLocale(userId: string, locale: string) {
-  return db.user.update({ where: { id: userId }, data: { locale }, select: { id: true, locale: true } });
+  return db.user.update({
+    where: { id: userId },
+    data: { locale },
+    select: { id: true, locale: true },
+  });
 }
 
 export async function findLinkedProviders(userId: string) {

@@ -72,7 +72,8 @@ export function renderNotificationContent(
           locale === "ar"
             ? "الرجاء تأكيد بريدك الإلكتروني لإكمال إعداد حسابك."
             : "Please confirm your email address to finish setting up your account.",
-        emailSubject: locale === "ar" ? "تحقق من بريدك الإلكتروني - AutoIQ" : "Verify your email — AutoIQ",
+        emailSubject:
+          locale === "ar" ? "تحقق من بريدك الإلكتروني - AutoIQ" : "Verify your email — AutoIQ",
         emailBody:
           locale === "ar"
             ? `الرجاء تأكيد بريدك الإلكتروني عبر هذا الرابط: ${verificationUrl}`
@@ -156,7 +157,11 @@ export function renderNotificationContent(
     }
     case "PAYMENT_COMPLETE": {
       const { invoiceNumber, amountMinorUnits, currency } = payload.data;
-      const amount = formatCurrency(amountMinorUnits, currency, locale === "ar" ? "ar-AE" : "en-AE");
+      const amount = formatCurrency(
+        amountMinorUnits,
+        currency,
+        locale === "ar" ? "ar-AE" : "en-AE",
+      );
       const bodyEn = `${amount} payment received for ${invoiceNumber}.`;
       const bodyAr = `تم استلام دفعة بقيمة ${amount} مقابل ${invoiceNumber}.`;
       return {
@@ -170,7 +175,11 @@ export function renderNotificationContent(
     }
     case "PAYMENT_FAILED": {
       const { invoiceNumber, amountMinorUnits, currency } = payload.data;
-      const amount = formatCurrency(amountMinorUnits, currency, locale === "ar" ? "ar-AE" : "en-AE");
+      const amount = formatCurrency(
+        amountMinorUnits,
+        currency,
+        locale === "ar" ? "ar-AE" : "en-AE",
+      );
       const bodyEn = `Your ${amount} payment for ${invoiceNumber} did not go through.`;
       const bodyAr = `لم تنجح عملية الدفع بقيمة ${amount} مقابل ${invoiceNumber}.`;
       return {

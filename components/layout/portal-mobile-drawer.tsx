@@ -107,7 +107,12 @@ export function PortalMobileDrawer({
                 {brandIcon}
               </div>
               <span
-                style={{ color: "#fff", fontWeight: 700, fontSize: "1rem", letterSpacing: "-0.01em" }}
+                style={{
+                  color: "#fff",
+                  fontWeight: 700,
+                  fontSize: "1rem",
+                  letterSpacing: "-0.01em",
+                }}
               >
                 {brandLabel}
               </span>
@@ -179,7 +184,11 @@ export function PortalMobileDrawer({
           {secondaryItems && secondaryItems.length > 0 && (
             <>
               <div
-                style={{ height: "1px", backgroundColor: "rgba(255,255,255,0.08)", margin: "0.75rem 0" }}
+                style={{
+                  height: "1px",
+                  backgroundColor: "rgba(255,255,255,0.08)",
+                  margin: "0.75rem 0",
+                }}
               />
               {secondaryItems.map(({ href, label, icon, soon, navigateHref }) => (
                 <SidebarNavLink
@@ -206,7 +215,11 @@ export function PortalMobileDrawer({
             flexShrink: 0,
           }}
         >
-          <MobileAccountPanel profileHref={profileHref} settingsHref={settingsHref} onNavigate={onClose} />
+          <MobileAccountPanel
+            profileHref={profileHref}
+            settingsHref={settingsHref}
+            onNavigate={onClose}
+          />
         </div>
       </div>
     </>

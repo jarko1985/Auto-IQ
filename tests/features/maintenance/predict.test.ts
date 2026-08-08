@@ -25,7 +25,13 @@ describe("predictDueServices", () => {
   it("never predicts a ServiceType with zero history entries, even if others exist", () => {
     const result = predictDueServices(
       { currentMileageKm: 42_000 },
-      [entry({ serviceType: "OIL_CHANGE", date: new Date("2026-06-01T00:00:00Z"), mileageKm: 41_000 })],
+      [
+        entry({
+          serviceType: "OIL_CHANGE",
+          date: new Date("2026-06-01T00:00:00Z"),
+          mileageKm: 41_000,
+        }),
+      ],
       NOW,
     );
 
@@ -38,7 +44,13 @@ describe("predictDueServices", () => {
     // OIL_CHANGE interval is 10,000km; last done at 30,000km, vehicle is now at 45,000km => overdue by 5,000km
     const result = predictDueServices(
       { currentMileageKm: 45_000 },
-      [entry({ serviceType: "OIL_CHANGE", date: new Date("2026-01-01T00:00:00Z"), mileageKm: 30_000 })],
+      [
+        entry({
+          serviceType: "OIL_CHANGE",
+          date: new Date("2026-01-01T00:00:00Z"),
+          mileageKm: 30_000,
+        }),
+      ],
       NOW,
     );
 
@@ -53,7 +65,13 @@ describe("predictDueServices", () => {
     // OIL_CHANGE interval is 6 months; last done 8 months ago
     const result = predictDueServices(
       { currentMileageKm: 30_500 },
-      [entry({ serviceType: "OIL_CHANGE", date: new Date("2025-11-01T00:00:00Z"), mileageKm: 30_000 })],
+      [
+        entry({
+          serviceType: "OIL_CHANGE",
+          date: new Date("2025-11-01T00:00:00Z"),
+          mileageKm: 30_000,
+        }),
+      ],
       NOW,
     );
 
@@ -64,7 +82,13 @@ describe("predictDueServices", () => {
     // OIL_CHANGE interval 10,000km; last done at 35,000km; now at 44,100km => 900km remaining (< 1,500 threshold)
     const result = predictDueServices(
       { currentMileageKm: 44_100 },
-      [entry({ serviceType: "OIL_CHANGE", date: new Date("2026-07-01T00:00:00Z"), mileageKm: 35_000 })],
+      [
+        entry({
+          serviceType: "OIL_CHANGE",
+          date: new Date("2026-07-01T00:00:00Z"),
+          mileageKm: 35_000,
+        }),
+      ],
       NOW,
     );
 
@@ -75,7 +99,13 @@ describe("predictDueServices", () => {
   it("marks a service OK when well within both thresholds", () => {
     const result = predictDueServices(
       { currentMileageKm: 36_000 },
-      [entry({ serviceType: "OIL_CHANGE", date: new Date("2026-07-01T00:00:00Z"), mileageKm: 35_000 })],
+      [
+        entry({
+          serviceType: "OIL_CHANGE",
+          date: new Date("2026-07-01T00:00:00Z"),
+          mileageKm: 35_000,
+        }),
+      ],
       NOW,
     );
 
@@ -88,8 +118,16 @@ describe("predictDueServices", () => {
     const result = predictDueServices(
       { currentMileageKm: 42_000 },
       [
-        entry({ serviceType: "OIL_CHANGE", date: new Date("2025-01-01T00:00:00Z"), mileageKm: 20_000 }),
-        entry({ serviceType: "OIL_CHANGE", date: new Date("2026-06-01T00:00:00Z"), mileageKm: 40_000 }),
+        entry({
+          serviceType: "OIL_CHANGE",
+          date: new Date("2025-01-01T00:00:00Z"),
+          mileageKm: 20_000,
+        }),
+        entry({
+          serviceType: "OIL_CHANGE",
+          date: new Date("2026-06-01T00:00:00Z"),
+          mileageKm: 40_000,
+        }),
       ],
       NOW,
     );
@@ -103,9 +141,17 @@ describe("predictDueServices", () => {
       { currentMileageKm: 50_000 },
       [
         // OK: brake service interval 20,000km, done recently at 45,000km => 15,000km remaining
-        entry({ serviceType: "BRAKE_SERVICE", date: new Date("2026-06-01T00:00:00Z"), mileageKm: 45_000 }),
+        entry({
+          serviceType: "BRAKE_SERVICE",
+          date: new Date("2026-06-01T00:00:00Z"),
+          mileageKm: 45_000,
+        }),
         // OVERDUE: oil change interval 10,000km, done at 30,000km => -10,000km remaining
-        entry({ serviceType: "OIL_CHANGE", date: new Date("2025-01-01T00:00:00Z"), mileageKm: 30_000 }),
+        entry({
+          serviceType: "OIL_CHANGE",
+          date: new Date("2025-01-01T00:00:00Z"),
+          mileageKm: 30_000,
+        }),
       ],
       NOW,
     );
@@ -130,13 +176,41 @@ describe("predictDueServices", () => {
     const result = predictDueServices(
       { currentMileageKm: 200_000 },
       [
-        entry({ serviceType: "OIL_CHANGE", date: new Date("2020-01-01T00:00:00Z"), mileageKm: 10_000 }),
-        entry({ serviceType: "TYRE_ROTATION", date: new Date("2020-01-01T00:00:00Z"), mileageKm: 10_000 }),
-        entry({ serviceType: "BRAKE_SERVICE", date: new Date("2020-01-01T00:00:00Z"), mileageKm: 10_000 }),
-        entry({ serviceType: "FILTER_CHANGE", date: new Date("2020-01-01T00:00:00Z"), mileageKm: 10_000 }),
-        entry({ serviceType: "FLUID_CHECK", date: new Date("2020-01-01T00:00:00Z"), mileageKm: 10_000 }),
-        entry({ serviceType: "AC_SERVICE", date: new Date("2020-01-01T00:00:00Z"), mileageKm: 10_000 }),
-        entry({ serviceType: "GENERAL_INSPECTION", date: new Date("2020-01-01T00:00:00Z"), mileageKm: 10_000 }),
+        entry({
+          serviceType: "OIL_CHANGE",
+          date: new Date("2020-01-01T00:00:00Z"),
+          mileageKm: 10_000,
+        }),
+        entry({
+          serviceType: "TYRE_ROTATION",
+          date: new Date("2020-01-01T00:00:00Z"),
+          mileageKm: 10_000,
+        }),
+        entry({
+          serviceType: "BRAKE_SERVICE",
+          date: new Date("2020-01-01T00:00:00Z"),
+          mileageKm: 10_000,
+        }),
+        entry({
+          serviceType: "FILTER_CHANGE",
+          date: new Date("2020-01-01T00:00:00Z"),
+          mileageKm: 10_000,
+        }),
+        entry({
+          serviceType: "FLUID_CHECK",
+          date: new Date("2020-01-01T00:00:00Z"),
+          mileageKm: 10_000,
+        }),
+        entry({
+          serviceType: "AC_SERVICE",
+          date: new Date("2020-01-01T00:00:00Z"),
+          mileageKm: 10_000,
+        }),
+        entry({
+          serviceType: "GENERAL_INSPECTION",
+          date: new Date("2020-01-01T00:00:00Z"),
+          mileageKm: 10_000,
+        }),
       ],
       NOW,
     );

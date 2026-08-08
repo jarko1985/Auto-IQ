@@ -269,7 +269,10 @@ export function GarageCalendarView({ weekStart, bookings }: Props) {
           </div>
 
           {columnDates.map((d, colIndex) => (
-            <div key={d} style={{ position: "relative", borderInlineEnd: "1px solid var(--border)" }}>
+            <div
+              key={d}
+              style={{ position: "relative", borderInlineEnd: "1px solid var(--border)" }}
+            >
               {Array.from({ length: totalRows }, (_, i) => (
                 <div
                   key={i}

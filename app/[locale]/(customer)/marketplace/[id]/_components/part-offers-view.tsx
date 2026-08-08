@@ -162,89 +162,90 @@ export function PartOffersView({ part, offers }: Props) {
               minWidth: "640px",
             }}
           >
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.8125rem" }}>
-            <thead>
-              <tr style={{ backgroundColor: "#f7fafd", textAlign: "start" }}>
-                {["Vendor", "Location", "Price", "Stock", "Qty", ""].map((h) => (
-                  <th
-                    key={h}
-                    style={{
-                      padding: "0.625rem 1rem",
-                      fontWeight: 600,
-                      color: "#5b6472",
-                      borderBottom: "1px solid var(--border)",
-                    }}
-                  >
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {offers.map((o) => (
-                <tr key={o.inventoryItemId} style={{ borderTop: "1px solid var(--border)" }}>
-                  <td style={{ padding: "0.75rem 1rem", fontWeight: 600, color: "#081a2f" }}>
-                    {o.vendorName}
-                  </td>
-                  <td style={{ padding: "0.75rem 1rem", color: "#5b6472" }}>
-                    {o.locationName}, {o.emirate.replaceAll("_", " ")}
-                  </td>
-                  <td style={{ padding: "0.75rem 1rem", color: "#081a2f", fontWeight: 700 }}>
-                    {formatCurrency(o.priceMinorUnits, o.currency)}
-                  </td>
-                  <td
-                    style={{
-                      padding: "0.75rem 1rem",
-                      color: o.stockStatus === "LOW_STOCK" ? "#d97706" : "#16a34a",
-                    }}
-                  >
-                    {STOCK_LABELS[o.stockStatus] ?? o.stockStatus}
-                    {o.stockStatus === "LOW_STOCK" ? `: ${o.qtyAvailable} left` : ""}
-                  </td>
-                  <td style={{ padding: "0.75rem 1rem" }}>
-                    <input
-                      type="number"
-                      min={1}
-                      max={o.qtyAvailable}
-                      value={quantities[o.inventoryItemId] ?? 1}
-                      onChange={(e) =>
-                        setQuantities((prev) => ({
-                          ...prev,
-                          [o.inventoryItemId]: Math.max(1, Number(e.target.value) || 1),
-                        }))
-                      }
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.8125rem" }}>
+              <thead>
+                <tr style={{ backgroundColor: "#f7fafd", textAlign: "start" }}>
+                  {["Vendor", "Location", "Price", "Stock", "Qty", ""].map((h) => (
+                    <th
+                      key={h}
                       style={{
-                        width: "60px",
-                        padding: "0.375rem 0.5rem",
-                        border: "1px solid var(--border)",
-                        borderRadius: "0.375rem",
-                        fontSize: "0.8125rem",
-                      }}
-                    />
-                  </td>
-                  <td style={{ padding: "0.75rem 1rem" }}>
-                    <button
-                      type="button"
-                      disabled={reservingId === o.inventoryItemId}
-                      onClick={() => void reserve(o)}
-                      style={{
-                        padding: "0.4375rem 1rem",
-                        backgroundColor: reservingId === o.inventoryItemId ? "#94a3b8" : "#00b8d9",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: "0.5rem",
-                        fontSize: "0.75rem",
+                        padding: "0.625rem 1rem",
                         fontWeight: 600,
-                        cursor: reservingId === o.inventoryItemId ? "not-allowed" : "pointer",
+                        color: "#5b6472",
+                        borderBottom: "1px solid var(--border)",
                       }}
                     >
-                      Reserve
-                    </button>
-                  </td>
+                      {h}
+                    </th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {offers.map((o) => (
+                  <tr key={o.inventoryItemId} style={{ borderTop: "1px solid var(--border)" }}>
+                    <td style={{ padding: "0.75rem 1rem", fontWeight: 600, color: "#081a2f" }}>
+                      {o.vendorName}
+                    </td>
+                    <td style={{ padding: "0.75rem 1rem", color: "#5b6472" }}>
+                      {o.locationName}, {o.emirate.replaceAll("_", " ")}
+                    </td>
+                    <td style={{ padding: "0.75rem 1rem", color: "#081a2f", fontWeight: 700 }}>
+                      {formatCurrency(o.priceMinorUnits, o.currency)}
+                    </td>
+                    <td
+                      style={{
+                        padding: "0.75rem 1rem",
+                        color: o.stockStatus === "LOW_STOCK" ? "#d97706" : "#16a34a",
+                      }}
+                    >
+                      {STOCK_LABELS[o.stockStatus] ?? o.stockStatus}
+                      {o.stockStatus === "LOW_STOCK" ? `: ${o.qtyAvailable} left` : ""}
+                    </td>
+                    <td style={{ padding: "0.75rem 1rem" }}>
+                      <input
+                        type="number"
+                        min={1}
+                        max={o.qtyAvailable}
+                        value={quantities[o.inventoryItemId] ?? 1}
+                        onChange={(e) =>
+                          setQuantities((prev) => ({
+                            ...prev,
+                            [o.inventoryItemId]: Math.max(1, Number(e.target.value) || 1),
+                          }))
+                        }
+                        style={{
+                          width: "60px",
+                          padding: "0.375rem 0.5rem",
+                          border: "1px solid var(--border)",
+                          borderRadius: "0.375rem",
+                          fontSize: "0.8125rem",
+                        }}
+                      />
+                    </td>
+                    <td style={{ padding: "0.75rem 1rem" }}>
+                      <button
+                        type="button"
+                        disabled={reservingId === o.inventoryItemId}
+                        onClick={() => void reserve(o)}
+                        style={{
+                          padding: "0.4375rem 1rem",
+                          backgroundColor:
+                            reservingId === o.inventoryItemId ? "#94a3b8" : "#00b8d9",
+                          color: "#fff",
+                          border: "none",
+                          borderRadius: "0.5rem",
+                          fontSize: "0.75rem",
+                          fontWeight: 600,
+                          cursor: reservingId === o.inventoryItemId ? "not-allowed" : "pointer",
+                        }}
+                      >
+                        Reserve
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       )}

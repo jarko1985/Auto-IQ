@@ -173,9 +173,7 @@ export function VendorOrdersView({ initialOrders }: Props) {
                             <Package size={14} color="#8a92a6" />
                           )}
                         </div>
-                        <span style={{ fontWeight: 600, color: "#081a2f" }}>
-                          #{o.orderNumber}
-                        </span>
+                        <span style={{ fontWeight: 600, color: "#081a2f" }}>#{o.orderNumber}</span>
                       </div>
                     </td>
                     <td style={{ padding: "0.75rem 1rem", color: "#5b6472" }}>{o.customerName}</td>

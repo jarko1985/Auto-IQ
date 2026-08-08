@@ -23,7 +23,10 @@ function resolveLocale(userLocale: string | null | undefined): NotificationLocal
   return userLocale === "ar" ? "ar" : "en";
 }
 
-function resolveChannels(eventType: NotificationEventType, pref: { emailEnabled: boolean; smsEnabled: boolean; inAppEnabled: boolean } | null) {
+function resolveChannels(
+  eventType: NotificationEventType,
+  pref: { emailEnabled: boolean; smsEnabled: boolean; inAppEnabled: boolean } | null,
+) {
   const meta = EVENT_METADATA[eventType];
   if (meta.locked) return meta.defaults;
   return {
@@ -213,11 +216,7 @@ export async function notifyEstimateApproved(
   ]);
   await Promise.all(
     recipientIds.map((userId) =>
-      safeDispatch(
-        userId,
-        { eventType: "ESTIMATE_APPROVED", data },
-        `${repairOrderId}:approved`,
-      ),
+      safeDispatch(userId, { eventType: "ESTIMATE_APPROVED", data }, `${repairOrderId}:approved`),
     ),
   );
 }
@@ -295,9 +294,15 @@ export async function getMyPreferences(userId: string) {
       category: meta.category,
       label: meta.label,
       locked: meta.locked,
-      emailEnabled: meta.locked ? meta.defaults.emailEnabled : (row?.emailEnabled ?? meta.defaults.emailEnabled),
-      smsEnabled: meta.locked ? meta.defaults.smsEnabled : (row?.smsEnabled ?? meta.defaults.smsEnabled),
-      inAppEnabled: meta.locked ? meta.defaults.inAppEnabled : (row?.inAppEnabled ?? meta.defaults.inAppEnabled),
+      emailEnabled: meta.locked
+        ? meta.defaults.emailEnabled
+        : (row?.emailEnabled ?? meta.defaults.emailEnabled),
+      smsEnabled: meta.locked
+        ? meta.defaults.smsEnabled
+        : (row?.smsEnabled ?? meta.defaults.smsEnabled),
+      inAppEnabled: meta.locked
+        ? meta.defaults.inAppEnabled
+        : (row?.inAppEnabled ?? meta.defaults.inAppEnabled),
     };
   });
 }

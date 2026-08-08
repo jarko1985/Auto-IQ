@@ -3,6 +3,7 @@ import { redirect, notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
 import { getUserVehicle } from "@/features/vehicles/service";
+import { MakeLogoBadge } from "@/components/vehicles/make-logo-badge";
 import { NotFoundError } from "@/lib/errors";
 
 const fuelLabel: Record<string, string> = {
@@ -99,22 +100,27 @@ export default async function VehicleDetailPage({ params }: Params) {
         )}
       </div>
 
-      <h1
-        className="text-fluid-page-title break-words"
-        style={{
-          fontWeight: 700,
-          color: "var(--navy)",
-          margin: "0 0 0.25rem",
-          letterSpacing: "-0.01em",
-        }}
-      >
-        {vehicle.year} {vehicle.makeName} {vehicle.modelName}
-      </h1>
-      {vehicle.trimName && (
-        <p style={{ color: "var(--muted-foreground)", fontSize: "0.875rem", margin: "0 0 2rem" }}>
-          {vehicle.trimName}
-        </p>
-      )}
+      <div style={{ display: "flex", alignItems: "center", gap: "0.875rem", marginBottom: "2rem" }}>
+        <MakeLogoBadge makeName={vehicle.makeName} size={75} />
+        <div style={{ minWidth: 0 }}>
+          <h1
+            className="text-fluid-page-title break-words"
+            style={{
+              fontWeight: 700,
+              color: "var(--navy)",
+              margin: "0 0 0.25rem",
+              letterSpacing: "-0.01em",
+            }}
+          >
+            {vehicle.year} {vehicle.makeName} {vehicle.modelName}
+          </h1>
+          {vehicle.trimName && (
+            <p style={{ color: "var(--muted-foreground)", fontSize: "0.875rem", margin: 0 }}>
+              {vehicle.trimName}
+            </p>
+          )}
+        </div>
+      </div>
 
       <div style={{ maxWidth: "48rem" }}>
         {/* Details card */}
@@ -138,7 +144,7 @@ export default async function VehicleDetailPage({ params }: Params) {
           >
             Vehicle Details
           </h2>
-          <dl className="grid grid-cols-1 gap-y-3.5 gap-x-4 sm:grid-cols-2" style={{ margin: 0 }}>
+          <dl className="grid grid-cols-1 gap-x-4 gap-y-3.5 sm:grid-cols-2" style={{ margin: 0 }}>
             {rows
               .filter((r) => r.value)
               .map(({ label, value }) => (

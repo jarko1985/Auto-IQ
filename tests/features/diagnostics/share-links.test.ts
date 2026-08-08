@@ -30,7 +30,9 @@ beforeEach(() => {
   vi.mocked(repo.createShareLink).mockReset();
   vi.mocked(repo.revokeShareLink).mockReset();
   vi.mocked(repo.findShareLinkByToken).mockReset();
-  vi.mocked(repo.incrementShareLinkView).mockReset().mockResolvedValue(undefined as never);
+  vi.mocked(repo.incrementShareLinkView)
+    .mockReset()
+    .mockResolvedValue(undefined as never);
   vi.mocked(getCitationDocuments).mockClear();
 });
 
@@ -63,7 +65,10 @@ describe("getOrCreateShareLink", () => {
   it("mints a new link with a ~30-day expiry when none is active", async () => {
     vi.mocked(repo.getSessionById).mockResolvedValue(completeSession as never);
     vi.mocked(repo.findActiveShareLink).mockResolvedValue(null);
-    vi.mocked(repo.createShareLink).mockResolvedValue({ id: "link-2", token: "new-token" } as never);
+    vi.mocked(repo.createShareLink).mockResolvedValue({
+      id: "link-2",
+      token: "new-token",
+    } as never);
 
     const result = await getOrCreateShareLink("session-1", "user-1");
 
@@ -71,8 +76,7 @@ describe("getOrCreateShareLink", () => {
       expect.objectContaining({ sessionId: "session-1", createdById: "user-1" }),
     );
     const call = vi.mocked(repo.createShareLink).mock.calls[0]![0];
-    const daysUntilExpiry =
-      (call.expiresAt.getTime() - Date.now()) / (24 * 60 * 60 * 1000);
+    const daysUntilExpiry = (call.expiresAt.getTime() - Date.now()) / (24 * 60 * 60 * 1000);
     expect(daysUntilExpiry).toBeGreaterThan(29);
     expect(daysUntilExpiry).toBeLessThan(31);
     expect(result).toMatchObject({ id: "link-2" });

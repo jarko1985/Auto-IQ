@@ -97,7 +97,9 @@ export function GarageSidebar({ organizationName, organizationStatus }: Props) {
           >
             <span style={{ color: "#fff", fontWeight: 700, fontSize: "0.875rem" }}>A</span>
           </div>
-          <span style={{ color: "#fff", fontWeight: 700, fontSize: "1rem", letterSpacing: "-0.01em" }}>
+          <span
+            style={{ color: "#fff", fontWeight: 700, fontSize: "1rem", letterSpacing: "-0.01em" }}
+          >
             AutoIQ Garage
           </span>
         </div>
@@ -135,7 +137,11 @@ export function GarageSidebar({ organizationName, organizationStatus }: Props) {
           ))}
 
           <div
-            style={{ height: "1px", backgroundColor: "rgba(255,255,255,0.08)", margin: "0.75rem 0" }}
+            style={{
+              height: "1px",
+              backgroundColor: "rgba(255,255,255,0.08)",
+              margin: "0.75rem 0",
+            }}
           />
 
           {garageSecondaryItems.map(({ href, label, icon, soon }) => (

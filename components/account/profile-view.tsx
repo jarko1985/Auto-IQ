@@ -139,27 +139,48 @@ export function ProfileView() {
         Manage your personal information and account security
       </p>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "1.5rem", alignItems: "start" }}>
-         <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+      <div
+        style={{ display: "grid", gridTemplateColumns: "1fr", gap: "1.5rem", alignItems: "start" }}
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
           <div style={{ ...CARD_STYLE, textAlign: "center" }}>
             <Avatar style={{ width: "4.5rem", height: "4.5rem", margin: "0 auto 0.75rem" }}>
-              {account.image && <AvatarImage src={account.image} alt={account.name ?? account.email} />}
-              <AvatarFallback style={{ backgroundColor: "#081a2f", color: "#fff", fontSize: "1.25rem", fontWeight: 700 }}>
+              {account.image && (
+                <AvatarImage src={account.image} alt={account.name ?? account.email} />
+              )}
+              <AvatarFallback
+                style={{
+                  backgroundColor: "#081a2f",
+                  color: "#fff",
+                  fontSize: "1.25rem",
+                  fontWeight: 700,
+                }}
+              >
                 {initials(account.name, account.email)}
               </AvatarFallback>
             </Avatar>
             <p style={{ margin: "0 0 0.125rem", fontWeight: 700, color: "#081a2f" }}>
               {account.name ?? "Unnamed"}
             </p>
-            <p style={{ margin: "0 0 0.75rem", fontSize: "0.8125rem", color: "#75859f" }}>{account.email}</p>
+            <p style={{ margin: "0 0 0.75rem", fontSize: "0.8125rem", color: "#75859f" }}>
+              {account.email}
+            </p>
             <p style={{ margin: 0, fontSize: "0.75rem", color: "#9aa3af" }}>
               Member since {formatDate(account.createdAt)}
             </p>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
-            <StatTile  icon={Car} label="Vehicles" value={account.stats.vehicleCount} />
-            <StatTile icon={CalendarCheck} label="Bookings" value={account.stats.completedBookingCount} />
-            <StatTile icon={Brain} label="Diagnostics" value={account.stats.diagnosticSessionCount} />
+            <StatTile icon={Car} label="Vehicles" value={account.stats.vehicleCount} />
+            <StatTile
+              icon={CalendarCheck}
+              label="Bookings"
+              value={account.stats.completedBookingCount}
+            />
+            <StatTile
+              icon={Brain}
+              label="Diagnostics"
+              value={account.stats.diagnosticSessionCount}
+            />
             <StatTile icon={Coins} label="AutoIQ Points" value={account.stats.autoIqPoints} />
           </div>
         </div>
@@ -168,11 +189,27 @@ export function ProfileView() {
           <section style={CARD_STYLE}>
             <h2 style={SECTION_TITLE_STYLE}>Personal Information</h2>
 
-            <div style={{ display: "flex", alignItems: "center", gap: "1.25rem", marginBottom: "1.5rem" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "1.25rem",
+                marginBottom: "1.5rem",
+              }}
+            >
               <div style={{ position: "relative" }}>
                 <Avatar size="lg" style={{ width: "4.5rem", height: "4.5rem" }}>
-                  {account.image && <AvatarImage src={account.image} alt={account.name ?? account.email} />}
-                  <AvatarFallback style={{ backgroundColor: "#081a2f", color: "#fff", fontSize: "1.25rem", fontWeight: 700 }}>
+                  {account.image && (
+                    <AvatarImage src={account.image} alt={account.name ?? account.email} />
+                  )}
+                  <AvatarFallback
+                    style={{
+                      backgroundColor: "#081a2f",
+                      color: "#fff",
+                      fontSize: "1.25rem",
+                      fontWeight: 700,
+                    }}
+                  >
                     {initials(account.name, account.email)}
                   </AvatarFallback>
                 </Avatar>
@@ -215,13 +252,22 @@ export function ProfileView() {
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
               <div>
                 <Label htmlFor="profile-name">Full Name</Label>
-                <Input id="profile-name" value={name} onChange={(e) => setName(e.target.value)} className="mt-1.5" />
+                <Input
+                  id="profile-name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="mt-1.5"
+                />
               </div>
               <div>
                 <Label htmlFor="profile-email">
                   Email Address
                   {account.emailVerified && (
-                    <CheckCircle2 size={13} color="#059669" style={{ marginInlineStart: "0.25rem" }} />
+                    <CheckCircle2
+                      size={13}
+                      color="#059669"
+                      style={{ marginInlineStart: "0.25rem" }}
+                    />
                   )}
                 </Label>
                 <Input id="profile-email" value={account.email} disabled className="mt-1.5" />
@@ -239,7 +285,9 @@ export function ProfileView() {
             </div>
 
             {profileError && (
-              <p style={{ color: "#ba1a1a", fontSize: "0.8125rem", marginTop: "0.75rem" }}>{profileError}</p>
+              <p style={{ color: "#ba1a1a", fontSize: "0.8125rem", marginTop: "0.75rem" }}>
+                {profileError}
+              </p>
             )}
             <div style={{ marginTop: "1.25rem" }}>
               <Button onClick={() => void handleSaveProfile()} disabled={savingProfile}>
@@ -267,7 +315,9 @@ export function ProfileView() {
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>Change Password</DialogTitle>
-                  <DialogDescription>Enter your current password and choose a new one.</DialogDescription>
+                  <DialogDescription>
+                    Enter your current password and choose a new one.
+                  </DialogDescription>
                 </DialogHeader>
                 <div style={{ display: "flex", flexDirection: "column", gap: "0.875rem" }}>
                   <div>
@@ -300,7 +350,9 @@ export function ProfileView() {
                       className="mt-1.5"
                     />
                   </div>
-                  {passwordError && <p style={{ color: "#ba1a1a", fontSize: "0.8125rem" }}>{passwordError}</p>}
+                  {passwordError && (
+                    <p style={{ color: "#ba1a1a", fontSize: "0.8125rem" }}>{passwordError}</p>
+                  )}
                 </div>
                 <DialogFooter>
                   <Button onClick={() => void handleChangePassword()} disabled={changingPassword}>
@@ -353,7 +405,9 @@ export function ProfileView() {
           <section style={CARD_STYLE}>
             <h2 style={SECTION_TITLE_STYLE}>Recent Activity</h2>
             {account.recentActivity.length === 0 ? (
-              <p style={{ color: "#75859f", fontSize: "0.875rem", margin: 0 }}>No recent activity yet.</p>
+              <p style={{ color: "#75859f", fontSize: "0.875rem", margin: 0 }}>
+                No recent activity yet.
+              </p>
             ) : (
               <div style={{ display: "flex", flexDirection: "column" }}>
                 {account.recentActivity.map((item, i) => (
@@ -378,8 +432,6 @@ export function ProfileView() {
             )}
           </section>
         </div>
-       
-       
       </div>
     </div>
   );

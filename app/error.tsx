@@ -1,6 +1,11 @@
 "use client";
 
-export default function RootError({ reset }: { error: Error & { digest?: string }; reset: () => void }) {
+export default function RootError({
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
   return (
     <html lang="en">
       <body
@@ -15,7 +20,14 @@ export default function RootError({ reset }: { error: Error & { digest?: string 
         }}
       >
         <div style={{ maxWidth: "28rem", textAlign: "center" }}>
-          <h2 style={{ marginBottom: "0.5rem", fontSize: "1.5rem", fontWeight: 600, color: "#081a2f" }}>
+          <h2
+            style={{
+              marginBottom: "0.5rem",
+              fontSize: "1.5rem",
+              fontWeight: 600,
+              color: "#081a2f",
+            }}
+          >
             Something went wrong
           </h2>
           <p style={{ marginBottom: "1.5rem", color: "#5b6472" }}>

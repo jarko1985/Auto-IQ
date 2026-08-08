@@ -4,6 +4,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
 import { isRtlLocale } from "@/i18n/direction";
 import { db } from "@/lib/db";
+import { MakeLogoBadge } from "@/components/vehicles/make-logo-badge";
 import {
   Plus,
   Clock,
@@ -53,7 +54,10 @@ export default async function DiagnosticsPage() {
       {/* Header */}
       <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
-          <h1 className="text-fluid-page-title break-words" style={{ fontWeight: 700, color: "#081a2f", margin: "0 0 0.25rem" }}>
+          <h1
+            className="text-fluid-page-title break-words"
+            style={{ fontWeight: 700, color: "#081a2f", margin: "0 0 0.25rem" }}
+          >
             {t("title")}
           </h1>
           <p style={{ fontSize: "0.9375rem", color: "#44474d", margin: 0 }}>{t("subtitle")}</p>
@@ -137,6 +141,7 @@ export default async function DiagnosticsPage() {
                     ? (`/diagnostics/new?session=${s.id}` as never)
                     : (`/diagnostics/${s.id}` as never)
                 }
+                className="transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-[0_12px_28px_-14px_rgba(8,26,47,0.25)]"
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -147,26 +152,13 @@ export default async function DiagnosticsPage() {
                     s.status === "SAFETY_ESCALATED" ? "1.5px solid #fca5a5" : "1px solid #ebeef1",
                   borderRadius: "1rem",
                   textDecoration: "none",
-                  transition: "box-shadow 0.15s",
                 }}
               >
-                {/* Category icon placeholder */}
-                <div
-                  style={{
-                    width: "2.75rem",
-                    height: "2.75rem",
-                    borderRadius: "0.75rem",
-                    backgroundColor:
-                      s.status === "SAFETY_ESCALATED" ? "#fee2e2" : "rgba(0,184,217,0.1)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "1.25rem",
-                    flexShrink: 0,
-                  }}
-                >
-                  {s.status === "SAFETY_ESCALATED" ? "⚠️" : "🔧"}
-                </div>
+                <MakeLogoBadge
+                  makeName={s.vehicle.makeName}
+                  size={75}
+                  indicator={s.status === "SAFETY_ESCALATED" ? "danger" : undefined}
+                />
 
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div

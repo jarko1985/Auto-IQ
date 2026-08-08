@@ -59,11 +59,7 @@ export async function changeMyPassword(userId: string, data: ChangePasswordInput
   await repo.createAuditLog({ userId, action: "AUTH_PASSWORD_CHANGED" });
 }
 
-export async function updateMyAvatar(
-  userId: string,
-  fileData: Buffer,
-  meta: UploadAvatarInput,
-) {
+export async function updateMyAvatar(userId: string, fileData: Buffer, meta: UploadAvatarInput) {
   const ext = AVATAR_EXT_BY_MIME[meta.mimeType] ?? "bin";
   const key = `avatars/${userId}/${randomUUID()}.${ext}`;
 
@@ -71,7 +67,11 @@ export async function updateMyAvatar(
   const { url } = await storage.upload(key, fileData, meta.mimeType);
 
   const updated = await repo.updateAvatar(userId, url);
-  await repo.createAuditLog({ userId, action: "AUTH_PROFILE_UPDATED", metadata: { field: "avatar" } });
+  await repo.createAuditLog({
+    userId,
+    action: "AUTH_PROFILE_UPDATED",
+    metadata: { field: "avatar" },
+  });
   return updated;
 }
 

@@ -33,7 +33,15 @@ interface Props {
  * badge). Collapsed (icon rail): icon only, with the label surfaced as a
  * tooltip on hover — pointed toward the content edge (away from the
  * sidebar), which flips with RTL. */
-export function SidebarNavLink({ href, label, icon: Icon, active, collapsed, soon, onNavigate }: Props) {
+export function SidebarNavLink({
+  href,
+  label,
+  icon: Icon,
+  active,
+  collapsed,
+  soon,
+  onNavigate,
+}: Props) {
   const isRtl = useIsRtl();
 
   const link = (

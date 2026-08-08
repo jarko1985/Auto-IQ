@@ -262,46 +262,57 @@ export function MyRepairOrderDetailView({ repairOrder }: Props) {
               </h3>
             </div>
             <div style={{ overflowX: "auto" }}>
-            <table
-              style={{ width: "100%", minWidth: "360px", borderCollapse: "collapse", fontSize: "0.8125rem" }}
-            >
-              <tbody>
-                {ro.jobs.map((j) => (
-                  <tr key={j.id} style={{ borderBottom: "1px solid var(--border)" }}>
-                    <td className="break-words" style={{ padding: "0.625rem 1.25rem", color: "#081a2f" }}>
-                      {j.description}
-                    </td>
-                    <td
-                      style={{
-                        padding: "0.625rem 1.25rem",
-                        textAlign: "end",
-                        fontWeight: 600,
-                        color: "#081a2f",
-                      }}
-                    >
-                      {formatCurrency(j.totalMinorUnits, ro.currency)}
-                    </td>
-                  </tr>
-                ))}
-                {ro.parts.map((p) => (
-                  <tr key={p.id} style={{ borderBottom: "1px solid var(--border)" }}>
-                    <td className="break-words" style={{ padding: "0.625rem 1.25rem", color: "#081a2f" }}>
-                      {p.partName}
-                    </td>
-                    <td
-                      style={{
-                        padding: "0.625rem 1.25rem",
-                        textAlign: "end",
-                        fontWeight: 600,
-                        color: "#081a2f",
-                      }}
-                    >
-                      {formatCurrency(p.totalMinorUnits, ro.currency)}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+              <table
+                style={{
+                  width: "100%",
+                  minWidth: "360px",
+                  borderCollapse: "collapse",
+                  fontSize: "0.8125rem",
+                }}
+              >
+                <tbody>
+                  {ro.jobs.map((j) => (
+                    <tr key={j.id} style={{ borderBottom: "1px solid var(--border)" }}>
+                      <td
+                        className="break-words"
+                        style={{ padding: "0.625rem 1.25rem", color: "#081a2f" }}
+                      >
+                        {j.description}
+                      </td>
+                      <td
+                        style={{
+                          padding: "0.625rem 1.25rem",
+                          textAlign: "end",
+                          fontWeight: 600,
+                          color: "#081a2f",
+                        }}
+                      >
+                        {formatCurrency(j.totalMinorUnits, ro.currency)}
+                      </td>
+                    </tr>
+                  ))}
+                  {ro.parts.map((p) => (
+                    <tr key={p.id} style={{ borderBottom: "1px solid var(--border)" }}>
+                      <td
+                        className="break-words"
+                        style={{ padding: "0.625rem 1.25rem", color: "#081a2f" }}
+                      >
+                        {p.partName}
+                      </td>
+                      <td
+                        style={{
+                          padding: "0.625rem 1.25rem",
+                          textAlign: "end",
+                          fontWeight: 600,
+                          color: "#081a2f",
+                        }}
+                      >
+                        {formatCurrency(p.totalMinorUnits, ro.currency)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
             <div style={{ padding: "1.25rem", display: "flex", justifyContent: "flex-end" }}>
               <div style={{ width: "16rem" }}>

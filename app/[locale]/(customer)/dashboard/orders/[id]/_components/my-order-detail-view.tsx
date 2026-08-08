@@ -218,77 +218,82 @@ export function MyOrderDetailView({ order }: Props) {
           Items
         </h2>
         <div style={{ overflowX: "auto" }}>
-        <table
-          style={{ width: "100%", minWidth: "420px", borderCollapse: "collapse", fontSize: "0.8125rem" }}
-        >
-          <thead>
-            <tr style={{ textAlign: "start" }}>
-              {["Product", "Qty", "Unit Price", "Total"].map((h) => (
-                <th
-                  key={h}
-                  style={{
-                    padding: "0.5rem 0",
-                    color: "#8a92a6",
-                    fontWeight: 600,
-                    borderBottom: "1px solid var(--border)",
-                  }}
-                >
-                  {h}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {order.items.map((item) => {
-              const imageSrc = getPartImage({
-                partNumber: item.partNumber,
-                categoryCode: item.categoryCode,
-              });
-              return (
-                <tr key={item.id} style={{ borderBottom: "1px solid var(--border)" }}>
-                  <td style={{ padding: "0.625rem 0", color: "#081a2f", fontWeight: 600 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
-                      <div
-                        style={{
-                          width: "36px",
-                          height: "36px",
-                          borderRadius: "0.5rem",
-                          backgroundColor: "#f7fafd",
-                          border: "1px solid var(--border)",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          overflow: "hidden",
-                          flexShrink: 0,
-                          position: "relative",
-                        }}
-                      >
-                        {imageSrc ? (
-                          <Image
-                            src={imageSrc}
-                            alt={item.partNameSnapshot}
-                            fill
-                            style={{ objectFit: "cover" }}
-                          />
-                        ) : (
-                          <Package size={16} color="#8a92a6" />
-                        )}
+          <table
+            style={{
+              width: "100%",
+              minWidth: "420px",
+              borderCollapse: "collapse",
+              fontSize: "0.8125rem",
+            }}
+          >
+            <thead>
+              <tr style={{ textAlign: "start" }}>
+                {["Product", "Qty", "Unit Price", "Total"].map((h) => (
+                  <th
+                    key={h}
+                    style={{
+                      padding: "0.5rem 0",
+                      color: "#8a92a6",
+                      fontWeight: 600,
+                      borderBottom: "1px solid var(--border)",
+                    }}
+                  >
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {order.items.map((item) => {
+                const imageSrc = getPartImage({
+                  partNumber: item.partNumber,
+                  categoryCode: item.categoryCode,
+                });
+                return (
+                  <tr key={item.id} style={{ borderBottom: "1px solid var(--border)" }}>
+                    <td style={{ padding: "0.625rem 0", color: "#081a2f", fontWeight: 600 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
+                        <div
+                          style={{
+                            width: "36px",
+                            height: "36px",
+                            borderRadius: "0.5rem",
+                            backgroundColor: "#f7fafd",
+                            border: "1px solid var(--border)",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            overflow: "hidden",
+                            flexShrink: 0,
+                            position: "relative",
+                          }}
+                        >
+                          {imageSrc ? (
+                            <Image
+                              src={imageSrc}
+                              alt={item.partNameSnapshot}
+                              fill
+                              style={{ objectFit: "cover" }}
+                            />
+                          ) : (
+                            <Package size={16} color="#8a92a6" />
+                          )}
+                        </div>
+                        <span>{item.partNameSnapshot}</span>
                       </div>
-                      <span>{item.partNameSnapshot}</span>
-                    </div>
-                  </td>
-                  <td style={{ padding: "0.625rem 0", color: "#5b6472" }}>{item.quantity}</td>
-                  <td style={{ padding: "0.625rem 0", color: "#5b6472" }}>
-                    {formatCurrency(item.unitPriceMinorUnits, order.currency)}
-                  </td>
-                  <td style={{ padding: "0.625rem 0", color: "#081a2f", fontWeight: 600 }}>
-                    {formatCurrency(item.totalMinorUnits, order.currency)}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                    </td>
+                    <td style={{ padding: "0.625rem 0", color: "#5b6472" }}>{item.quantity}</td>
+                    <td style={{ padding: "0.625rem 0", color: "#5b6472" }}>
+                      {formatCurrency(item.unitPriceMinorUnits, order.currency)}
+                    </td>
+                    <td style={{ padding: "0.625rem 0", color: "#081a2f", fontWeight: 600 }}>
+                      {formatCurrency(item.totalMinorUnits, order.currency)}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
 
         <div style={{ marginTop: "1rem", fontSize: "0.8125rem" }}>

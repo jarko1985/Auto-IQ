@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
+import Counter from "@/components/reactbits/counter";
 import { SiteHeader } from "./_components/site-header";
 import { ScrollLink } from "./_components/scroll-link";
 
@@ -166,17 +167,17 @@ export default function HomePage() {
             className="flex flex-wrap justify-center gap-6 sm:gap-8 md:gap-12"
             style={{ alignItems: "center", marginBottom: "2.5rem" }}
           >
-            <StatItem value="15k+" label="Active Users" />
+            <StatItem value={15} suffix="k+" label="Active Users" />
             <div
               className="hidden sm:block"
               style={{ width: "1px", height: "2rem", backgroundColor: "rgba(255,255,255,0.12)" }}
             />
-            <StatItem value="250+" label="Verified Garages" />
+            <StatItem value={250} suffix="+" label="Verified Garages" />
             <div
               className="hidden sm:block"
               style={{ width: "1px", height: "2rem", backgroundColor: "rgba(255,255,255,0.12)" }}
             />
-            <StatItem value="89%" label="AI Accuracy" />
+            <StatItem value={89} suffix="%" label="AI Accuracy" />
           </div>
 
           {/* CTAs */}
@@ -250,97 +251,58 @@ export default function HomePage() {
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {[
               {
-                step: "01",
-                icon: "📷",
-                title: "Scan & Detect",
+                image: "/images/landing/scan_detect.png",
+                alt: "Scan and detect vehicle issues with AI",
                 desc: "Point your phone at dashboard warning lights or describe symptoms in plain language.",
-                badge: "Real-time AI Scan",
               },
               {
-                step: "02",
-                icon: "⚡",
-                title: "AI Diagnosis",
+                image: "/images/landing/ai_diagnostic.png",
+                alt: "AI diagnosis identifying the root cause",
                 desc: "Our AI cross-references millions of repair records to identify the most likely root cause.",
-                badge: "89% Confidence",
               },
               {
-                step: "03",
-                icon: "🔧",
-                title: "Expert Repair",
+                image: "/images/landing/expert_repair.png",
+                alt: "Certified mechanic performing expert repair",
                 desc: "Choose from pre-vetted certified service centers near you with transparent pricing.",
-                badge: "250+ Garages",
               },
-            ].map(({ step, icon, title, desc, badge }) => (
+            ].map(({ image, alt, desc }) => (
               <div
-                key={step}
-                className="px-5 py-6 sm:px-6 sm:py-8"
+                key={image}
+                className="group overflow-hidden border border-[#c4c6cd] transition-all duration-300 ease-out hover:-translate-y-2 hover:border-cyan/40 hover:shadow-[0_20px_40px_-16px_rgba(8,26,47,0.25)]"
                 style={{
                   backgroundColor: "#fff",
-                  border: "1px solid #c4c6cd",
                   borderRadius: "1rem",
                   boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
                 }}
               >
                 <div
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.75rem",
-                    marginBottom: "1rem",
+                    position: "relative",
+                    width: "100%",
+                    aspectRatio: "3 / 2",
+                    overflow: "hidden",
                   }}
                 >
-                  <span
+                  <Image
+                    src={image}
+                    alt={alt}
+                    fill
+                    className="transition-transform duration-500 ease-out group-hover:scale-105"
+                    style={{ objectFit: "cover" }}
+                  />
+                </div>
+                <div className="px-5 py-5 sm:px-6 sm:py-6">
+                  <p
                     style={{
-                      width: "2.5rem",
-                      height: "2.5rem",
-                      borderRadius: "0.625rem",
-                      backgroundColor: "rgba(0,184,217,0.1)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: "1.125rem",
-                      flexShrink: 0,
+                      fontSize: "0.875rem",
+                      color: "#44474d",
+                      margin: 0,
+                      lineHeight: 1.6,
                     }}
                   >
-                    {icon}
-                  </span>
-                  <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "#00b8d9" }}>
-                    STEP {step}
-                  </span>
+                    {desc}
+                  </p>
                 </div>
-                <h3
-                  style={{
-                    fontSize: "1.0625rem",
-                    fontWeight: 700,
-                    color: "#081a2f",
-                    margin: "0 0 0.5rem",
-                  }}
-                >
-                  {title}
-                </h3>
-                <p
-                  style={{
-                    fontSize: "0.875rem",
-                    color: "#44474d",
-                    margin: "0 0 1rem",
-                    lineHeight: 1.6,
-                  }}
-                >
-                  {desc}
-                </p>
-                <span
-                  style={{
-                    display: "inline-block",
-                    fontSize: "0.75rem",
-                    fontWeight: 600,
-                    backgroundColor: "rgba(0,184,217,0.08)",
-                    color: "#0090ab",
-                    padding: "0.2rem 0.625rem",
-                    borderRadius: "9999px",
-                  }}
-                >
-                  {badge}
-                </span>
               </div>
             ))}
           </div>
@@ -616,14 +578,42 @@ export default function HomePage() {
   );
 }
 
-function StatItem({ value, label }: { value: string; label: string }) {
+function StatItem({ value, suffix, label }: { value: number; suffix: string; label: string }) {
   return (
     <div style={{ textAlign: "center" }}>
       <p
-        className="text-2xl sm:text-[1.75rem]"
-        style={{ fontWeight: 700, color: "#00b8d9", margin: "0 0 0.125rem" }}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontWeight: 700,
+          color: "#00b8d9",
+          margin: "0 0 0.125rem",
+        }}
       >
-        {value}
+        <Counter
+          value={value}
+          fontSize={30}
+          padding={2}
+          gap={0}
+          horizontalPadding={0}
+          borderRadius={0}
+          textColor="#00b8d9"
+          fontWeight={700}
+          gradientHeight={6}
+          gradientFrom="#081a2f"
+          gradientTo="transparent"
+        />
+        <span
+          style={{
+            fontSize: "1.75rem",
+            fontWeight: 700,
+            color: "#00b8d9",
+            position: "relative",
+          }}
+        >
+          {suffix}
+        </span>
       </p>
       <p style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.45)", margin: 0 }}>{label}</p>
     </div>

@@ -62,7 +62,10 @@ export function MyOrdersView({ initialOrders }: Props) {
       <div style={{ marginBottom: "1.5rem" }}>
         {isMobile ? (
           <SearchableSelect
-            options={TABS.filter((t) => t.value !== "").map((t) => ({ value: t.value, label: t.label }))}
+            options={TABS.filter((t) => t.value !== "").map((t) => ({
+              value: t.value,
+              label: t.label,
+            }))}
             value={tab}
             onChange={setTab}
             placeholder="All"

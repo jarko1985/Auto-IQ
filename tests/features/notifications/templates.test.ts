@@ -1,5 +1,8 @@
 import { describe, it, expect } from "vitest";
-import { renderNotificationContent, type NotificationEventPayload } from "@/features/notifications/templates";
+import {
+  renderNotificationContent,
+  type NotificationEventPayload,
+} from "@/features/notifications/templates";
 import { EVENT_METADATA } from "@/features/notifications/defaults";
 
 const SAMPLE_PAYLOADS: NotificationEventPayload[] = [
@@ -7,14 +10,25 @@ const SAMPLE_PAYLOADS: NotificationEventPayload[] = [
     eventType: "EMAIL_VERIFICATION",
     data: { token: "tok123", verificationUrl: "https://example.com/verify?token=tok123" },
   },
-  { eventType: "DIAGNOSTIC_COMPLETE", data: { vehicleLabel: "Toyota Land Cruiser", sessionId: "s1" } },
+  {
+    eventType: "DIAGNOSTIC_COMPLETE",
+    data: { vehicleLabel: "Toyota Land Cruiser", sessionId: "s1" },
+  },
   {
     eventType: "BOOKING_REQUESTED",
-    data: { garageName: "Al Rashidi Auto", bookingNumber: "BKG-0001", scheduledStart: "2026-08-01T10:00:00Z" },
+    data: {
+      garageName: "Al Rashidi Auto",
+      bookingNumber: "BKG-0001",
+      scheduledStart: "2026-08-01T10:00:00Z",
+    },
   },
   {
     eventType: "BOOKING_ACCEPTED",
-    data: { garageName: "Al Rashidi Auto", bookingNumber: "BKG-0001", scheduledStart: "2026-08-01T10:00:00Z" },
+    data: {
+      garageName: "Al Rashidi Auto",
+      bookingNumber: "BKG-0001",
+      scheduledStart: "2026-08-01T10:00:00Z",
+    },
   },
   {
     eventType: "ESTIMATE_READY",
@@ -27,7 +41,12 @@ const SAMPLE_PAYLOADS: NotificationEventPayload[] = [
   },
   {
     eventType: "PAYMENT_FAILED",
-    data: { invoiceNumber: "INV-0001", amountMinorUnits: 152250, currency: "AED", reason: "card_declined" },
+    data: {
+      invoiceNumber: "INV-0001",
+      amountMinorUnits: 152250,
+      currency: "AED",
+      reason: "card_declined",
+    },
   },
   {
     eventType: "REPAIR_STATUS_CHANGED",
@@ -69,7 +88,10 @@ describe("renderNotificationContent", () => {
 
   it("formats money with the correct currency in the ready/complete/failed events", () => {
     const content = renderNotificationContent(
-      { eventType: "PAYMENT_COMPLETE", data: { invoiceNumber: "INV-1", amountMinorUnits: 100000, currency: "AED" } },
+      {
+        eventType: "PAYMENT_COMPLETE",
+        data: { invoiceNumber: "INV-1", amountMinorUnits: 100000, currency: "AED" },
+      },
       "en",
     );
     expect(content.body).toContain("1,000.00");

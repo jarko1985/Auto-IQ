@@ -189,10 +189,19 @@ export function NotificationBell({ centerHref }: Props) {
                     <div
                       style={{ display: "flex", justifyContent: "space-between", gap: "0.5rem" }}
                     >
-                      <p style={{ margin: 0, fontSize: "0.875rem", fontWeight: 700, color: "#081a2f" }}>
+                      <p
+                        style={{
+                          margin: 0,
+                          fontSize: "0.875rem",
+                          fontWeight: 700,
+                          color: "#081a2f",
+                        }}
+                      >
                         {n.title}
                       </p>
-                      <span style={{ fontSize: "0.625rem", color: "#75859f", whiteSpace: "nowrap" }}>
+                      <span
+                        style={{ fontSize: "0.625rem", color: "#75859f", whiteSpace: "nowrap" }}
+                      >
                         {formatRelativeTime(n.createdAt)}
                       </span>
                     </div>
@@ -232,7 +241,12 @@ export function NotificationBell({ centerHref }: Props) {
             <Link
               href={centerHref as never}
               onClick={() => setOpen(false)}
-              style={{ color: "#00b8d9", fontSize: "0.875rem", fontWeight: 600, textDecoration: "none" }}
+              style={{
+                color: "#00b8d9",
+                fontSize: "0.875rem",
+                fontWeight: 600,
+                textDecoration: "none",
+              }}
             >
               View all notifications
             </Link>

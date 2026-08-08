@@ -99,7 +99,13 @@ export function LiveResultsDropdown({ items, loading, query, onSelect, fallbackI
               }}
             >
               {item.imageUrl ? (
-                <Image src={item.imageUrl} alt="" fill sizes="40px" style={{ objectFit: "cover" }} />
+                <Image
+                  src={item.imageUrl}
+                  alt=""
+                  fill
+                  sizes="40px"
+                  style={{ objectFit: "cover" }}
+                />
               ) : (
                 fallbackIcon
               )}
@@ -130,7 +136,9 @@ export function LiveResultsDropdown({ items, loading, query, onSelect, fallbackI
               </div>
             </div>
             {item.meta && (
-              <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#081a2f", flexShrink: 0 }}>
+              <div
+                style={{ fontSize: "0.75rem", fontWeight: 700, color: "#081a2f", flexShrink: 0 }}
+              >
                 {item.meta}
               </div>
             )}

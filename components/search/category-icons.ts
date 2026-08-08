@@ -27,4 +27,8 @@ export const CATEGORY_VISUALS: Record<string, { icon: LucideIcon; color: string;
   "diagnostic-feedback": { icon: MessageSquare, color: "#b8790a", bg: "rgba(255,176,32,0.1)" },
 };
 
-export const DEFAULT_CATEGORY_VISUAL = { icon: Package, color: "#75859f", bg: "rgba(117,133,159,0.1)" };
+export const DEFAULT_CATEGORY_VISUAL = {
+  icon: Package,
+  color: "#75859f",
+  bg: "rgba(117,133,159,0.1)",
+};

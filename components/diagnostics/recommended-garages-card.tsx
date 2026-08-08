@@ -153,8 +153,7 @@ export function RecommendedGaragesCard({ garages, deepLinkQuery }: Props) {
                 style={{
                   paddingTop: i === 0 ? 0 : "1.25rem",
                   paddingBottom: i < Math.min(garages.length, 3) - 1 ? "1.25rem" : 0,
-                  borderBottom:
-                    i < Math.min(garages.length, 3) - 1 ? "1px solid #f1f4f7" : "none",
+                  borderBottom: i < Math.min(garages.length, 3) - 1 ? "1px solid #f1f4f7" : "none",
                 }}
               >
                 <div style={{ display: "flex", gap: "0.625rem", marginBottom: "0.75rem" }}>

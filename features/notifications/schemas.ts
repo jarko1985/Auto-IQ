@@ -1,9 +1,7 @@
 import { z } from "zod";
 
 export const listNotificationsSchema = z.object({
-  category: z
-    .enum(["ACCOUNT", "DIAGNOSTICS", "BOOKINGS", "REPAIR_ORDERS", "PAYMENTS"])
-    .optional(),
+  category: z.enum(["ACCOUNT", "DIAGNOSTICS", "BOOKINGS", "REPAIR_ORDERS", "PAYMENTS"]).optional(),
   unreadOnly: z.coerce.boolean().optional().default(false),
   limit: z.coerce.number().int().min(1).max(100).optional().default(20),
   offset: z.coerce.number().int().min(0).optional().default(0),

@@ -10,7 +10,11 @@ const GARAGE_ROLES: RoleName[] = ["GARAGE_OWNER", "GARAGE_MANAGER", "MECHANIC"];
 
 const MIN_QUERY_LENGTH = 2;
 
-function category(key: string, label: string, items: SearchResultCategory["items"]): SearchResultCategory | null {
+function category(
+  key: string,
+  label: string,
+  items: SearchResultCategory["items"],
+): SearchResultCategory | null {
   return items.length > 0 ? { key, label, items } : null;
 }
 
@@ -78,7 +82,12 @@ async function searchAsCustomer(userId: string, query: string): Promise<SearchRe
     category(
       "garages",
       "Garages",
-      garages.map((g) => ({ id: g.id, title: g.businessName, subtitle: g.emirate, href: `/garages/${g.id}` })),
+      garages.map((g) => ({
+        id: g.id,
+        title: g.businessName,
+        subtitle: g.emirate,
+        href: `/garages/${g.id}`,
+      })),
     ),
   ].filter((c): c is SearchResultCategory => c !== null);
 }
@@ -107,12 +116,22 @@ async function searchAsVendor(userId: string, query: string): Promise<SearchResu
     category(
       "orders",
       "Orders",
-      orders.map((o) => ({ id: o.id, title: o.orderNumber, subtitle: o.status, href: `/vendor/orders/${o.id}` })),
+      orders.map((o) => ({
+        id: o.id,
+        title: o.orderNumber,
+        subtitle: o.status,
+        href: `/vendor/orders/${o.id}`,
+      })),
     ),
     category(
       "locations",
       "Locations",
-      locations.map((l) => ({ id: l.id, title: l.name, subtitle: l.emirate, href: "/vendor/locations" })),
+      locations.map((l) => ({
+        id: l.id,
+        title: l.name,
+        subtitle: l.emirate,
+        href: "/vendor/locations",
+      })),
     ),
   ].filter((c): c is SearchResultCategory => c !== null);
 }
@@ -142,12 +161,22 @@ async function searchAsGarage(userId: string, query: string): Promise<SearchResu
     category(
       "bookings",
       "Appointments",
-      bookings.map((b) => ({ id: b.id, title: b.bookingNumber, subtitle: b.status, href: "/garage/appointments" })),
+      bookings.map((b) => ({
+        id: b.id,
+        title: b.bookingNumber,
+        subtitle: b.status,
+        href: "/garage/appointments",
+      })),
     ),
     category(
       "locations",
       "Locations",
-      locations.map((l) => ({ id: l.id, title: l.name, subtitle: l.emirate, href: "/garage/locations" })),
+      locations.map((l) => ({
+        id: l.id,
+        title: l.name,
+        subtitle: l.emirate,
+        href: "/garage/locations",
+      })),
     ),
     category(
       "mechanics",
@@ -174,12 +203,22 @@ async function searchAsAdmin(query: string): Promise<SearchResultCategory[]> {
     category(
       "vendors",
       "Vendors",
-      vendors.map((v) => ({ id: v.id, title: v.businessName, subtitle: v.verificationStatus, href: "/admin/vendors" })),
+      vendors.map((v) => ({
+        id: v.id,
+        title: v.businessName,
+        subtitle: v.verificationStatus,
+        href: "/admin/vendors",
+      })),
     ),
     category(
       "garages",
       "Garages",
-      garages.map((g) => ({ id: g.id, title: g.businessName, subtitle: g.verificationStatus, href: "/admin/garages" })),
+      garages.map((g) => ({
+        id: g.id,
+        title: g.businessName,
+        subtitle: g.verificationStatus,
+        href: "/admin/garages",
+      })),
     ),
     category(
       "parts",
@@ -204,7 +243,11 @@ async function searchAsAdmin(query: string): Promise<SearchResultCategory[]> {
   ].filter((c): c is SearchResultCategory => c !== null);
 }
 
-export async function search(userId: string, role: RoleName, rawQuery: string): Promise<GlobalSearchResponse> {
+export async function search(
+  userId: string,
+  role: RoleName,
+  rawQuery: string,
+): Promise<GlobalSearchResponse> {
   const query = rawQuery.trim();
   if (query.length < MIN_QUERY_LENGTH) return { query, categories: [] };
 

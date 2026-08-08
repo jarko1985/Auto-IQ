@@ -72,7 +72,9 @@ export function AdminSidebar() {
           >
             <ShieldCheck size={16} color="#fff" />
           </div>
-          <span style={{ color: "#fff", fontWeight: 700, fontSize: "1rem", letterSpacing: "-0.01em" }}>
+          <span
+            style={{ color: "#fff", fontWeight: 700, fontSize: "1rem", letterSpacing: "-0.01em" }}
+          >
             AutoIQ Admin
           </span>
         </div>

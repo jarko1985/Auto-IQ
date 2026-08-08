@@ -178,7 +178,14 @@ export function GlobalSearch({ fullWidth = false }: { fullWidth?: boolean } = {}
                 onValueChange={handleQueryChange}
               />
               {loading && (
-                <div style={{ position: "absolute", insetInlineEnd: "1.25rem", top: "50%", translate: "0 -50%" }}>
+                <div
+                  style={{
+                    position: "absolute",
+                    insetInlineEnd: "1.25rem",
+                    top: "50%",
+                    translate: "0 -50%",
+                  }}
+                >
                   <InlineSpinner color="#00b8d9" size={16} />
                 </div>
               )}
@@ -187,7 +194,15 @@ export function GlobalSearch({ fullWidth = false }: { fullWidth?: boolean } = {}
             <CommandList style={{ maxHeight: "24rem", padding: "0.5rem" }}>
               {showEmptyHint && (
                 <CommandEmpty>
-                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.75rem", padding: "1.5rem 1rem" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      gap: "0.75rem",
+                      padding: "1.5rem 1rem",
+                    }}
+                  >
                     <div
                       style={{
                         width: "2.75rem",
@@ -204,7 +219,8 @@ export function GlobalSearch({ fullWidth = false }: { fullWidth?: boolean } = {}
                     <div style={{ textAlign: "center" }}>
                       <p style={{ margin: 0, fontWeight: 600, color: "#181c1e" }}>Search AutoIQ</p>
                       <p style={{ margin: "0.25rem 0 0", fontSize: "0.8125rem", color: "#75859f" }}>
-                        Type at least 2 characters to find your vehicles, bookings, orders, and more.
+                        Type at least 2 characters to find your vehicles, bookings, orders, and
+                        more.
                       </p>
                     </div>
                   </div>
@@ -213,7 +229,15 @@ export function GlobalSearch({ fullWidth = false }: { fullWidth?: boolean } = {}
 
               {showNoResults && (
                 <CommandEmpty>
-                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.75rem", padding: "1.5rem 1rem" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      gap: "0.75rem",
+                      padding: "1.5rem 1rem",
+                    }}
+                  >
                     <div
                       style={{
                         width: "2.75rem",
@@ -266,7 +290,14 @@ export function GlobalSearch({ fullWidth = false }: { fullWidth?: boolean } = {}
                           >
                             <Icon size={16} color={visual.color} />
                           </div>
-                          <div style={{ display: "flex", flexDirection: "column", minWidth: 0, flex: 1 }}>
+                          <div
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              minWidth: 0,
+                              flex: 1,
+                            }}
+                          >
                             <span style={{ fontWeight: 600, color: "#181c1e" }}>{item.title}</span>
                             {item.subtitle && (
                               <span

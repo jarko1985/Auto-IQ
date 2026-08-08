@@ -21,8 +21,11 @@ describe("normalizeNullSentinels", () => {
   });
 
   it("leaves real null, numbers, booleans, and other strings untouched", () => {
-    expect(
-      normalizeNullSentinels({ a: null, b: 5, c: true, d: "hello null world" }),
-    ).toEqual({ a: null, b: 5, c: true, d: "hello null world" });
+    expect(normalizeNullSentinels({ a: null, b: 5, c: true, d: "hello null world" })).toEqual({
+      a: null,
+      b: 5,
+      c: true,
+      d: "hello null world",
+    });
   });
 });

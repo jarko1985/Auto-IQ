@@ -122,13 +122,7 @@ export function AuthSplitPanel({
                         flexShrink: 0,
                       }}
                     >
-                      <Image
-                        src={src}
-                        alt=""
-                        fill
-                        sizes="32px"
-                        style={{ objectFit: "cover" }}
-                      />
+                      <Image src={src} alt="" fill sizes="32px" style={{ objectFit: "cover" }} />
                     </div>
                   ))}
                 </div>

@@ -93,40 +93,45 @@ function OrderSummaryCard({ invoice }: { invoice: InvoiceForCheckout }) {
         </span>
       </div>
       <div style={{ overflowX: "auto" }}>
-      <table
-        style={{ width: "100%", minWidth: "420px", borderCollapse: "collapse", fontSize: "0.8125rem" }}
-      >
-        <thead>
-          <tr style={{ textAlign: "start" }}>
-            {["Service / Part Description", "Qty", `Price (${invoice.currency})`].map((h) => (
-              <th
-                key={h}
-                style={{
-                  padding: "0.5rem 1.25rem",
-                  color: "#8a92a6",
-                  fontWeight: 600,
-                  borderBottom: "1px solid var(--border)",
-                }}
-              >
-                {h}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {invoice.lineItems.map((item) => (
-            <tr key={item.id} style={{ borderBottom: "1px solid var(--border)" }}>
-              <td style={{ padding: "0.625rem 1.25rem", color: "#081a2f", fontWeight: 600 }}>
-                {item.description}
-              </td>
-              <td style={{ padding: "0.625rem 1.25rem", color: "#5b6472" }}>{item.quantity}</td>
-              <td style={{ padding: "0.625rem 1.25rem", color: "#081a2f", fontWeight: 600 }}>
-                {formatCurrency(item.totalMinorUnits, invoice.currency)}
-              </td>
+        <table
+          style={{
+            width: "100%",
+            minWidth: "420px",
+            borderCollapse: "collapse",
+            fontSize: "0.8125rem",
+          }}
+        >
+          <thead>
+            <tr style={{ textAlign: "start" }}>
+              {["Service / Part Description", "Qty", `Price (${invoice.currency})`].map((h) => (
+                <th
+                  key={h}
+                  style={{
+                    padding: "0.5rem 1.25rem",
+                    color: "#8a92a6",
+                    fontWeight: 600,
+                    borderBottom: "1px solid var(--border)",
+                  }}
+                >
+                  {h}
+                </th>
+              ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {invoice.lineItems.map((item) => (
+              <tr key={item.id} style={{ borderBottom: "1px solid var(--border)" }}>
+                <td style={{ padding: "0.625rem 1.25rem", color: "#081a2f", fontWeight: 600 }}>
+                  {item.description}
+                </td>
+                <td style={{ padding: "0.625rem 1.25rem", color: "#5b6472" }}>{item.quantity}</td>
+                <td style={{ padding: "0.625rem 1.25rem", color: "#081a2f", fontWeight: 600 }}>
+                  {formatCurrency(item.totalMinorUnits, invoice.currency)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
@@ -421,7 +426,10 @@ export function CheckoutView({ invoice }: { invoice: InvoiceForCheckout }) {
   return (
     <div>
       <BackLink invoice={invoice} />
-      <h1 className="text-fluid-page-title" style={{ fontWeight: 700, color: "#081a2f", margin: "0 0 1.5rem" }}>
+      <h1
+        className="text-fluid-page-title"
+        style={{ fontWeight: 700, color: "#081a2f", margin: "0 0 1.5rem" }}
+      >
         Checkout
       </h1>
 

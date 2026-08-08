@@ -75,46 +75,70 @@ export function SettingsView({ notificationPreferencesHref }: Props) {
         {/* General Settings */}
         <section style={CARD_STYLE}>
           <h2 style={SECTION_TITLE_STYLE}>
-            <Globe size={16} style={{ display: "inline", marginInlineEnd: "0.5rem", verticalAlign: "-2px" }} />
+            <Globe
+              size={16}
+              style={{ display: "inline", marginInlineEnd: "0.5rem", verticalAlign: "-2px" }}
+            />
             General Settings
           </h2>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
             <div>
-              <p style={{ margin: "0 0 0.5rem", fontSize: "0.875rem", fontWeight: 600, color: "#181c1e" }}>
+              <p
+                style={{
+                  margin: "0 0 0.5rem",
+                  fontSize: "0.875rem",
+                  fontWeight: 600,
+                  color: "#181c1e",
+                }}
+              >
                 Interface Language
               </p>
-              <div className="flex gap-2 align-center justify-start">
-              <div style={{ display: "flex", gap: "0.5rem" }}>
-                {routing.locales.map((locale) => (
-                  <button
-                    key={locale}
-                    onClick={() => setSelectedLocale(locale)}
-                    style={{
-                      padding:selectedLocale === locale ? "0.2rem 1.25rem" : "0.2rem 1.25rem",
-                      borderRadius: "10px",
-                      border: selectedLocale === locale ? "1px solid #00b8d9" : "1px solid #e5e8eb",
-                      backgroundColor: selectedLocale === locale ? "rgba(0,184,217,0.08)" : "#fff",
-                      color: selectedLocale === locale ? "#00b8d9" : "#44474d",
-                      fontSize: "0.8125rem",
-                      fontWeight: 600,
-                      cursor: "pointer",
-                    }}
+              <div className="align-center flex justify-start gap-2">
+                <div style={{ display: "flex", gap: "0.5rem" }}>
+                  {routing.locales.map((locale) => (
+                    <button
+                      key={locale}
+                      onClick={() => setSelectedLocale(locale)}
+                      style={{
+                        padding: selectedLocale === locale ? "0.2rem 1.25rem" : "0.2rem 1.25rem",
+                        borderRadius: "10px",
+                        border:
+                          selectedLocale === locale ? "1px solid #00b8d9" : "1px solid #e5e8eb",
+                        backgroundColor:
+                          selectedLocale === locale ? "rgba(0,184,217,0.08)" : "#fff",
+                        color: selectedLocale === locale ? "#00b8d9" : "#44474d",
+                        fontSize: "0.8125rem",
+                        fontWeight: 600,
+                        cursor: "pointer",
+                      }}
+                    >
+                      {LOCALE_LABELS[locale]}
+                    </button>
+                  ))}
+                </div>
+                {localeChanged && (
+                  <Button
+                    onClick={() => void handleSaveLocale()}
+                    disabled={saving}
+                    size="sm"
+                    style={{ padding: "0.875rem" }}
                   >
-                    {LOCALE_LABELS[locale]}
-                  </button>
-                ))}
-              </div>
-              {localeChanged && (
-                <Button onClick={() => void handleSaveLocale()} disabled={saving} size="sm" style={{ padding: "0.875rem" }}>
-                  {saving ? "Saving..." : "Save Language"}
-                </Button>
-              )}
+                    {saving ? "Saving..." : "Save Language"}
+                  </Button>
+                )}
               </div>
             </div>
 
             <div>
-              <p style={{ margin: "0 0 0.5rem", fontSize: "0.875rem", fontWeight: 600, color: "#181c1e" }}>
+              <p
+                style={{
+                  margin: "0 0 0.5rem",
+                  fontSize: "0.875rem",
+                  fontWeight: 600,
+                  color: "#181c1e",
+                }}
+              >
                 Default Currency
               </p>
               <div
@@ -140,11 +164,15 @@ export function SettingsView({ notificationPreferencesHref }: Props) {
         {/* Notification Preferences */}
         <section style={CARD_STYLE}>
           <h2 style={SECTION_TITLE_STYLE}>
-            <Bell size={16} style={{ display: "inline", marginInlineEnd: "0.5rem", verticalAlign: "-2px" }} />
+            <Bell
+              size={16}
+              style={{ display: "inline", marginInlineEnd: "0.5rem", verticalAlign: "-2px" }}
+            />
             Notification Preferences
           </h2>
           <p style={{ margin: "0 0 1rem", fontSize: "0.8125rem", color: "#75859f" }}>
-            Choose how you&apos;d like to be notified about diagnostics, bookings, repair orders, and payments.
+            Choose how you&apos;d like to be notified about diagnostics, bookings, repair orders,
+            and payments.
           </p>
           <Button variant="outline" asChild>
             <a href={notificationPreferencesHref}>Manage Notification Preferences</a>
@@ -154,7 +182,10 @@ export function SettingsView({ notificationPreferencesHref }: Props) {
         {/* Security */}
         <section style={CARD_STYLE}>
           <h2 style={SECTION_TITLE_STYLE}>
-            <ShieldCheck size={16} style={{ display: "inline", marginInlineEnd: "0.5rem", verticalAlign: "-2px" }} />
+            <ShieldCheck
+              size={16}
+              style={{ display: "inline", marginInlineEnd: "0.5rem", verticalAlign: "-2px" }}
+            />
             Security
           </h2>
           <div

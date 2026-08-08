@@ -1,8 +1,11 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
+import { isRtlLocale } from "@/i18n/direction";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { listUserVehicles } from "@/features/vehicles/service";
+import { MakeLogoBadge } from "@/components/vehicles/make-logo-badge";
 
 const fuelLabel: Record<string, string> = {
   PETROL: "Petrol",
@@ -31,6 +34,7 @@ export default async function VehiclesPage() {
 
   const t = await getTranslations("Vehicles");
   const vehicles = await listUserVehicles(session.user.id);
+  const ForwardIcon = isRtlLocale(await getLocale()) ? ChevronLeft : ChevronRight;
 
   return (
     <div className="px-4 py-6 sm:px-6 sm:py-8 lg:px-10 lg:py-8">
@@ -116,84 +120,129 @@ export default async function VehiclesPage() {
           style={{
             display: "grid",
             gap: "1rem",
-            gridTemplateColumns: "repeat(auto-fill, minmax(18rem, 1fr))",
+            gridTemplateColumns: "repeat(auto-fill, minmax(19rem, 1fr))",
           }}
         >
           {vehicles.map((v) => (
             <Link key={v.id} href={`/vehicles/${v.id}` as never} style={{ textDecoration: "none" }}>
               <div
+                className="group border border-border transition-all duration-300 ease-out hover:-translate-y-1 hover:border-cyan/40 hover:shadow-[0_16px_32px_-16px_rgba(8,26,47,0.2)]"
                 style={{
                   backgroundColor: "var(--card)",
-                  border: "1px solid var(--border)",
-                  borderRadius: "1rem",
+                  borderRadius: "1.25rem",
                   padding: "1.25rem 1.5rem",
                   cursor: "pointer",
                   boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
                 }}
               >
+                {/* Header: logo + title + default badge */}
                 <div
                   style={{
                     display: "flex",
-                    alignItems: "flex-start",
-                    justifyContent: "space-between",
-                    marginBottom: "0.75rem",
+                    alignItems: "center",
+                    gap: "0.75rem",
+                    marginBottom: "1rem",
                   }}
                 >
-                  <div>
-                    <p
+                  <MakeLogoBadge makeName={v.makeName} size={80} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div
                       style={{
-                        fontWeight: 700,
-                        color: "var(--navy)",
-                        fontSize: "1rem",
-                        margin: "0 0 0.125rem",
+                        display: "flex",
+                        alignItems: "flex-start",
+                        justifyContent: "space-between",
+                        gap: "0.5rem",
                       }}
                     >
-                      {v.year} {v.makeName} {v.modelName}
-                    </p>
+                      <p
+                        className="break-words"
+                        style={{
+                          fontWeight: 700,
+                          color: "var(--navy)",
+                          fontSize: "1rem",
+                          margin: 0,
+                          lineHeight: 1.3,
+                        }}
+                      >
+                        {v.year} {v.makeName} {v.modelName}
+                      </p>
+                      {v.isDefault && (
+                        <span
+                          style={{
+                            fontSize: "0.6875rem",
+                            fontWeight: 600,
+                            backgroundColor: "var(--cyan)",
+                            color: "#fff",
+                            padding: "0.2rem 0.5rem",
+                            borderRadius: "9999px",
+                            flexShrink: 0,
+                          }}
+                        >
+                          {t("defaultBadge")}
+                        </span>
+                      )}
+                    </div>
                     {v.trimName && (
                       <p
                         style={{
                           fontSize: "0.8125rem",
                           color: "var(--muted-foreground)",
-                          margin: 0,
+                          margin: "0.125rem 0 0",
                         }}
                       >
                         {v.trimName}
                       </p>
                     )}
                   </div>
-                  {v.isDefault && (
-                    <span
-                      style={{
-                        fontSize: "0.6875rem",
-                        fontWeight: 600,
-                        backgroundColor: "var(--cyan)",
-                        color: "#fff",
-                        padding: "0.2rem 0.5rem",
-                        borderRadius: "9999px",
-                        flexShrink: 0,
-                        marginInlineStart: "0.5rem",
-                      }}
-                    >
-                      {t("defaultBadge")}
-                    </span>
-                  )}
                 </div>
-                <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-                  <Tag>{typeLabel[v.vehicleType] ?? v.vehicleType}</Tag>
-                  <Tag>{fuelLabel[v.fuelType] ?? v.fuelType}</Tag>
-                  {v.plateNumber && <Tag>{v.plateNumber}</Tag>}
-                </div>
-                <p
+
+                <div
                   style={{
-                    fontSize: "0.8125rem",
-                    color: "var(--muted-foreground)",
-                    marginTop: "0.75rem",
-                    marginBottom: 0,
+                    height: "1px",
+                    backgroundColor: "var(--border)",
+                    marginBottom: "0.875rem",
+                  }}
+                />
+
+                {/* Spec grid */}
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr",
+                    gap: "0.75rem 1rem",
                   }}
                 >
-                  {v.mileageKm.toLocaleString()} km
-                </p>
+                  <Stat
+                    label={t("vehicleType")}
+                    value={typeLabel[v.vehicleType] ?? v.vehicleType}
+                  />
+                  <Stat label={t("fuelType")} value={fuelLabel[v.fuelType] ?? v.fuelType} />
+                  {v.plateNumber && <Stat label="Plate No." value={v.plateNumber} />}
+                  <Stat label="Mileage" value={`${v.mileageKm.toLocaleString()} km`} />
+                </div>
+
+                <div
+                  style={{
+                    height: "1px",
+                    backgroundColor: "var(--border)",
+                    marginTop: "0.875rem",
+                    marginBottom: "0.75rem",
+                  }}
+                />
+
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "flex-end",
+                    gap: "0.25rem",
+                  }}
+                >
+                  <span style={{ fontSize: "0.8125rem", fontWeight: 600, color: "var(--cyan)" }}>
+                    View details
+                  </span>
+                  <ForwardIcon size={14} color="var(--cyan)" />
+                </div>
               </div>
             </Link>
           ))}
@@ -203,18 +252,27 @@ export default async function VehiclesPage() {
   );
 }
 
-function Tag({ children }: { children: React.ReactNode }) {
+function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <span
-      style={{
-        fontSize: "0.75rem",
-        backgroundColor: "var(--muted)",
-        color: "var(--muted-foreground)",
-        padding: "0.2rem 0.6rem",
-        borderRadius: "9999px",
-      }}
-    >
-      {children}
-    </span>
+    <div style={{ minWidth: 0 }}>
+      <p
+        style={{
+          fontSize: "0.6875rem",
+          fontWeight: 600,
+          color: "var(--muted-foreground)",
+          textTransform: "uppercase",
+          letterSpacing: "0.03em",
+          margin: "0 0 0.1875rem",
+        }}
+      >
+        {label}
+      </p>
+      <p
+        className="break-words"
+        style={{ fontSize: "0.8125rem", fontWeight: 600, color: "var(--navy)", margin: 0 }}
+      >
+        {value}
+      </p>
+    </div>
   );
 }

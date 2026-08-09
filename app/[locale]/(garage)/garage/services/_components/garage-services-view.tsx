@@ -39,6 +39,7 @@ const SERVICE_LABELS: Record<string, string> = {
   BODY_REPAIR: "Body Repair",
   STEERING_REPAIR: "Steering Repair",
   FUEL_SYSTEM_REPAIR: "Fuel System Repair",
+  OBD_SCAN: "OBD Scan",
 };
 
 const VEHICLE_TYPE_LABELS: Record<string, string> = {

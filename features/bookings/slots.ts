@@ -11,6 +11,18 @@ export const GST_OFFSET_MINUTES = 4 * 60;
 export const SERVICE_DURATION_MINUTES = 60;
 export const SLOT_GRANULARITY_MINUTES = 30;
 
+/** Per-service-type slot duration overrides — anything not listed here uses
+ * the standard SERVICE_DURATION_MINUTES. OBD_SCAN is quick (a code read/clear,
+ * not a full workshop visit) so it reserves a shorter slot than every other
+ * service type, which all still share the one fixed 60-minute duration. */
+const SERVICE_DURATION_OVERRIDES_MINUTES: Partial<Record<string, number>> = {
+  OBD_SCAN: 15,
+};
+
+export function getServiceDurationMinutes(serviceType: string): number {
+  return SERVICE_DURATION_OVERRIDES_MINUTES[serviceType] ?? SERVICE_DURATION_MINUTES;
+}
+
 export interface WorkingHoursDay {
   dayOfWeek: number;
   isClosed: boolean;
@@ -56,6 +68,7 @@ export function generateSlotsForDay(
   workingHours: WorkingHoursDay | null,
   bookedRanges: BookedRange[],
   now: Date = new Date(),
+  durationMinutes: number = SERVICE_DURATION_MINUTES,
 ): SlotCandidate[] {
   if (!workingHours || workingHours.isClosed || !workingHours.openTime || !workingHours.closeTime) {
     return [];
@@ -67,11 +80,11 @@ export function generateSlotsForDay(
 
   for (
     let startMin = openMin;
-    startMin + SERVICE_DURATION_MINUTES <= closeMin;
+    startMin + durationMinutes <= closeMin;
     startMin += SLOT_GRANULARITY_MINUTES
   ) {
     const start = gstToUtc(dateStr, startMin);
-    const end = gstToUtc(dateStr, startMin + SERVICE_DURATION_MINUTES);
+    const end = gstToUtc(dateStr, startMin + durationMinutes);
     if (start < now) continue;
 
     const overlaps = bookedRanges.some((b) => start < b.scheduledEnd && end > b.scheduledStart);
@@ -87,6 +100,7 @@ export function generateSlotsForDay(
 export function isSlotWithinWorkingHours(
   scheduledStart: Date,
   workingHours: WorkingHoursDay | null,
+  durationMinutes: number = SERVICE_DURATION_MINUTES,
 ): boolean {
   if (!workingHours || workingHours.isClosed || !workingHours.openTime || !workingHours.closeTime) {
     return false;
@@ -97,7 +111,7 @@ export function isSlotWithinWorkingHours(
 
   const openMin = parseTimeToMinutes(workingHours.openTime);
   const closeMin = parseTimeToMinutes(workingHours.closeTime);
-  if (startMin < openMin || startMin + SERVICE_DURATION_MINUTES > closeMin) return false;
+  if (startMin < openMin || startMin + durationMinutes > closeMin) return false;
   if (startMin % SLOT_GRANULARITY_MINUTES !== 0) return false;
   if (scheduledStart.getUTCSeconds() !== 0 || scheduledStart.getUTCMilliseconds() !== 0)
     return false;

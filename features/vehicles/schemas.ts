@@ -61,6 +61,7 @@ export const serviceTypeValues = [
   "BODY_REPAIR",
   "STEERING_REPAIR",
   "FUEL_SYSTEM_REPAIR",
+  "OBD_SCAN",
 ] as const;
 
 export const createVehicleSchema = z.object({

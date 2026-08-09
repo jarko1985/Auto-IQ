@@ -59,6 +59,7 @@ export const SERVICE_LABELS: Record<string, string> = {
   BODY_REPAIR: "Body Repair",
   STEERING_REPAIR: "Steering Repair",
   FUEL_SYSTEM_REPAIR: "Fuel System Repair",
+  OBD_SCAN: "OBD Scan",
 };
 
 export const EMIRATE_LABELS: Record<string, string> = {

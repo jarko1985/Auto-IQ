@@ -307,6 +307,9 @@ enum ServiceType {
   BODY_REPAIR
   STEERING_REPAIR
   FUEL_SYSTEM_REPAIR
+  // Added for the "Book Free OBD Scan" modal — a real, filterable
+  // GarageService like any other, not a mocked/decorative concept.
+  OBD_SCAN
 }
 
 enum PartOrigin {
@@ -1699,6 +1702,12 @@ model Garage {
   // same write-time-aggregation precedent as RepairOrder's pre-computed totals.
   reviewCount   Int   @default(0)
   averageRating Float @default(0)
+
+  // Public-facing profile media/copy — nullable, seed-populated for the demo
+  // garages only for now; no garage-owner self-service edit UI exists yet for
+  // either field (same class of gap as e.g. the storage provider's TODO).
+  photoUrl    String?
+  description String? @db.Text
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

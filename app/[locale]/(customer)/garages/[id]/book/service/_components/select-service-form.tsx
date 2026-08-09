@@ -24,6 +24,7 @@ import {
   Car,
   Compass,
   Fuel,
+  ScanLine,
   type LucideIcon,
 } from "lucide-react";
 
@@ -134,6 +135,11 @@ const SERVICE_META: Record<string, { label: string; description: string; icon: L
     label: "Fuel System Repair",
     description: "Fuel pump, injectors, and fuel system repair.",
     icon: Fuel,
+  },
+  OBD_SCAN: {
+    label: "OBD Scan",
+    description: "Read and clear onboard diagnostic trouble codes.",
+    icon: ScanLine,
   },
 };
 

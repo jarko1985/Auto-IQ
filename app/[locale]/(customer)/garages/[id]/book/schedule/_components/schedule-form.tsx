@@ -75,12 +75,12 @@ export function ScheduleForm({ garageId, locationId, vehicleId, serviceType }: P
   useEffect(() => {
     setLoading(true);
     setSelectedStart(null);
-    const params = new URLSearchParams({ locationId, date });
+    const params = new URLSearchParams({ locationId, date, serviceType });
     fetch(`/api/v1/garages/${garageId}/slots?${params.toString()}`)
       .then((res) => (res.ok ? res.json() : { data: [] }))
       .then((body: { data: Slot[] }) => setSlots(body.data))
       .finally(() => setLoading(false));
-  }, [garageId, locationId, date]);
+  }, [garageId, locationId, date, serviceType]);
 
   const morning = slots.filter((s) => gstHour(s.start) < 12);
   const afternoon = slots.filter((s) => gstHour(s.start) >= 12 && gstHour(s.start) < 17);

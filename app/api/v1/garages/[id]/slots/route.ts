@@ -18,6 +18,7 @@ export async function GET(request: NextRequest, { params }: Params) {
     const parsed = listSlotsSchema.safeParse({
       locationId: searchParams.get("locationId") ?? undefined,
       date: searchParams.get("date") ?? undefined,
+      serviceType: searchParams.get("serviceType") ?? undefined,
     });
     if (!parsed.success) {
       return NextResponse.json(

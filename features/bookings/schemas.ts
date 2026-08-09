@@ -44,6 +44,11 @@ export type SearchGaragesInput = z.infer<typeof searchGaragesSchema>;
 export const listSlotsSchema = z.object({
   locationId: z.string().uuid(),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be YYYY-MM-DD"),
+  // Optional — omitting it preserves the standard 60-minute duration every
+  // existing caller already relies on. Passing it lets slot generation use a
+  // service-specific duration (see getServiceDurationMinutes), e.g. OBD_SCAN's
+  // shorter 15-minute slot.
+  serviceType: z.enum(serviceTypeValues).optional(),
 });
 export type ListSlotsInput = z.infer<typeof listSlotsSchema>;
 

@@ -11,8 +11,8 @@ import * as repo from "./repository";
 import {
   dayOfWeekFromDateStr,
   generateSlotsForDay,
+  getServiceDurationMinutes,
   isSlotWithinWorkingHours,
-  SERVICE_DURATION_MINUTES,
 } from "./slots";
 import type {
   CancelBookingInput,
@@ -72,6 +72,12 @@ type SearchedGarage = Awaited<ReturnType<typeof searchGarages>>["garages"][numbe
 export interface GarageSearchResult {
   id: string;
   businessName: string;
+  description: string | null;
+  photoUrl: string | null;
+  // The primary location's id — search results (and the search result shape
+  // generally) only ever surface the primary location's fields, same
+  // simplification already applied to emirate/addressLine1/lat/lng below.
+  locationId: string | null;
   emirate: string | null;
   addressLine1: string | null;
   latitude: number | null;
@@ -94,6 +100,9 @@ export function toGarageSearchResult(g: SearchedGarage): GarageSearchResult {
   return {
     id: g.id,
     businessName: g.businessName,
+    description: g.description,
+    photoUrl: g.photoUrl,
+    locationId: primaryLocation?.id ?? null,
     emirate: primaryLocation?.emirate ?? null,
     addressLine1: primaryLocation?.addressLine1 ?? null,
     latitude: primaryLocation?.latitude ?? null,
@@ -135,7 +144,14 @@ export async function listAvailableSlots(garageId: string, input: ListSlotsInput
     windowStart,
     windowEnd,
   );
-  const slots = generateSlotsForDay(input.date, workingHours ?? null, bookedRanges);
+  const durationMinutes = getServiceDurationMinutes(input.serviceType ?? "");
+  const slots = generateSlotsForDay(
+    input.date,
+    workingHours ?? null,
+    bookedRanges,
+    new Date(),
+    durationMinutes,
+  );
 
   return slots.map((s) => ({
     start: s.start.toISOString(),
@@ -182,11 +198,12 @@ export async function createBooking(customerId: string, input: CreateBookingInpu
   const workingHours =
     location.workingHours.find((h) => h.dayOfWeek === gstDate.getUTCDay()) ?? null;
 
-  if (!isSlotWithinWorkingHours(scheduledStart, workingHours)) {
+  const durationMinutes = getServiceDurationMinutes(input.serviceType);
+  if (!isSlotWithinWorkingHours(scheduledStart, workingHours, durationMinutes)) {
     throw new ValidationError("The selected time is outside this garage's working hours.");
   }
 
-  const scheduledEnd = new Date(scheduledStart.getTime() + SERVICE_DURATION_MINUTES * 60_000);
+  const scheduledEnd = new Date(scheduledStart.getTime() + durationMinutes * 60_000);
   const bookingNumber = repo.generateBookingNumber();
 
   const booking = await db.$transaction(async (tx) => {
@@ -472,11 +489,12 @@ export async function proposeReschedule(
   const gstDate = new Date(proposedStart.getTime() + 4 * 60 * 60_000);
   const workingHours =
     location.workingHours.find((h) => h.dayOfWeek === gstDate.getUTCDay()) ?? null;
-  if (!isSlotWithinWorkingHours(proposedStart, workingHours)) {
+  const durationMinutes = getServiceDurationMinutes(booking.serviceType);
+  if (!isSlotWithinWorkingHours(proposedStart, workingHours, durationMinutes)) {
     throw new ValidationError("The proposed time is outside this garage's working hours.");
   }
 
-  const proposedEnd = new Date(proposedStart.getTime() + SERVICE_DURATION_MINUTES * 60_000);
+  const proposedEnd = new Date(proposedStart.getTime() + durationMinutes * 60_000);
 
   const updated = await db.$transaction(async (tx) => {
     await repo.lockLocationForBooking(tx, booking.locationId);

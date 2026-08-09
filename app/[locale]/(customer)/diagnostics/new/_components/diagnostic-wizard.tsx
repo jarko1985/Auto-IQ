@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Link, useRouter } from "@/i18n/routing";
 import { getVehicleImage } from "@/features/vehicles/vehicle-image";
 import { useIsRtl } from "@/i18n/direction";
+import { ObdScanModal } from "@/components/garages/obd-scan-modal";
 import {
   ChevronRight,
   ChevronLeft,
@@ -327,6 +328,7 @@ export function DiagnosticWizard({ vehicles, categories, resumeSession }: Props)
   const ForwardIcon = isRtl ? ChevronLeft : ChevronRight;
 
   const [step, setStep] = useState<number>(resumeSession?.currentStep ?? 1);
+  const [obdScanModalOpen, setObdScanModalOpen] = useState(false);
   const [vehicleId, setVehicleId] = useState(resumeSession?.vehicleId ?? "");
   const [categoryId, setCategoryId] = useState(resumeSession?.categoryId ?? "");
   const [description, setDescription] = useState(resumeSession?.description ?? "");
@@ -1634,7 +1636,9 @@ export function DiagnosticWizard({ vehicles, categories, resumeSession }: Props)
             </div>
 
             {/* OBD scanner promo */}
-            <div
+            <button
+              type="button"
+              onClick={() => setObdScanModalOpen(true)}
               style={{
                 padding: "1rem 1.25rem",
                 backgroundColor: "#081a2f",
@@ -1642,6 +1646,10 @@ export function DiagnosticWizard({ vehicles, categories, resumeSession }: Props)
                 display: "flex",
                 alignItems: "center",
                 gap: "0.75rem",
+                border: "none",
+                cursor: "pointer",
+                width: "100%",
+                textAlign: "start",
               }}
             >
               <div style={{ fontSize: "1.5rem" }}>🔌</div>
@@ -1654,7 +1662,7 @@ export function DiagnosticWizard({ vehicles, categories, resumeSession }: Props)
                     letterSpacing: "0.06em",
                   }}
                 >
-                  PRO FEATURE
+                  FREE SERVICE
                 </span>
                 <p
                   style={{
@@ -1664,12 +1672,19 @@ export function DiagnosticWizard({ vehicles, categories, resumeSession }: Props)
                     margin: "0.125rem 0 0",
                   }}
                 >
-                  Connect OBD-II Scanner
+                  Book Free OBD-II Scanning
                 </p>
               </div>
-            </div>
+            </button>
           </div>
         </div>
+
+        <ObdScanModal
+          open={obdScanModalOpen}
+          onClose={() => setObdScanModalOpen(false)}
+          vehicleId={vehicleId}
+          diagnosticSessionId={sessionId}
+        />
 
         <BottomBar>
           <button type="button" onClick={goPrev} style={btnSecondary}>

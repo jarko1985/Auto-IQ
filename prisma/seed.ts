@@ -1706,7 +1706,11 @@ async function seedGarages() {
   if (garageOrg && garageOwner) {
     const garage = await db.garage.upsert({
       where: { organizationId: garageOrg.id },
-      update: {},
+      update: {
+        photoUrl: "/images/garages/obd-card-2.jpg",
+        description:
+          "Full-service workshop offering routine maintenance, brakes, and AI-assisted diagnostics.",
+      },
       create: {
         organizationId: garageOrg.id,
         businessName: "Al Rashidi Auto Service",
@@ -1722,6 +1726,9 @@ async function seedGarages() {
         verificationStatus: "APPROVED",
         submittedAt: new Date("2026-06-01"),
         reviewedAt: new Date("2026-06-02"),
+        photoUrl: "/images/garages/obd-card-2.jpg",
+        description:
+          "Full-service workshop offering routine maintenance, brakes, and AI-assisted diagnostics.",
       },
     });
 
@@ -1770,6 +1777,7 @@ async function seedGarages() {
       "BRAKE_SERVICE",
       "AC_SERVICE",
       "GENERAL_INSPECTION",
+      "OBD_SCAN",
     ] as const;
     for (const serviceType of serviceTypes) {
       await db.garageService.upsert({
@@ -1929,6 +1937,8 @@ interface NewGarageSeed {
   services: string[];
   vehicleTypes: string[];
   makeSlugs: string[];
+  photoUrl: string;
+  description: string;
 }
 
 const NEW_GARAGES: NewGarageSeed[] = [
@@ -1942,9 +1952,11 @@ const NEW_GARAGES: NewGarageSeed[] = [
     emirate: "ABU_DHABI",
     latitude: 24.4539,
     longitude: 54.3773,
-    services: ["OIL_CHANGE", "TYRE_ROTATION", "FILTER_CHANGE", "GENERAL_INSPECTION"],
+    services: ["OIL_CHANGE", "TYRE_ROTATION", "FILTER_CHANGE", "GENERAL_INSPECTION", "OBD_SCAN"],
     vehicleTypes: ["SEDAN", "SUV"],
     makeSlugs: ["honda"],
+    photoUrl: "/images/garages/obd-card-1.jpg",
+    description: "Trusted neighborhood garage for routine maintenance and multi-point inspections.",
   },
   {
     slug: "al-ain-motor-works",
@@ -1959,6 +1971,8 @@ const NEW_GARAGES: NewGarageSeed[] = [
     services: ["ENGINE_REPAIR", "TRANSMISSION_SERVICE", "FLUID_CHECK", "GENERAL_INSPECTION"],
     vehicleTypes: ["SEDAN", "SUV", "PICKUP_TRUCK"],
     makeSlugs: ["mitsubishi", "toyota"],
+    photoUrl: "/images/garages/search-card-1.jpg",
+    description: "Specialists in engine and transmission repair for sedans, SUVs, and pickups.",
   },
   {
     slug: "sharjah-industrial-auto-care",
@@ -1970,9 +1984,17 @@ const NEW_GARAGES: NewGarageSeed[] = [
     emirate: "SHARJAH",
     latitude: 25.3373,
     longitude: 55.4033,
-    services: ["ELECTRICAL_REPAIR", "BATTERY_REPLACEMENT", "TIMING_BELT", "OIL_CHANGE"],
+    services: [
+      "ELECTRICAL_REPAIR",
+      "BATTERY_REPLACEMENT",
+      "TIMING_BELT",
+      "OIL_CHANGE",
+      "OBD_SCAN",
+    ],
     vehicleTypes: ["SEDAN", "HATCHBACK"],
     makeSlugs: ["bmw"],
+    photoUrl: "/images/garages/obd-card-3.jpg",
+    description: "Electrical and battery diagnostics with fast, code-accurate OBD scanning.",
   },
   {
     slug: "sharjah-airport-auto-hub",
@@ -1987,6 +2009,8 @@ const NEW_GARAGES: NewGarageSeed[] = [
     services: ["SUSPENSION_REPAIR", "TYRE_REPAIR", "TYRE_ROTATION", "GENERAL_INSPECTION"],
     vehicleTypes: ["SUV", "PICKUP_TRUCK", "TRUCK"],
     makeSlugs: ["mercedes-benz"],
+    photoUrl: "/images/garages/search-card-2.jpg",
+    description: "Suspension and tyre specialists serving SUVs, pickups, and heavy trucks.",
   },
   {
     slug: "ajman-prestige-motors",
@@ -1998,9 +2022,17 @@ const NEW_GARAGES: NewGarageSeed[] = [
     emirate: "AJMAN",
     latitude: 25.4052,
     longitude: 55.5136,
-    services: ["COOLING_SYSTEM_REPAIR", "EXHAUST_REPAIR", "OIL_CHANGE", "FLUID_CHECK"],
+    services: [
+      "COOLING_SYSTEM_REPAIR",
+      "EXHAUST_REPAIR",
+      "OIL_CHANGE",
+      "FLUID_CHECK",
+      "OBD_SCAN",
+    ],
     vehicleTypes: ["SEDAN", "SUV"],
     makeSlugs: ["land-rover", "nissan"],
+    photoUrl: "/images/garages/obd-card-4.jpg",
+    description: "Premium care for cooling systems and exhaust, with a dedicated OBD scan bay.",
   },
   {
     slug: "umm-al-quwain-auto-body",
@@ -2015,6 +2047,8 @@ const NEW_GARAGES: NewGarageSeed[] = [
     services: ["BODY_REPAIR", "STEERING_REPAIR", "GENERAL_INSPECTION", "OIL_CHANGE"],
     vehicleTypes: ["SEDAN", "VAN"],
     makeSlugs: ["honda", "toyota"],
+    photoUrl: "/images/garages/search-card-4.jpg",
+    description: "Bodywork, paint, and steering repair for sedans and vans.",
   },
   {
     slug: "rak-fuel-brake-specialists",
@@ -2029,6 +2063,8 @@ const NEW_GARAGES: NewGarageSeed[] = [
     services: ["FUEL_SYSTEM_REPAIR", "OTHER", "BRAKE_SERVICE", "AC_SERVICE"],
     vehicleTypes: ["SEDAN", "PICKUP_TRUCK"],
     makeSlugs: ["bmw"],
+    photoUrl: "/images/garages/location-dubai.jpg",
+    description: "Fuel system and brake specialists keeping sedans and pickups road-ready.",
   },
   {
     slug: "fujairah-coastal-garage",
@@ -2043,6 +2079,8 @@ const NEW_GARAGES: NewGarageSeed[] = [
     services: ["AC_SERVICE", "BRAKE_SERVICE", "GENERAL_INSPECTION", "OIL_CHANGE"],
     vehicleTypes: ["SUV", "SEDAN", "HATCHBACK"],
     makeSlugs: ["mercedes-benz", "mitsubishi"],
+    photoUrl: "/images/garages/location-sharjah.jpg",
+    description: "Coastal-climate AC and brake care for SUVs, sedans, and hatchbacks.",
   },
 ];
 
@@ -2061,7 +2099,7 @@ async function seedAdditionalGarages() {
 
     const garage = await db.garage.upsert({
       where: { organizationId: org.id },
-      update: {},
+      update: { photoUrl: seed.photoUrl, description: seed.description },
       create: {
         organizationId: org.id,
         businessName: seed.businessName,
@@ -2077,6 +2115,8 @@ async function seedAdditionalGarages() {
         verificationStatus: "APPROVED",
         submittedAt: new Date("2026-06-01"),
         reviewedAt: new Date("2026-06-02"),
+        photoUrl: seed.photoUrl,
+        description: seed.description,
       },
     });
 
